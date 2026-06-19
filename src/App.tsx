@@ -27,7 +27,7 @@ function App() {
           Brève
         </h1>
         <p className="text-content-muted text-base mb-8">
-          App de news agrégée, synthétisée et filtrée — RSS + IA + Supabase
+          App de news synthétisées
         </p>
         <button className="btn btn--ghost" onClick={() => navigate(ROUTES.DESIGN_SYSTEM)}>
           Design System →
