@@ -12,12 +12,7 @@ const Input: FC<Props> = ({ id, label, className = '', ...rest }) => {
         <label
           id={`${id}__label`}
           htmlFor={id}
-          style={{
-            display: 'block',
-            marginBottom: 'var(--space-2)',
-            fontSize: 'var(--text-sm)',
-            color: 'var(--color-text-muted)',
-          }}
+          className="block mb-2 text-sm text-content-muted"
         >
           {label}
         </label>

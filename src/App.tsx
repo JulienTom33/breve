@@ -21,12 +21,12 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)] flex items-center justify-center">
+    <div className="min-h-screen bg-bg text-content flex items-center justify-center">
       <div className="text-center">
-        <h1 className="text-[var(--text-xl)] font-bold mb-[var(--space-2)]">
+        <h1 className="text-4xl font-bold mb-2">
           Brève
         </h1>
-        <p className="text-[var(--color-text-muted)] text-[var(--text-base)] mb-[var(--space-8)]">
+        <p className="text-content-muted text-base mb-8">
           App de news agrégée, synthétisée et filtrée — RSS + IA + Supabase
         </p>
         <button className="btn btn--ghost" onClick={() => navigate(ROUTES.DESIGN_SYSTEM)}>
