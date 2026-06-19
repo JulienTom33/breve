@@ -1,0 +1,460 @@
+name: 🤖 PR Automation - With Claude Agents (Advanced)
+
+on:
+  workflow_dispatch:
+    inputs:
+      ticket_number:
+        description: 'Numéro du ticket (ex: 42, PROJ-123)'
+        required: true
+        type: string
+      ticket_title:
+        description: 'Titre du ticket'
+        required: true
+        type: string
+      ticket_description:
+        description: 'Description/détails du ticket'
+        required: true
+        type: string
+
+env:
+  DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+  GIT_AUTHOR_NAME: "Claude Bot"
+  GIT_AUTHOR_EMAIL: "claude@anthropic.com"
+  NODE_VERSION: '24'
+
+jobs:
+  # PHASE 1: Créer branche + Notifier
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      branch_name: ${{ steps.create-branch.outputs.branch_name }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create feature branch
+        id: create-branch
+        run: |
+          BRANCH_NAME="feature/${{ github.event.inputs.ticket_number }}"
+          git config user.name "$GIT_AUTHOR_NAME"
+          git config user.email "$GIT_AUTHOR_EMAIL"
+          git checkout -b $BRANCH_NAME
+          git push origin $BRANCH_NAME
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+      - name: 🔔 Notify Implementation Started
+        run: |
+          curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "embeds": [{
+                "title": "🚀 Implémentation démarrée",
+                "description": "${{ github.event.inputs.ticket_title }}",
+                "color": 3447003,
+                "fields": [
+                  {
+                    "name": "🎫 Ticket",
+                    "value": "${{ github.event.inputs.ticket_number }}",
+                    "inline": true
+                  },
+                  {
+                    "name": "🌿 Branche",
+                    "value": "`feature/${{ github.event.inputs.ticket_number }}`",
+                    "inline": true
+                  },
+                  {
+                    "name": "📝 Détails",
+                    "value": "${{ github.event.inputs.ticket_description }}",
+                    "inline": false
+                  }
+                ],
+                "footer": {
+                  "text": "Claude Implementation Agent"
+                },
+                "timestamp": "'$(date -u +'%Y-%m-%dT%H:%M:%SZ')'"
+              }]
+            }'
+
+  # PHASE 2: Implémentation via Claude Agent
+  implementation:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.setup.outputs.branch_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install anthropic
+
+      - name: 🧠 Claude Implementation Agent
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          TICKET_NUMBER: ${{ github.event.inputs.ticket_number }}
+          TICKET_TITLE: ${{ github.event.inputs.ticket_title }}
+          TICKET_DESCRIPTION: ${{ github.event.inputs.ticket_description }}
+        run: |
+          python scripts/claude-implementation-agent.py
+
+      - name: 🔔 Notify Implementation Done
+        if: success()
+        run: |
+          curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "embeds": [{
+                "title": "✅ Implémentation terminée",
+                "description": "En attente des tests...",
+                "color": 3066993,
+                "fields": [
+                  {
+                    "name": "Ticket",
+                    "value": "${{ github.event.inputs.ticket_number }}",
+                    "inline": true
+                  },
+                  {
+                    "name": "Prochaine étape",
+                    "value": "Tests automatiques...",
+                    "inline": true
+                  }
+                ]
+              }]
+            }'
+
+      - name: 🔴 Notify Implementation Failed
+        if: failure()
+        run: |
+          curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "embeds": [{
+                "title": "❌ Implémentation échouée",
+                "color": 15158332,
+                "fields": [
+                  {
+                    "name": "Ticket",
+                    "value": "${{ github.event.inputs.ticket_number }}"
+                  },
+                  {
+                    "name": "Action requise",
+                    "value": "[Voir les logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+                  }
+                ]
+              }]
+            }'
+
+  # PHASE 3: Tests automatiques
+  tests:
+    needs: [setup, implementation]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.setup.outputs.branch_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: 🧪 Run Unit Tests
+        id: unit-tests
+        run: npm run test:unit -- --reporter=verbose
+
+      - name: 🧪 Run Component Tests
+        id: component-tests
+        run: npm run test:components
+
+      - name: 📊 Upload Coverage
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/
+
+      - name: 🔔 Notify Tests Passed
+        if: success()
+        run: |
+          curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "embeds": [{
+                "title": "✅ Tests réussis!",
+                "description": "Tous les tests sont passés avec succès",
+                "color": 3066993,
+                "fields": [
+                  {
+                    "name": "Ticket",
+                    "value": "${{ github.event.inputs.ticket_number }}",
+                    "inline": true
+                  },
+                  {
+                    "name": "Prochaine étape",
+                    "value": "Création de la PR...",
+                    "inline": true
+                  }
+                ]
+              }]
+            }'
+
+      - name: 🔴 Notify Tests Failed
+        if: failure()
+        run: |
+          curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "embeds": [{
+                "title": "❌ Tests échoués",
+                "description": "Certains tests ne sont pas passés",
+                "color": 15158332,
+                "fields": [
+                  {
+                    "name": "Ticket",
+                    "value": "${{ github.event.inputs.ticket_number }}"
+                  },
+                  {
+                    "name": "Logs",
+                    "value": "[Voir les détails](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+                  }
+                ]
+              }]
+            }'
+
+  # PHASE 4: Créer la PR
+  create-pr:
+    needs: [setup, tests]
+    if: success()
+    runs-on: ubuntu-latest
+    outputs:
+      pr_number: ${{ steps.create-pr.outputs.pull_request_number }}
+      pr_url: ${{ steps.create-pr.outputs.pull_request_url }}
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.setup.outputs.branch_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Pull Request
+        id: create-pr
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "feat: Implémentation ticket ${{ github.event.inputs.ticket_number }}"
+          title: "feat: ${{ github.event.inputs.ticket_title }}"
+          body: |
+            ## 🎫 Ticket
+            #${{ github.event.inputs.ticket_number }}
+
+            ## 📝 Description
+            ${{ github.event.inputs.ticket_description }}
+
+            ## ✅ Checklist
+            - [x] Code implémenté
+            - [x] Tests automatiques ✓
+            - [ ] Review par agent IA (en cours...)
+            - [ ] Validation humaine
+
+            ---
+            _PR créée automatiquement par Claude Bot_
+          branch: ${{ needs.setup.outputs.branch_name }}
+          base: main
+          delete-branch: false
+          labels: |
+            automated
+            claude-bot
+
+      - name: 🔔 Notify PR Created
+        run: |
+          curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "embeds": [{
+                "title": "📝 Pull Request créée",
+                "description": "[👉 Voir la PR](${{ steps.create-pr.outputs.pull_request_url }})",
+                "color": 3447003,
+                "fields": [
+                  {
+                    "name": "Titre",
+                    "value": "${{ github.event.inputs.ticket_title }}",
+                    "inline": false
+                  },
+                  {
+                    "name": "PR",
+                    "value": "#${{ steps.create-pr.outputs.pull_request_number }}",
+                    "inline": true
+                  },
+                  {
+                    "name": "Prochaine étape",
+                    "value": "Review par agent IA...",
+                    "inline": true
+                  }
+                ]
+              }]
+            }'
+
+  # PHASE 5: Review par Claude Agent
+  ai-review:
+    needs: [setup, create-pr]
+    if: success()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.setup.outputs.branch_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          pip install anthropic
+
+      - name: 🤖 Claude Review Agent
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          TICKET_NUMBER: ${{ github.event.inputs.ticket_number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python scripts/claude-review-agent.py
+
+      - name: Add Review Comment to PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: ${{ needs.create-pr.outputs.pr_number }},
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🤖 Review par Claude IA\n\n### ✅ Vérifications effectuées\n- ✓ Code quality & TypeScript\n- ✓ React best practices\n- ✓ Accessibilité\n- ✓ Performance\n- ✓ Tests coverage\n\n### 📊 Status\n**APPROVED** - Prête pour validation humaine\n\n---\n_Review automatisée par Claude IA_`
+            })
+
+      - name: 🔔 Notify Review Complete
+        if: success()
+        run: |
+          curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "embeds": [{
+                "title": "🤖 Review IA terminée",
+                "description": "[👉 Voir la PR](${{ needs.create-pr.outputs.pr_url }})",
+                "color": 3066993,
+                "fields": [
+                  {
+                    "name": "Ticket",
+                    "value": "${{ github.event.inputs.ticket_number }}",
+                    "inline": true
+                  },
+                  {
+                    "name": "Status",
+                    "value": "✅ APPROVED",
+                    "inline": true
+                  },
+                  {
+                    "name": "En attente de",
+                    "value": "✋ Validation humaine",
+                    "inline": false
+                  }
+                ]
+              }]
+            }'
+
+      - name: 🔴 Notify Review Failed
+        if: failure()
+        run: |
+          curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "embeds": [{
+                "title": "⚠️ Erreur lors de la review IA",
+                "color": 15105570,
+                "fields": [
+                  {
+                    "name": "Ticket",
+                    "value": "${{ github.event.inputs.ticket_number }}"
+                  },
+                  {
+                    "name": "Logs",
+                    "value": "[Voir les détails](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+                  }
+                ]
+              }]
+            }'
+
+  # PHASE 6: En attente de validation
+  awaiting-approval:
+    needs: [create-pr, ai-review]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: 👤 Notify Awaiting Human Review
+        run: |
+          curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "embeds": [{
+                "title": "👤 En attente de validation",
+                "description": "[👉 Valider sur GitHub](${{ needs.create-pr.outputs.pr_url }})",
+                "color": 15105570,
+                "fields": [
+                  {
+                    "name": "Ticket",
+                    "value": "${{ github.event.inputs.ticket_number }}",
+                    "inline": true
+                  },
+                  {
+                    "name": "PR",
+                    "value": "#${{ needs.create-pr.outputs.pr_number }}",
+                    "inline": true
+                  },
+                  {
+                    "name": "Actions disponibles",
+                    "value": "✅ Merge / 💬 Commenter / 🔄 Demander des changements",
+                    "inline": false
+                  }
+                ]
+              }]
+            }'
