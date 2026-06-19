@@ -16,14 +16,6 @@ interface ButtonProps {
   className?: string
 }
 
-/**
- * Composant Button réutilisable
- *
- * @example
- * ```tsx
- * <Button label="Click me" onClick={() => console.log('clicked')} />
- * ```
- */
 export const Button: React.FC<ButtonProps> = ({
   label,
   onClick,
