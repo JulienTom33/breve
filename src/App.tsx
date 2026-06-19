@@ -27,7 +27,7 @@ function App() {
           Brève
         </h1>
         <p className="text-content-muted text-base mb-8">
-          Brève : application de news synthétisées
+          Brève : une application de news synthétisées
         </p>
         <button className="btn btn--ghost" onClick={() => navigate(ROUTES.DESIGN_SYSTEM)}>
           Design System →
