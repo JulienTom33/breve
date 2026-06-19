@@ -1,0 +1,88 @@
+name: Claude PR Review
+
+on:
+  workflow_run:
+    workflows: ["PR Checks"]
+    types: [completed]
+    branches-ignore: [main]
+
+jobs:
+  claude-review:
+    name: AI Code Review
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get PR info from workflow run
+        id: get-pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prs = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: context.payload.workflow_run.head_branch,
+              state: "open",
+            });
+            if (prs.data.length > 0) {
+              core.setOutput("pr_number", prs.data[0].number);
+              core.setOutput("pr_title", prs.data[0].title);
+              core.setOutput("pr_url", prs.data[0].html_url);
+            }
+
+      - name: Notify Discord — Review en cours
+        uses: rjstone/discord-webhook-notify@v1
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          severity: info
+          details: |
+            **PR #${{ steps.get-pr.outputs.pr_number }}:** ${{ steps.get-pr.outputs.pr_title }}
+            **Lien:** ${{ steps.get-pr.outputs.pr_url }}
+          text: "🔍 **Claude analyse la PR** — review en cours..."
+
+      - name: Claude PR Review
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          direct_prompt: |
+            Tu es un expert React/TypeScript/Supabase.
+            Relis cette PR de manière critique :
+            1. Vérifie la logique métier et les edge cases
+            2. Détecte les failles de sécurité (RLS, injection, XSS)
+            3. Vérifie la qualité des tests (couverture, cas limites)
+            4. Vérifie les performances (re-renders inutiles, queries non optimisées)
+            5. Vérifie la cohérence avec le design system
+            Fournis un résumé : ✅ points positifs, ⚠️ points à corriger, ❌ bloquants.
+            Si des corrections mineures sont nécessaires, applique-les directement.
+            Une fois terminé, marque la PR comme "Ready for Review".
+
+      - name: Notify Discord — Review Terminée
+        if: success()
+        uses: rjstone/discord-webhook-notify@v1
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          severity: good
+          details: |
+            **PR #${{ steps.get-pr.outputs.pr_number }}:** ${{ steps.get-pr.outputs.pr_title }}
+            **→ Ta revue finale ici :** ${{ steps.get-pr.outputs.pr_url }}
+          text: "👀 **PR prête pour ta validation** — Claude a terminé sa review"
+
+      - name: Notify Discord — Review Échouée
+        if: failure()
+        uses: rjstone/discord-webhook-notify@v1
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          severity: error
+          details: |
+            **PR #${{ steps.get-pr.outputs.pr_number }}:** ${{ steps.get-pr.outputs.pr_title }}
+            **Logs:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          text: "❌ **Erreur lors de la review Claude** — vérifier les logs"
