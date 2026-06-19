@@ -1,0 +1,131 @@
+/* ── Button ─────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 1;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.btn--primary {
+  background-color: var(--color-primary);
+  color: #ffffff;
+  padding: 10px var(--space-5);
+}
+.btn--primary:hover {
+  background-color: var(--color-primary-hover);
+}
+.btn--primary:active {
+  background-color: var(--color-primary-active);
+}
+
+.btn--ghost {
+  background-color: transparent;
+  color: var(--color-text);
+  border-color: var(--color-border);
+  padding: 10px var(--space-5);
+}
+.btn--ghost:hover {
+  background-color: var(--color-surface-2);
+}
+.btn--ghost:active {
+  background-color: var(--color-surface-offset);
+}
+
+.btn--icon {
+  background-color: var(--color-surface-2);
+  color: var(--color-text);
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  flex-shrink: 0;
+}
+.btn--icon:hover {
+  background-color: var(--color-surface-offset);
+}
+
+/* ── Badge ───────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.badge--monde     { background-color: var(--color-badge-monde); }
+.badge--france    { background-color: var(--color-badge-france); }
+.badge--economie  { background-color: var(--color-badge-economie); }
+.badge--science   { background-color: var(--color-badge-science); color: #0a0a0a; }
+.badge--techno    { background-color: var(--color-badge-techno); }
+.badge--enviro    { background-color: var(--color-badge-enviro); color: #0a0a0a; }
+
+/* ── SourcePill ──────────────────────────────────────── */
+.source-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 5px var(--space-3);
+  background-color: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+.source-pill:hover {
+  background-color: var(--color-surface-offset);
+  color: var(--color-text);
+}
+
+/* ── Input ───────────────────────────────────────────── */
+.input {
+  width: 100%;
+  background-color: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  outline: none;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+.input::placeholder {
+  color: var(--color-text-faint);
+}
+.input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-subtle);
+}
+
+/* ── Card ────────────────────────────────────────────── */
+.card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}

@@ -1,0 +1,90 @@
+/* ── Dark mode (default) ───────────────────────────── */
+:root,
+[data-theme='dark'] {
+  --color-bg: #0a0a0a;
+  --color-surface: #111111;
+  --color-surface-2: #1a1a1a;
+  --color-surface-offset: #222222;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-divider: rgba(255, 255, 255, 0.06);
+
+  --color-text: #f0f0f0;
+  --color-text-muted: #8a8a8a;
+  --color-text-faint: #555555;
+  --color-text-inverse: #0a0a0a;
+
+  --color-primary: #4a7fe8;
+  --color-primary-hover: #3a6fd8;
+  --color-primary-active: #2a5fc8;
+  --color-primary-subtle: rgba(74, 127, 232, 0.15);
+
+  --color-badge-monde: #4a7fe8;
+  --color-badge-france: #e84a4a;
+  --color-badge-economie: #e8a44a;
+  --color-badge-science: #4ae8a4;
+  --color-badge-techno: #a44ae8;
+  --color-badge-enviro: #4ae84a;
+
+  --color-success: #4ae8a4;
+  --color-error: #e84a4a;
+}
+
+/* ── Light mode ─────────────────────────────────────── */
+[data-theme='light'] {
+  --color-bg: #f5f5f5;
+  --color-surface: #ffffff;
+  --color-surface-2: #f0f0f0;
+  --color-surface-offset: #e8e8e8;
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-divider: rgba(0, 0, 0, 0.06);
+
+  --color-text: #111111;
+  --color-text-muted: #666666;
+  --color-text-faint: #aaaaaa;
+  --color-text-inverse: #ffffff;
+
+  --color-primary: #3a6fd8;
+  --color-primary-hover: #2a5fc8;
+  --color-primary-active: #1a4fb8;
+  --color-primary-subtle: rgba(58, 111, 216, 0.12);
+}
+
+/* ── Shared tokens ──────────────────────────────────── */
+:root {
+  --font-display: 'Satoshi', 'Inter', sans-serif;
+  --font-body: 'Satoshi', 'Inter', sans-serif;
+
+  /* Fluid type scale */
+  --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+  --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+  --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+  --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+
+  /* Spacing (base 4px) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.875rem;
+  --radius-xl: 1.25rem;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-base: 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
