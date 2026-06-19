@@ -1,0 +1,82 @@
+name: PR → Discord notifications
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+
+jobs:
+  notify-discord:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build Discord message
+        id: build
+        run: |
+          ACTION="${{ github.event.action }}"
+          PR_NUMBER="${{ github.event.number }}"
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          PR_AUTHOR="${{ github.event.pull_request.user.login }}"
+          PR_FROM="${{ github.event.pull_request.head.ref }}"
+          PR_TO="${{ github.event.pull_request.base.ref }}"
+          PR_URL="${{ github.event.pull_request.html_url }}"
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+          # Emoji + label selon l'action de la PR
+          case "$ACTION" in
+            opened)
+              EMOJI="🆕"
+              LABEL="Nouvelle pull request"
+              ;;
+            reopened)
+              EMOJI="🔁"
+              LABEL="Pull request ré-ouverte"
+              ;;
+            synchronize)
+              EMOJI="♻️"
+              LABEL="Mise à jour de la pull request"
+              ;;
+            closed)
+              if [ "${{ github.event.pull_request.merged }}" = "true" ]; then
+                EMOJI="✅"
+                LABEL="Pull request fusionnée"
+              else
+                EMOJI="🛑"
+                LABEL="Pull request fermée"
+              fi
+              ;;
+            *)
+              EMOJI="ℹ️"
+              LABEL="Évènement pull request"
+              ;;
+          esac
+
+          # Ping @here uniquement si la PR vise main
+          if [ "$PR_TO" = "main" ]; then
+            PING="@here "
+          else
+            PING=""
+          fi
+
+          # Message multi-lignes en Markdown
+          CONTENT=$(printf '%s\n\n%s\n%s\n%s\n\n%s\n%s\n' \
+            "${PING}${EMOJI} **${LABEL} #${PR_NUMBER}** sur \`${{ github.repository }}\`" \
+            "👤 Auteur : ${PR_AUTHOR}" \
+            "🌿 Branches : \`${PR_FROM}\` → \`${PR_TO}\`" \
+            "📝 Titre : ${PR_TITLE}" \
+            "🔗 PR : ${PR_URL}" \
+            "🔗 Run Actions : ${RUN_URL}")
+
+          # On échappe les sauts de ligne pour le JSON
+          CONTENT_ESCAPED=$(printf '%s\n' "$CONTENT" | python -c 'import json,sys; print(json.dumps(sys.stdin.read())[1:-1])')
+
+          echo "content=${CONTENT_ESCAPED}" >> $GITHUB_OUTPUT
+
+      - name: Send to Discord
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_PR_WEBHOOK_URL }}
+          CONTENT: ${{ steps.build.outputs.content }}
+        run: |
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d "{\"content\": \"${CONTENT}\"}" \
+               "$DISCORD_WEBHOOK_URL"
