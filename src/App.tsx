@@ -30,7 +30,7 @@ function App() {
           Brève : une application de news synthétisées
         </p>
         <button className="btn btn--ghost" onClick={() => navigate(ROUTES.DESIGN_SYSTEM)}>
-          Design System →
+          prout
         </button>
       </div>
     </div>
