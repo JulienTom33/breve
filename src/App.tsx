@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import DesignSystem from './pages/DesignSystem';
+import { ROUTES } from './config/routes';
 
 function navigate(to: string) {
   window.history.pushState({}, '', to);
@@ -15,41 +16,20 @@ function App() {
     return () => window.removeEventListener('popstate', handlePop);
   }, []);
 
-  if (path === '/design-system') {
+  if (path === ROUTES.DESIGN_SYSTEM) {
     return <DesignSystem />;
   }
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        backgroundColor: 'var(--color-bg)',
-        color: 'var(--color-text)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <div style={{ textAlign: 'center' }}>
-        <h1
-          style={{
-            fontSize: 'var(--text-xl)',
-            fontWeight: 700,
-            marginBottom: 'var(--space-2)',
-          }}
-        >
+    <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)] flex items-center justify-center">
+      <div className="text-center">
+        <h1 className="text-[var(--text-xl)] font-bold mb-[var(--space-2)]">
           Brève
         </h1>
-        <p
-          style={{
-            color: 'var(--color-text-muted)',
-            fontSize: 'var(--text-base)',
-            marginBottom: 'var(--space-8)',
-          }}
-        >
+        <p className="text-[var(--color-text-muted)] text-[var(--text-base)] mb-[var(--space-8)]">
           App de news agrégée, synthétisée et filtrée — RSS + IA + Supabase
         </p>
-        <button className="btn btn--ghost" onClick={() => navigate('/design-system')}>
+        <button className="btn btn--ghost" onClick={() => navigate(ROUTES.DESIGN_SYSTEM)}>
           Design System →
         </button>
       </div>
