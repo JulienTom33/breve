@@ -4,15 +4,12 @@ import React from 'react'
  * Props pour le composant Button
  */
 interface ButtonProps {
-  /** Texte du bouton */
   label: string
-  /** Callback au clic */
   onClick: () => void
-  /** Variante du bouton */
   variant?: 'primary' | 'secondary' | 'danger'
-  /** Désactiver le bouton */
+
   disabled?: boolean
-  /** Ajouter une classe CSS personnalisée */
+
   className?: string
 }
 

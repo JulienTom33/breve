@@ -13,7 +13,7 @@ export default defineConfig({
     // 📊 Coverage
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html', 'lcov'],
+      reporter: ['text', 'json'],
       exclude: [
         'node_modules/',
         'src/test/',
@@ -33,7 +33,7 @@ export default defineConfig({
     exclude: ['node_modules', 'dist', '.idea', '.git', '.cache'],
 
     // 🔍 Reporter
-    reporter: ['verbose', 'html'],
+    reporter: ['verbose'],
     outputFile: {
       html: './coverage/index.html',
     },
