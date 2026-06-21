@@ -1,3 +1,5 @@
+import plugin from 'tailwindcss/plugin'
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
@@ -115,4 +117,23 @@ export default {
       },
     },
   },
+  plugins: [
+    plugin(function ({ addBase }) {
+      addBase({
+        h1: {
+          fontSize: 'var(--text-xl, 1.5rem)',
+          fontFamily: 'var(--font-display, sans-serif)',
+          fontWeight: '700',
+        },
+        h2: {
+          fontSize: 'var(--text-lg, 1.125rem)',
+          fontWeight: '600',
+        },
+        h3: {
+          fontSize: 'var(--text-base, 1rem)',
+          fontWeight: '600',
+        },
+      })
+    }),
+  ],
 }
