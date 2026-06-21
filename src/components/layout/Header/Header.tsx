@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import { SunIcon, MoonIcon } from '@heroicons/react/24/outline'
-import Button from '@/components/ui/Button'
+import Button from '@/components/ui/Button/Button'
 import { useDarkMode } from '@/hooks/useDarkMode'
 
 const Header: FC = () => {

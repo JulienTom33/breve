@@ -1,8 +1,8 @@
 import { FC } from 'react'
 import { Outlet } from 'react-router-dom'
-import Header from './Header'
-import Sidebar from './Sidebar'
-import BottomNav from './BottomNav'
+import Header from '../Header/Header'
+import Sidebar from '../Sidebar/Sidebar'
+import BottomNav from '../BottomNav/BottomNav'
 
 const AppLayout: FC = () => (
   <div id="app-layout__container--main" className="min-h-screen bg-bg flex flex-col">
