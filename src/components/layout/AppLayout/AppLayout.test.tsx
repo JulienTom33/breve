@@ -37,4 +37,9 @@ describe('AppLayout', () => {
     renderLayout()
     expect(screen.getByRole('navigation', { name: 'Navigation principale' })).toBeInTheDocument()
   })
+
+  it('renders category tabs', () => {
+    renderLayout()
+    expect(screen.getByRole('navigation', { name: "Catégories d'actualités" })).toBeInTheDocument()
+  })
 })
