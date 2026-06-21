@@ -9,26 +9,36 @@ beforeEach(() => {
 })
 
 describe('Header', () => {
-  it('renders logo', () => {
+  it('renders logo Brève', () => {
     render(<Header />)
-    expect(screen.getByText('Scope')).toBeInTheDocument()
+    expect(screen.getByText('Brève')).toBeInTheDocument()
+  })
+
+  it('renders search input', () => {
+    render(<Header />)
+    expect(screen.getByRole('searchbox', { name: 'Rechercher des articles' })).toBeInTheDocument()
+  })
+
+  it('renders avatar button', () => {
+    render(<Header />)
+    expect(screen.getByRole('button', { name: 'Profil utilisateur' })).toBeInTheDocument()
   })
 
   it('renders dark mode toggle button', () => {
     render(<Header />)
-    expect(screen.getByRole('button')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /mode clair|mode sombre/ })).toBeInTheDocument()
   })
 
   it('has aria-label on toggle button', () => {
     render(<Header />)
-    const btn = screen.getByRole('button')
+    const btn = screen.getByRole('button', { name: /mode clair|mode sombre/ })
     expect(btn).toHaveAttribute('aria-label')
   })
 
   it('toggles theme on click', async () => {
     const user = userEvent.setup()
     render(<Header />)
-    const btn = screen.getByRole('button')
+    const btn = screen.getByRole('button', { name: /mode clair|mode sombre/ })
     const initialLabel = btn.getAttribute('aria-label')
     await user.click(btn)
     expect(btn.getAttribute('aria-label')).not.toBe(initialLabel)

@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { SunIcon, MoonIcon } from '@heroicons/react/24/outline'
+import { SunIcon, MoonIcon, MagnifyingGlassIcon, UserCircleIcon } from '@heroicons/react/24/outline'
 import Button from '@/components/ui/Button/Button'
 import { useDarkMode } from '@/hooks/useDarkMode'
 
@@ -11,26 +11,49 @@ const Header: FC = () => {
       id="header__container--main"
       className="sticky top-0 z-50 w-full bg-surface border-b border-border h-14 md:h-16 flex items-center px-4 md:px-6"
     >
-      <div className="flex items-center justify-between w-full max-w-7xl mx-auto">
+      <div className="flex items-center gap-3 w-full max-w-7xl mx-auto">
         <span
-          id="header__logo--scope"
-          className="font-display font-bold text-text text-base md:text-lg tracking-tight select-none"
+          id="header__logo--breve"
+          className="font-display font-bold text-primary text-base md:text-lg tracking-tight select-none shrink-0"
         >
-          Scope
+          Brève
         </span>
 
-        <Button
-          variant="icon"
-          onClick={toggle}
-          aria-label={isDark ? 'Passer en mode clair' : 'Passer en mode sombre'}
-          className="w-10 h-10 md:w-11 md:h-11"
+        <div
+          id="header__search--wrapper"
+          className="flex-1 flex items-center gap-2 bg-surface-2 border border-border rounded-full px-3 h-9 max-w-md mx-auto"
         >
-          {isDark ? (
-            <SunIcon className="w-5 h-5" aria-hidden="true" />
-          ) : (
-            <MoonIcon className="w-5 h-5" aria-hidden="true" />
-          )}
-        </Button>
+          <MagnifyingGlassIcon className="w-4 h-4 text-text-faint shrink-0" aria-hidden="true" />
+          <input
+            id="header__input--search"
+            type="search"
+            placeholder="Rechercher…"
+            className="flex-1 bg-transparent text-text placeholder:text-text-faint text-sm outline-none"
+            aria-label="Rechercher des articles"
+          />
+        </div>
+
+        <div id="header__actions--right" className="flex items-center gap-1 shrink-0">
+          <Button
+            variant="icon"
+            aria-label="Profil utilisateur"
+            className="w-10 h-10 md:w-11 md:h-11"
+          >
+            <UserCircleIcon className="w-5 h-5" aria-hidden="true" />
+          </Button>
+          <Button
+            variant="icon"
+            onClick={toggle}
+            aria-label={isDark ? 'Passer en mode clair' : 'Passer en mode sombre'}
+            className="w-10 h-10 md:w-11 md:h-11"
+          >
+            {isDark ? (
+              <SunIcon className="w-5 h-5" aria-hidden="true" />
+            ) : (
+              <MoonIcon className="w-5 h-5" aria-hidden="true" />
+            )}
+          </Button>
+        </div>
       </div>
     </header>
   )
