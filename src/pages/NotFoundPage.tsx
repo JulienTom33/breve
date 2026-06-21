@@ -8,7 +8,7 @@ const NotFoundPage: FC = () => (
   >
     <span
       id="not-found-page__code--404"
-      className="text-[6rem] font-display font-bold text-text-faint leading-none mb-4 select-none"
+      className="text-9xl font-display font-bold text-text-faint leading-none mb-4 select-none"
       aria-hidden="true"
     >
       404

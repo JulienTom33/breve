@@ -9,10 +9,7 @@ const AppLayout: FC = () => (
     <Header />
     <div id="app-layout__body--content" className="flex flex-1 overflow-hidden">
       <Sidebar />
-      <main
-        id="app-layout__main--content"
-        className="flex-1 overflow-y-auto pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0"
-      >
+      <main id="app-layout__main--content" className="flex-1 overflow-y-auto pb-14 md:pb-0">
         <Outlet />
       </main>
     </div>

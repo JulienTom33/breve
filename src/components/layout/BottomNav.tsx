@@ -21,11 +21,7 @@ const BottomNav: FC = () => (
     className="fixed bottom-0 left-0 right-0 z-50 bg-surface border-t border-border md:hidden"
     aria-label="Navigation principale"
   >
-    <ul
-      id="bottom-nav__list--items"
-      className="flex items-stretch h-[calc(3.5rem+env(safe-area-inset-bottom))] pb-[env(safe-area-inset-bottom)]"
-      role="list"
-    >
+    <ul id="bottom-nav__list--items" className="flex items-stretch h-14" role="list">
       {NAV_ITEMS.map(({ to, icon: Icon, label, id }) => (
         <li key={to} className="flex-1" role="listitem">
           <NavLink
@@ -41,7 +37,7 @@ const BottomNav: FC = () => (
             aria-label={label}
           >
             <Icon className="w-6 h-6" aria-hidden="true" />
-            <span className="text-[10px] leading-none">{label}</span>
+            <span className="text-xs leading-none">{label}</span>
           </NavLink>
         </li>
       ))}
