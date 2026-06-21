@@ -3,8 +3,8 @@ import { render, screen } from '@testing-library/react'
 import Badge from './Badge'
 
 describe('Badge', () => {
-  it('renders default label for monde', () => {
-    render(<Badge category="monde" />)
+  it('renders default label for world', () => {
+    render(<Badge category="world" />)
     expect(screen.getByText('Monde')).toBeInTheDocument()
   })
 
@@ -13,8 +13,8 @@ describe('Badge', () => {
     expect(screen.getByText('France')).toBeInTheDocument()
   })
 
-  it('renders default label for economie', () => {
-    render(<Badge category="economie" />)
+  it('renders default label for economy', () => {
+    render(<Badge category="economy" />)
     expect(screen.getByText('Économie')).toBeInTheDocument()
   })
 
@@ -23,29 +23,29 @@ describe('Badge', () => {
     expect(screen.getByText('Science')).toBeInTheDocument()
   })
 
-  it('renders default label for techno', () => {
-    render(<Badge category="techno" />)
+  it('renders default label for tech', () => {
+    render(<Badge category="tech" />)
     expect(screen.getByText('Tech')).toBeInTheDocument()
   })
 
-  it('renders default label for enviro', () => {
-    render(<Badge category="enviro" />)
+  it('renders default label for environment', () => {
+    render(<Badge category="environment" />)
     expect(screen.getByText('Environnement')).toBeInTheDocument()
   })
 
   it('renders custom label when provided', () => {
-    render(<Badge category="techno" label="IA" />)
+    render(<Badge category="tech" label="IA" />)
     expect(screen.getByText('IA')).toBeInTheDocument()
   })
 
   it('applies correct background class per category', () => {
     const cases = [
-      ['monde', 'bg-badge-monde'],
+      ['world', 'bg-badge-world'],
       ['france', 'bg-badge-france'],
-      ['economie', 'bg-badge-economie'],
+      ['economy', 'bg-badge-economy'],
       ['science', 'bg-badge-science'],
-      ['techno', 'bg-badge-techno'],
-      ['enviro', 'bg-badge-enviro'],
+      ['tech', 'bg-badge-tech'],
+      ['environment', 'bg-badge-environment'],
     ] as const
 
     cases.forEach(([cat, cls]) => {
@@ -56,7 +56,7 @@ describe('Badge', () => {
   })
 
   it('has uppercase class', () => {
-    const { container } = render(<Badge category="monde" />)
+    const { container } = render(<Badge category="world" />)
     expect(container.querySelector('span')).toHaveClass('uppercase')
   })
 
@@ -66,7 +66,7 @@ describe('Badge', () => {
   })
 
   it('has bold font weight', () => {
-    const { container } = render(<Badge category="monde" />)
+    const { container } = render(<Badge category="world" />)
     expect(container.querySelector('span')).toHaveClass('font-bold')
   })
 })

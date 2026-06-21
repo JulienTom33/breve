@@ -1,6 +1,6 @@
 import { FC } from 'react'
 
-export type BadgeCategory = 'monde' | 'france' | 'economie' | 'science' | 'techno' | 'enviro'
+export type BadgeCategory = 'world' | 'france' | 'economy' | 'science' | 'tech' | 'environment'
 
 interface BadgeProps {
   category: BadgeCategory
@@ -8,27 +8,26 @@ interface BadgeProps {
 }
 
 const defaultLabels: Record<BadgeCategory, string> = {
-  monde: 'Monde',
+  world: 'Monde',
   france: 'France',
-  economie: 'Économie',
+  economy: 'Économie',
   science: 'Science',
-  techno: 'Tech',
-  enviro: 'Environnement',
+  tech: 'Tech',
+  environment: 'Environnement',
 }
 
 const categoryClass: Record<BadgeCategory, string> = {
-  monde: 'bg-badge-monde',
+  world: 'bg-badge-world',
   france: 'bg-badge-france',
-  economie: 'bg-badge-economie',
+  economy: 'bg-badge-economy',
   science: 'bg-badge-science',
-  techno: 'bg-badge-techno',
-  enviro: 'bg-badge-enviro',
+  tech: 'bg-badge-tech',
+  environment: 'bg-badge-environment',
 }
 
 const Badge: FC<BadgeProps> = ({ category, label }) => (
   <span
-    className={`inline-flex items-center px-2 py-1 rounded-sm text-white uppercase font-bold tracking-[0.08em] ${categoryClass[category]}`}
-    style={{ fontSize: '11px' }}
+    className={`inline-flex items-center px-2 py-1 rounded-sm text-white uppercase font-bold tracking-[0.08em] text-[11px] ${categoryClass[category]}`}
   >
     {label ?? defaultLabels[category]}
   </span>

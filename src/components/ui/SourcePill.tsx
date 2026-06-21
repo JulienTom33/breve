@@ -1,4 +1,5 @@
 import { FC } from 'react'
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
 
 interface SourcePillProps {
   name: string
@@ -10,19 +11,10 @@ const SourcePill: FC<SourcePillProps> = ({ name, url }) => (
     href={url}
     target="_blank"
     rel="noopener noreferrer"
-    className="inline-flex items-center gap-1.5 bg-surface-2 border border-border text-text-muted rounded-full px-3 py-1 hover:bg-surface-offset hover:text-text transition-colors duration-150 ease-out-expo no-underline"
-    style={{ fontSize: '13px' }}
+    className="inline-flex items-center gap-1.5 bg-surface-2 border border-border text-text-muted rounded-full px-3 py-1 text-[13px] hover:bg-surface-offset hover:text-text transition-colors duration-150 ease-out-expo no-underline"
   >
     {name}
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-      <path
-        d="M3.5 8.5L8.5 3.5M8.5 3.5H5M8.5 3.5V7"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
+    <ArrowTopRightOnSquareIcon className="w-3 h-3" aria-hidden="true" />
   </a>
 )
 

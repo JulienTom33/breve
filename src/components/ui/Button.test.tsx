@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { Cog6ToothIcon } from '@heroicons/react/24/outline'
 import Button from './Button'
 
 describe('Button (ui)', () => {
@@ -22,7 +23,7 @@ describe('Button (ui)', () => {
   it('icon variant is 40px square', () => {
     const { container } = render(
       <Button variant="icon" aria-label="Settings">
-        ⚙
+        <Cog6ToothIcon className="w-5 h-5" />
       </Button>,
     )
     expect(container.querySelector('button')).toHaveClass('w-10', 'h-10')

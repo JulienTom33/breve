@@ -1,4 +1,5 @@
 import { FC, useState } from 'react'
+import { Cog6ToothIcon, SunIcon, MoonIcon } from '@heroicons/react/24/outline'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
 import SourcePill from '@/components/ui/SourcePill'
@@ -21,7 +22,17 @@ const DesignSystem: FC = () => {
         <div className="flex items-center justify-between mb-12">
           <h1 className="text-xl font-display font-bold">Design System — Brève</h1>
           <Button variant="ghost" onClick={toggleTheme}>
-            {theme === 'dark' ? '☀ Light' : '☾ Dark'}
+            {theme === 'dark' ? (
+              <>
+                <SunIcon className="w-4 h-4 mr-1.5" aria-hidden="true" />
+                Light
+              </>
+            ) : (
+              <>
+                <MoonIcon className="w-4 h-4 mr-1.5" aria-hidden="true" />
+                Dark
+              </>
+            )}
           </Button>
         </div>
 
@@ -31,7 +42,7 @@ const DesignSystem: FC = () => {
             <Button variant="primary">Connexion</Button>
             <Button variant="ghost">Annuler</Button>
             <Button variant="icon" aria-label="Settings">
-              ⚙
+              <Cog6ToothIcon className="w-5 h-5" aria-hidden="true" />
             </Button>
             <Button variant="primary" disabled>
               Désactivé
@@ -42,12 +53,12 @@ const DesignSystem: FC = () => {
         <section className="mb-10">
           <h2 className="text-lg font-semibold mb-4 text-text-muted">Badges</h2>
           <div className="flex items-center gap-3 flex-wrap">
-            <Badge category="monde" />
+            <Badge category="world" />
             <Badge category="france" />
-            <Badge category="economie" />
+            <Badge category="economy" />
             <Badge category="science" />
-            <Badge category="techno" />
-            <Badge category="enviro" />
+            <Badge category="tech" />
+            <Badge category="environment" />
           </div>
         </section>
 
@@ -96,7 +107,7 @@ const DesignSystem: FC = () => {
             <Card>
               <div className="h-32 bg-surface-offset" />
               <div className="p-4 flex flex-col gap-2">
-                <Badge category="techno" />
+                <Badge category="tech" />
                 <h3 className="text-base font-semibold">Titre de l'article</h3>
                 <p className="text-text-muted text-sm">Résumé en deux lignes...</p>
                 <SourcePill name="The Verge" url="https://theverge.com" />
@@ -105,7 +116,7 @@ const DesignSystem: FC = () => {
             <Card>
               <div className="h-32 bg-primary-subtle" />
               <div className="p-4 flex flex-col gap-2">
-                <Badge category="monde" />
+                <Badge category="world" />
                 <h3 className="text-base font-semibold">Autre article</h3>
                 <p className="text-text-muted text-sm">Autre résumé court...</p>
                 <SourcePill name="Reuters" url="https://reuters.com" />
@@ -119,20 +130,19 @@ const DesignSystem: FC = () => {
           <div className="grid grid-cols-4 gap-3">
             {(
               [
-                { cls: 'bg-bg', name: 'bg', hex: '#0a0a0a' },
-                { cls: 'bg-surface', name: 'surface', hex: '#111111' },
-                { cls: 'bg-surface-2', name: 'surface-2', hex: '#1a1a1a' },
-                { cls: 'bg-surface-offset', name: 'surface-offset', hex: '#222222' },
-                { cls: 'bg-primary', name: 'primary', hex: '#4a7fe8' },
-                { cls: 'bg-success', name: 'success', hex: '#4ae8a4' },
-                { cls: 'bg-error', name: 'error', hex: '#e84a4a' },
-                { cls: 'bg-text', name: 'text', hex: '#f0f0f0' },
+                { cls: 'bg-bg', name: 'bg' },
+                { cls: 'bg-surface', name: 'surface' },
+                { cls: 'bg-surface-2', name: 'surface-2' },
+                { cls: 'bg-surface-offset', name: 'surface-offset' },
+                { cls: 'bg-primary', name: 'primary' },
+                { cls: 'bg-success', name: 'success' },
+                { cls: 'bg-error', name: 'error' },
+                { cls: 'bg-text', name: 'text' },
               ] as const
-            ).map(({ cls, name, hex }) => (
+            ).map(({ cls, name }) => (
               <div key={name} className="flex flex-col gap-1">
                 <div className={`h-12 rounded-md border border-border ${cls}`} />
                 <p className="text-xs text-text-muted">{name}</p>
-                <p className="text-xs text-text-faint">{hex}</p>
               </div>
             ))}
           </div>

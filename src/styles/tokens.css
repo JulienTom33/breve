@@ -17,15 +17,16 @@
   --color-primary-active: #2a5fc8;
   --color-primary-subtle: rgba(74, 127, 232, 0.15);
 
-  --color-badge-monde: #4a7fe8;
+  --color-badge-world: #4a7fe8;
   --color-badge-france: #e84a4a;
-  --color-badge-economie: #e8a44a;
+  --color-badge-economy: #e8a44a;
   --color-badge-science: #4ae8a4;
-  --color-badge-techno: #a44ae8;
-  --color-badge-enviro: #4ae84a;
+  --color-badge-tech: #a44ae8;
+  --color-badge-environment: #4ae84a;
 
   --color-success: #4ae8a4;
   --color-error: #e84a4a;
+  --color-error-subtle: rgba(232, 74, 74, 0.15);
 
   /* === TYPOGRAPHY === */
   --font-display: 'Satoshi', 'Inter', sans-serif;
