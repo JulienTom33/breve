@@ -13,7 +13,8 @@ export default defineConfig({
     // 📊 Coverage
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json'],
+      reporter: ['text', 'json', 'html'], // ✅ 'html' ajouté ici
+      reportsDirectory: './coverage', // ✅ remplace outputFile.html
       exclude: [
         'node_modules/',
         'src/test/',
@@ -22,10 +23,12 @@ export default defineConfig({
         '**/index.ts',
         '**/index.tsx',
       ],
-      lines: 80, // Minimum 80% line coverage
-      functions: 80,
-      branches: 75,
-      statements: 80,
+      thresholds: {
+        lines: 80,
+        functions: 80,
+        branches: 75,
+        statements: 80,
+      },
     },
 
     // 🎯 Patterns
@@ -33,16 +36,13 @@ export default defineConfig({
     exclude: ['node_modules', 'dist', '.idea', '.git', '.cache'],
 
     // 🔍 Reporter
-    reporter: ['verbose'],
-    outputFile: {
-      html: './coverage/index.html',
-    },
+    reporters: ['verbose'], // ✅ pluriel
 
     // ⚙️ Avancé
     testTimeout: 10000,
     hookTimeout: 10000,
     isolate: true,
-    threads: true,
+    pool: 'forks', // ✅ remplace threads: true (forks = défaut Vitest 2+)
     mockReset: true,
     restoreMocks: true,
   },

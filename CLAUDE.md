@@ -13,6 +13,20 @@ Tu dois toujours suivre le workflow décrit ici, sauf indication contraire expli
   - Lancer lint, type-check, tests et build avant d’ouvrir ou mettre à jour une PR.
 - Utiliser `gh` (GitHub CLI) pour interagir avec les issues et PR (création de branche, PR, checkout de PR, etc.).
 
+### 0.1 Statut des issues (labels)
+
+Les issues du backlog utilisent des labels de statut :
+
+- `status: backlog`
+- `status: in-progress`
+- `status: in-review`
+- (optionnel plus tard : `status: done`)
+
+Règles :
+
+- Quand tu commences à travailler sur un ticket → passer l’issue en `status: in-progress`.
+- Quand tu crées la PR → passer l’issue en `status: in-review`.
+
 ---
 
 ## 1. Workflow à partir d’un ticket GitHub (issue)
@@ -67,6 +81,25 @@ Si la branche existe déjà :
 git switch feature/<issueNumber>-<slug>
 git pull --rebase origin feature/<issueNumber>-<slug> || git pull origin feature/<issueNumber>-<slug>
 ```
+
+### 1.4 Mettre l’issue en "In Progress"
+
+Dès que tu commences à travailler sur le ticket :
+
+1. Mettre à jour les labels de l’issue :
+
+   ```bash
+   gh issue edit <issueNumber> \
+     --add-label "status: in-progress" \
+     --remove-label "status: backlog"
+   ```
+
+2. Ajouter un commentaire sur l’issue pour tracer le début du travail :
+
+   ```bash
+   gh issue comment <issueNumber> \
+     --body "🧑‍💻 Début de l’implémentation (branche \`feature/<issueNumber>-<slug>\`)."
+   ```
 
 ---
 
@@ -183,7 +216,24 @@ Closes #<issueNumber>
 
   ```
 
-4. À la fin, afficher l’URL de la PR dans ta réponse.
+4. Mettre l’issue en "In Review" après création de la PR :
+
+   1. Mettre à jour les labels :
+
+      ```bash
+      gh issue edit <issueNumber> \
+        --add-label "status: in-review" \
+        --remove-label "status: in-progress"
+      ```
+
+   2. Ajouter un commentaire sur l’issue avec le lien vers la PR :
+
+      ```bash
+      gh issue comment <issueNumber> \
+        --body "👀 PR créée pour revue : <URL_DE_LA_PR>."
+      ```
+
+5. À la fin, afficher l’URL de la PR dans ta réponse.
 
 ---
 
@@ -242,7 +292,7 @@ Chaque push sur la branche existante mettra à jour la PR et déclenchera la CI 
 
 ## 7. Stack technique
 
-- **Framework** : React 19 + Vite[cite:48]
+- **Framework** : React 19 + Vite
 - **Langage** : TypeScript (strict)
 - **Style** : CSS Modules + variables CSS custom (design system)
 - **Tests** : Vitest + @testing-library/react
@@ -293,11 +343,13 @@ src/
 
 > Implémente le ticket https://github.com/JulienTom33/breve/issues/42 en suivant CLAUDE.md :  
 > – crée la branche depuis main `feature/<numero>-<slug>`  
+> – met l’issue en `status: in-progress`  
 > – implémente la feature  
 > – ajoute les tests  
 > – lance lint, tests, build  
 > – commit/push  
-> – crée la PR vers main en liant le ticket.
+> – crée la PR vers main en liant le ticket  
+> – met l’issue en `status: in-review`.
 
 ### 10.2 Corriger une PR
 
