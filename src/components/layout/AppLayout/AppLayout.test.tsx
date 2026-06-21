@@ -1,0 +1,40 @@
+import { describe, it, expect } from 'vitest'
+import { render, screen } from '@testing-library/react'
+import { createMemoryRouter, RouterProvider } from 'react-router-dom'
+import AppLayout from './AppLayout'
+
+const renderLayout = (initialPath = '/') => {
+  const router = createMemoryRouter(
+    [
+      {
+        path: '/',
+        element: <AppLayout />,
+        children: [{ index: true, element: <div>Feed content</div> }],
+      },
+    ],
+    { initialEntries: [initialPath] },
+  )
+  return render(<RouterProvider router={router} />)
+}
+
+describe('AppLayout', () => {
+  it('renders header', () => {
+    renderLayout()
+    expect(screen.getByRole('banner')).toBeInTheDocument()
+  })
+
+  it('renders main content area', () => {
+    renderLayout()
+    expect(screen.getByRole('main')).toBeInTheDocument()
+  })
+
+  it('renders outlet content', () => {
+    renderLayout()
+    expect(screen.getByText('Feed content')).toBeInTheDocument()
+  })
+
+  it('renders bottom nav', () => {
+    renderLayout()
+    expect(screen.getByRole('navigation', { name: 'Navigation principale' })).toBeInTheDocument()
+  })
+})

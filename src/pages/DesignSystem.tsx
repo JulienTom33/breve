@@ -1,10 +1,10 @@
 import { FC, useState } from 'react'
 import { Cog6ToothIcon, SunIcon, MoonIcon } from '@heroicons/react/24/outline'
-import Button from '@/components/ui/Button'
-import Badge from '@/components/ui/Badge'
-import SourcePill from '@/components/ui/SourcePill'
-import Input from '@/components/ui/Input'
-import Card from '@/components/ui/Card'
+import Button from '@/components/ui/Button/Button'
+import Badge from '@/components/ui/Badge/Badge'
+import SourcePill from '@/components/ui/SourcePill/SourcePill'
+import Input from '@/components/ui/Input/Input'
+import Card from '@/components/ui/Card/Card'
 import { t } from '@/lib/i18n'
 
 const { designSystem: ds } = t
