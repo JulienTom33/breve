@@ -1,51 +1,88 @@
 import { FC } from 'react'
-import { SunIcon, MoonIcon, MagnifyingGlassIcon, UserCircleIcon } from '@heroicons/react/24/outline'
+import { Link, NavLink } from 'react-router-dom'
+import { SunIcon, MoonIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import Button from '@/components/ui/Button/Button'
+import BreveLogo from '@/components/ui/BreveLogo/BreveLogo'
 import { useDarkMode } from '@/hooks/useDarkMode'
+import { useTime } from '@/hooks/useTime'
 
 const Header: FC = () => {
   const { isDark, toggle } = useDarkMode()
+  const time = useTime()
+  const timeString = time.toLocaleTimeString('fr-FR')
 
   return (
     <header
       id="header__container--main"
-      className="sticky top-0 z-50 w-full bg-surface border-b border-border h-14 md:h-16 flex items-center px-4 md:px-6"
+      className="sticky top-0 z-50 w-full bg-surface border-b border-border h-14 flex items-center px-4 md:px-6"
     >
       <div className="flex items-center gap-3 w-full max-w-7xl mx-auto">
-        <span
-          id="header__logo--breve"
-          className="font-display font-bold text-primary text-base md:text-lg tracking-tight select-none shrink-0"
-        >
-          Brève
-        </span>
+        {/* Logo + brand + nav links */}
+        <div id="header__brand--wrapper" className="flex items-center gap-2 shrink-0">
+          <BreveLogo className="h-6 w-auto" />
+          <span
+            id="header__logo--breve"
+            className="font-display font-bold text-primary text-base tracking-tight select-none"
+          >
+            Brève
+          </span>
+          <span className="hidden md:block text-border mx-1 select-none">|</span>
+          <nav
+            id="header__nav--links"
+            className="hidden md:flex items-center gap-3"
+            aria-label="Sections de l'application"
+          >
+            <NavLink
+              to="/"
+              end
+              id="header__link--actualites"
+              className={({ isActive }) =>
+                `text-sm font-medium transition-colors duration-150 ${isActive ? 'text-text' : 'text-text-muted hover:text-text'}`
+              }
+            >
+              Actualités
+            </NavLink>
+            <NavLink
+              to="/meteo"
+              id="header__link--meteo"
+              className={({ isActive }) =>
+                `text-sm font-medium transition-colors duration-150 ${isActive ? 'text-text' : 'text-text-muted hover:text-text'}`
+              }
+            >
+              Météo
+            </NavLink>
+          </nav>
+        </div>
 
+        {/* Search */}
         <div
           id="header__search--wrapper"
-          className="flex-1 flex items-center gap-2 bg-surface-2 border border-border rounded-full px-3 h-9 max-w-md mx-auto"
+          className="flex-1 flex items-center gap-2 bg-surface-2 border border-border rounded-full px-4 h-9 max-w-md mx-auto"
         >
           <MagnifyingGlassIcon className="w-4 h-4 text-text-faint shrink-0" aria-hidden="true" />
           <input
             id="header__input--search"
             type="search"
-            placeholder="Rechercher…"
+            placeholder="Rechercher..."
             className="flex-1 bg-transparent text-text placeholder:text-text-faint text-sm outline-none"
             aria-label="Rechercher des articles"
           />
         </div>
 
-        <div id="header__actions--right" className="flex items-center gap-1 shrink-0">
-          <Button
-            variant="icon"
-            aria-label="Profil utilisateur"
-            className="w-10 h-10 md:w-11 md:h-11"
+        {/* Right actions */}
+        <div id="header__actions--right" className="flex items-center gap-2 shrink-0">
+          <span
+            id="header__time--display"
+            className="hidden md:block text-text-muted text-sm font-mono tabular-nums"
+            aria-label="Heure actuelle"
           >
-            <UserCircleIcon className="w-5 h-5" aria-hidden="true" />
-          </Button>
+            {timeString}
+          </span>
           <Button
             variant="icon"
             onClick={toggle}
             aria-label={isDark ? 'Passer en mode clair' : 'Passer en mode sombre'}
-            className="w-10 h-10 md:w-11 md:h-11"
+            className="hidden md:inline-flex"
           >
             {isDark ? (
               <SunIcon className="w-5 h-5" aria-hidden="true" />
@@ -53,6 +90,13 @@ const Header: FC = () => {
               <MoonIcon className="w-5 h-5" aria-hidden="true" />
             )}
           </Button>
+          <Link
+            to="/auth"
+            id="header__button--connexion"
+            className="inline-flex items-center justify-center bg-primary hover:bg-primary-hover text-white text-sm font-semibold rounded-full px-4 h-9 transition-colors duration-150"
+          >
+            Connexion
+          </Link>
         </div>
       </div>
     </header>
