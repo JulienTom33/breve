@@ -1,5 +1,6 @@
 import { FC } from 'react'
 import { Link, useLocation, useSearchParams } from 'react-router-dom'
+import { t } from '@/lib/i18n'
 
 interface Category {
   id: string
@@ -8,13 +9,13 @@ interface Category {
 }
 
 const CATEGORIES: Category[] = [
-  { id: 'tout', label: 'Tout', cat: null },
-  { id: 'monde', label: 'Monde', cat: 'monde' },
-  { id: 'france', label: 'France', cat: 'france' },
-  { id: 'economie', label: 'Économie', cat: 'economie' },
-  { id: 'science', label: 'Science', cat: 'science' },
-  { id: 'technologie', label: 'Technologie', cat: 'technologie' },
-  { id: 'environnement', label: 'Environnement', cat: 'environnement' },
+  { id: 'tout', label: t.nav.categories.tout, cat: null },
+  { id: 'monde', label: t.nav.categories.monde, cat: 'monde' },
+  { id: 'france', label: t.nav.categories.france, cat: 'france' },
+  { id: 'economie', label: t.nav.categories.economie, cat: 'economie' },
+  { id: 'science', label: t.nav.categories.science, cat: 'science' },
+  { id: 'technologie', label: t.nav.categories.technologie, cat: 'technologie' },
+  { id: 'environnement', label: t.nav.categories.environnement, cat: 'environnement' },
 ]
 
 const CategoryTabs: FC = () => {

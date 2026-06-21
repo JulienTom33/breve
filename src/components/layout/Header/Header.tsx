@@ -5,6 +5,7 @@ import Button from '@/components/ui/Button/Button'
 import BreveLogo from '@/components/ui/BreveLogo/BreveLogo'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { useTime } from '@/hooks/useTime'
+import { t } from '@/lib/i18n'
 
 const Header: FC = () => {
   const { isDark, toggle } = useDarkMode()
@@ -24,7 +25,7 @@ const Header: FC = () => {
             id="header__logo--breve"
             className="font-display font-bold text-primary text-base tracking-tight select-none"
           >
-            Brève
+            {t.app.name}
           </span>
           <span className="hidden md:block text-border mx-1 select-none">|</span>
           <nav
@@ -40,7 +41,7 @@ const Header: FC = () => {
                 `text-sm font-medium transition-colors duration-150 ${isActive ? 'text-text' : 'text-text-muted hover:text-text'}`
               }
             >
-              Actualités
+              {t.nav.actualites}
             </NavLink>
             <NavLink
               to="/meteo"
@@ -49,7 +50,7 @@ const Header: FC = () => {
                 `text-sm font-medium transition-colors duration-150 ${isActive ? 'text-text' : 'text-text-muted hover:text-text'}`
               }
             >
-              Météo
+              {t.nav.meteo}
             </NavLink>
           </nav>
         </div>
@@ -63,7 +64,7 @@ const Header: FC = () => {
           <input
             id="header__input--search"
             type="search"
-            placeholder="Rechercher..."
+            placeholder={t.nav.searchPlaceholder}
             className="flex-1 bg-transparent text-text placeholder:text-text-faint text-sm outline-none"
             aria-label="Rechercher des articles"
           />
@@ -95,7 +96,7 @@ const Header: FC = () => {
             id="header__button--connexion"
             className="inline-flex items-center justify-center bg-primary hover:bg-primary-hover text-white text-sm font-semibold rounded-full px-4 h-9 transition-colors duration-150"
           >
-            Connexion
+            {t.nav.connexion}
           </Link>
         </div>
       </div>

@@ -4,7 +4,23 @@ const translations = {
   fr: {
     app: {
       title: 'Brèves',
+      name: 'Brève',
       tagline: 'Une application de news synthétisées.',
+    },
+    nav: {
+      actualites: 'Actualités',
+      meteo: 'Météo',
+      connexion: 'Connexion',
+      searchPlaceholder: 'Rechercher...',
+      categories: {
+        tout: 'Tout',
+        monde: 'Monde',
+        france: 'France',
+        economie: 'Économie',
+        science: 'Science',
+        technologie: 'Technologie',
+        environnement: 'Environnement',
+      },
     },
     badges: {
       world: 'Monde',
@@ -51,7 +67,23 @@ const translations = {
   en: {
     app: {
       title: 'Brèves',
+      name: 'Brève',
       tagline: 'A news digest app.',
+    },
+    nav: {
+      actualites: 'News',
+      meteo: 'Weather',
+      connexion: 'Sign in',
+      searchPlaceholder: 'Search...',
+      categories: {
+        tout: 'All',
+        monde: 'World',
+        france: 'France',
+        economie: 'Economy',
+        science: 'Science',
+        technologie: 'Technology',
+        environnement: 'Environment',
+      },
     },
     badges: {
       world: 'World',
