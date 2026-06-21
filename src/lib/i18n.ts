@@ -4,7 +4,7 @@ const translations = {
   fr: {
     app: {
       title: 'Brèves',
-      name: 'Brève',
+      name: 'Brèves',
       tagline: 'Une application de news synthétisées.',
     },
     nav: {
