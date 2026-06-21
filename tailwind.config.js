@@ -120,6 +120,32 @@ export default {
   plugins: [
     plugin(function ({ addBase }) {
       addBase({
+        '*, *::before, *::after': {
+          boxSizing: 'border-box',
+        },
+        html: {
+          WebkitFontSmoothing: 'antialiased',
+          MozOsxFontSmoothing: 'grayscale',
+          textRendering: 'optimizeLegibility',
+        },
+        body: {
+          margin: '0',
+          fontFamily: 'var(--font-body)',
+          backgroundColor: 'var(--color-bg)',
+          color: 'var(--color-text)',
+          minHeight: '100vh',
+          lineHeight: '1.6',
+        },
+        'img, picture, video, canvas, svg': {
+          display: 'block',
+          maxWidth: '100%',
+        },
+        'input, button, textarea, select': {
+          font: 'inherit',
+        },
+        'p, h1, h2, h3, h4, h5, h6': {
+          overflowWrap: 'break-word',
+        },
         h1: {
           fontSize: 'var(--text-xl, 1.5rem)',
           fontFamily: 'var(--font-display, sans-serif)',
