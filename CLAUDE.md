@@ -17,7 +17,7 @@ Tu dois toujours suivre le workflow décrit ici, sauf indication contraire expli
 
 Les issues du backlog utilisent des labels de statut :
 
-- `status: backlog`
+- `status: ready`
 - `status: in-progress`
 - `status: in-review`
 - (optionnel plus tard : `status: done`)
@@ -91,7 +91,7 @@ Dès que tu commences à travailler sur le ticket :
    ```bash
    gh issue edit <issueNumber> \
      --add-label "status: in-progress" \
-     --remove-label "status: backlog"
+     --remove-label "status: ready"
    ```
 
 2. Ajouter un commentaire sur l’issue pour tracer le début du travail :
@@ -212,6 +212,7 @@ Closes #<issueNumber>
 - [ ] Design system respecté
       EOF
       )"
+
   ```
 
   ```
