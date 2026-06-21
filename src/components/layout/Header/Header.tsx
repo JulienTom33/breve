@@ -17,7 +17,7 @@ const Header: FC = () => {
       id="header__container--main"
       className="sticky top-0 z-50 w-full bg-surface border-b border-border h-14 flex items-center px-4 md:px-6"
     >
-      <div className="flex items-center gap-3 w-full max-w-7xl mx-auto">
+      <div className="flex items-center gap-3 w-full mx-auto">
         {/* Logo + brand + nav links */}
         <div id="header__brand--wrapper" className="flex items-center gap-2 shrink-0">
           <BreveLogo className="h-6 w-auto" />

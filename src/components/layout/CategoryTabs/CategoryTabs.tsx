@@ -27,7 +27,7 @@ const CategoryTabs: FC = () => {
   return (
     <nav
       id="category-tabs__container--main"
-      className="bg-surface border-b border-border overflow-x-auto"
+      className="bg-surface border-b border-border w-full overflow-x-auto"
       aria-label="Catégories d'actualités"
     >
       <ul
