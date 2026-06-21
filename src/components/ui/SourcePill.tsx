@@ -11,7 +11,7 @@ const SourcePill: FC<SourcePillProps> = ({ name, url }) => (
     href={url}
     target="_blank"
     rel="noopener noreferrer"
-    className="inline-flex items-center gap-1.5 bg-surface-2 border border-border text-text-muted rounded-full px-3 py-1 text-[13px] hover:bg-surface-offset hover:text-text transition-colors duration-150 ease-out-expo no-underline"
+    className="inline-flex items-center gap-1.5 bg-surface-2 border border-border text-text-muted rounded-full px-3 py-1 text-xs hover:bg-surface-offset hover:text-text transition-colors duration-150 ease-out-expo no-underline"
   >
     {name}
     <ArrowTopRightOnSquareIcon className="w-3 h-3" aria-hidden="true" />

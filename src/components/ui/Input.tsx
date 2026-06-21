@@ -18,8 +18,8 @@ const Input: FC<InputProps> = ({ id, label, error, ...props }) => (
       className={[
         'bg-surface-2 text-text placeholder:text-text-faint rounded-md px-4 py-3 text-base outline-none transition-colors duration-150 ease-out-expo border',
         error
-          ? 'border-error focus:shadow-[0_0_0_3px_var(--color-error-subtle)]'
-          : 'border-border focus:border-primary focus:shadow-[0_0_0_3px_var(--color-primary-subtle)]',
+          ? 'border-error-500 focus:shadow-focus-error'
+          : 'border-border focus:border-primary-500 focus:shadow-focus-primary',
       ].join(' ')}
       {...props}
     />

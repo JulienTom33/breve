@@ -5,6 +5,9 @@ import Badge from '@/components/ui/Badge'
 import SourcePill from '@/components/ui/SourcePill'
 import Input from '@/components/ui/Input'
 import Card from '@/components/ui/Card'
+import { t } from '@/lib/i18n'
+
+const { designSystem: ds } = t
 
 const DesignSystem: FC = () => {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark')
@@ -20,38 +23,38 @@ const DesignSystem: FC = () => {
     <div className="min-h-screen bg-bg text-text font-body p-8">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-12">
-          <h1 className="text-xl font-display font-bold">Design System — Brève</h1>
+          <h1>{ds.title}</h1>
           <Button variant="ghost" onClick={toggleTheme}>
             {theme === 'dark' ? (
               <>
                 <SunIcon className="w-4 h-4 mr-1.5" aria-hidden="true" />
-                Light
+                {ds.actions.light}
               </>
             ) : (
               <>
                 <MoonIcon className="w-4 h-4 mr-1.5" aria-hidden="true" />
-                Dark
+                {ds.actions.dark}
               </>
             )}
           </Button>
         </div>
 
         <section className="mb-10">
-          <h2 className="text-lg font-semibold mb-4 text-text-muted">Buttons</h2>
+          <h2 className="mb-4 text-text-muted">{ds.sections.buttons}</h2>
           <div className="flex items-center gap-4 flex-wrap">
-            <Button variant="primary">Connexion</Button>
-            <Button variant="ghost">Annuler</Button>
-            <Button variant="icon" aria-label="Settings">
+            <Button variant="primary">{ds.actions.login}</Button>
+            <Button variant="ghost">{ds.actions.cancel}</Button>
+            <Button variant="icon" aria-label={ds.actions.settings}>
               <Cog6ToothIcon className="w-5 h-5" aria-hidden="true" />
             </Button>
             <Button variant="primary" disabled>
-              Désactivé
+              {ds.actions.disabled}
             </Button>
           </div>
         </section>
 
         <section className="mb-10">
-          <h2 className="text-lg font-semibold mb-4 text-text-muted">Badges</h2>
+          <h2 className="mb-4 text-text-muted">{ds.sections.badges}</h2>
           <div className="flex items-center gap-3 flex-wrap">
             <Badge category="world" />
             <Badge category="france" />
@@ -63,7 +66,7 @@ const DesignSystem: FC = () => {
         </section>
 
         <section className="mb-10">
-          <h2 className="text-lg font-semibold mb-4 text-text-muted">Source Pills</h2>
+          <h2 className="mb-4 text-text-muted">{ds.sections.sourcePills}</h2>
           <div className="flex items-center gap-3 flex-wrap">
             <SourcePill name="Le Monde" url="https://lemonde.fr" />
             <SourcePill name="Reuters" url="https://reuters.com" />
@@ -72,44 +75,44 @@ const DesignSystem: FC = () => {
         </section>
 
         <section className="mb-10">
-          <h2 className="text-lg font-semibold mb-4 text-text-muted">Inputs</h2>
+          <h2 className="mb-4 text-text-muted">{ds.sections.inputs}</h2>
           <div className="flex flex-col gap-4 max-w-sm">
             <Input
               id="demo-email"
-              label="Email"
+              label={ds.inputs.emailLabel}
               type="email"
-              placeholder="vous@exemple.fr"
+              placeholder={ds.inputs.emailPlaceholder}
               value={emailValue}
               onChange={(e) => setEmailValue(e.target.value)}
             />
             <Input
               id="demo-search"
               type="search"
-              placeholder="Rechercher..."
+              placeholder={ds.inputs.searchPlaceholder}
               value=""
               onChange={() => {}}
             />
             <Input
               id="demo-error"
-              label="Champ avec erreur"
+              label={ds.inputs.errorLabel}
               type="text"
-              placeholder="..."
+              placeholder={ds.inputs.errorPlaceholder}
               value=""
               onChange={() => {}}
-              error="Ce champ est requis"
+              error={ds.inputs.errorMessage}
             />
           </div>
         </section>
 
         <section className="mb-10">
-          <h2 className="text-lg font-semibold mb-4 text-text-muted">Cards</h2>
+          <h2 className="mb-4 text-text-muted">{ds.sections.cards}</h2>
           <div className="grid grid-cols-2 gap-4 max-w-lg">
             <Card>
               <div className="h-32 bg-surface-offset" />
               <div className="p-4 flex flex-col gap-2">
                 <Badge category="tech" />
-                <h3 className="text-base font-semibold">Titre de l'article</h3>
-                <p className="text-text-muted text-sm">Résumé en deux lignes...</p>
+                <h3>{ds.cards.articleTitle}</h3>
+                <p className="text-text-muted text-sm">{ds.cards.articleSummary}</p>
                 <SourcePill name="The Verge" url="https://theverge.com" />
               </div>
             </Card>
@@ -117,8 +120,8 @@ const DesignSystem: FC = () => {
               <div className="h-32 bg-primary-subtle" />
               <div className="p-4 flex flex-col gap-2">
                 <Badge category="world" />
-                <h3 className="text-base font-semibold">Autre article</h3>
-                <p className="text-text-muted text-sm">Autre résumé court...</p>
+                <h3>{ds.cards.anotherArticle}</h3>
+                <p className="text-text-muted text-sm">{ds.cards.anotherSummary}</p>
                 <SourcePill name="Reuters" url="https://reuters.com" />
               </div>
             </Card>
@@ -126,7 +129,7 @@ const DesignSystem: FC = () => {
         </section>
 
         <section className="mb-10">
-          <h2 className="text-lg font-semibold mb-4 text-text-muted">Palette</h2>
+          <h2 className="mb-4 text-text-muted">{ds.sections.palette}</h2>
           <div className="grid grid-cols-4 gap-3">
             {(
               [

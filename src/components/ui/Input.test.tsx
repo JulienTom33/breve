@@ -44,7 +44,7 @@ describe('Input', () => {
 
   it('applies error border when error prop provided', () => {
     const { container } = render(<Input id="test" value="" onChange={vi.fn()} error="Error" />)
-    expect(container.querySelector('input')).toHaveClass('border-error')
+    expect(container.querySelector('input')).toHaveClass('border-error-500')
   })
 
   it('applies default border when no error', () => {

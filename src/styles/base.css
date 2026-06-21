@@ -44,3 +44,21 @@ h5,
 h6 {
   overflow-wrap: break-word;
 }
+
+@layer base {
+  h1 {
+    font-size: var(--text-xl, 1.5rem);
+    font-family: var(--font-display, sans-serif);
+    font-weight: 700;
+  }
+
+  h2 {
+    font-size: var(--text-lg, 1.125rem);
+    font-weight: 600;
+  }
+
+  h3 {
+    font-size: var(--text-base, 1rem);
+    font-weight: 600;
+  }
+}

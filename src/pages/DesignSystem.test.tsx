@@ -2,6 +2,9 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import DesignSystem from './DesignSystem'
+import { t } from '@/lib/i18n'
+
+const { designSystem: ds } = t
 
 describe('DesignSystem', () => {
   beforeEach(() => {
@@ -10,46 +13,52 @@ describe('DesignSystem', () => {
 
   it('renders the page title', () => {
     render(<DesignSystem />)
-    expect(screen.getByText('Design System — Brève')).toBeInTheDocument()
+    expect(screen.getByText(ds.title)).toBeInTheDocument()
   })
 
   it('renders all section headings', () => {
     render(<DesignSystem />)
-    expect(screen.getByText('Buttons')).toBeInTheDocument()
-    expect(screen.getByText('Badges')).toBeInTheDocument()
-    expect(screen.getByText('Source Pills')).toBeInTheDocument()
-    expect(screen.getByText('Inputs')).toBeInTheDocument()
-    expect(screen.getByText('Cards')).toBeInTheDocument()
-    expect(screen.getByText('Palette')).toBeInTheDocument()
+    expect(screen.getByText(ds.sections.buttons)).toBeInTheDocument()
+    expect(screen.getByText(ds.sections.badges)).toBeInTheDocument()
+    expect(screen.getByText(ds.sections.sourcePills)).toBeInTheDocument()
+    expect(screen.getByText(ds.sections.inputs)).toBeInTheDocument()
+    expect(screen.getByText(ds.sections.cards)).toBeInTheDocument()
+    expect(screen.getByText(ds.sections.palette)).toBeInTheDocument()
   })
 
   it('renders theme toggle button', () => {
     render(<DesignSystem />)
-    expect(screen.getByRole('button', { name: /light/i })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: new RegExp(ds.actions.light, 'i') }),
+    ).toBeInTheDocument()
   })
 
   it('toggles theme on button click', async () => {
     const user = userEvent.setup()
     render(<DesignSystem />)
-    const toggleBtn = screen.getByRole('button', { name: /light/i })
+    const toggleBtn = screen.getByRole('button', { name: new RegExp(ds.actions.light, 'i') })
     await user.click(toggleBtn)
     expect(document.documentElement.getAttribute('data-theme')).toBe('light')
-    expect(screen.getByRole('button', { name: /dark/i })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: new RegExp(ds.actions.dark, 'i') }),
+    ).toBeInTheDocument()
   })
 
   it('renders settings icon button', () => {
     render(<DesignSystem />)
-    expect(screen.getByRole('button', { name: /settings/i })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: new RegExp(ds.actions.settings, 'i') }),
+    ).toBeInTheDocument()
   })
 
   it('renders all badge categories', () => {
     render(<DesignSystem />)
-    expect(screen.getAllByText('Monde').length).toBeGreaterThan(0)
-    expect(screen.getByText('France')).toBeInTheDocument()
-    expect(screen.getByText('Économie')).toBeInTheDocument()
-    expect(screen.getByText('Science')).toBeInTheDocument()
-    expect(screen.getAllByText('Tech').length).toBeGreaterThan(0)
-    expect(screen.getByText('Environnement')).toBeInTheDocument()
+    expect(screen.getAllByText(t.badges.world).length).toBeGreaterThan(0)
+    expect(screen.getByText(t.badges.france)).toBeInTheDocument()
+    expect(screen.getByText(t.badges.economy)).toBeInTheDocument()
+    expect(screen.getByText(t.badges.science)).toBeInTheDocument()
+    expect(screen.getAllByText(t.badges.tech).length).toBeGreaterThan(0)
+    expect(screen.getByText(t.badges.environment)).toBeInTheDocument()
   })
 
   it('renders source pills as links', () => {
@@ -60,18 +69,18 @@ describe('DesignSystem', () => {
 
   it('renders email input with label', () => {
     render(<DesignSystem />)
-    expect(screen.getByLabelText('Email')).toBeInTheDocument()
+    expect(screen.getByLabelText(ds.inputs.emailLabel)).toBeInTheDocument()
   })
 
   it('renders error input with error message', () => {
     render(<DesignSystem />)
-    expect(screen.getByText('Ce champ est requis')).toBeInTheDocument()
+    expect(screen.getByText(ds.inputs.errorMessage)).toBeInTheDocument()
   })
 
   it('updates email input value on change', async () => {
     const user = userEvent.setup()
     render(<DesignSystem />)
-    const emailInput = screen.getByLabelText('Email')
+    const emailInput = screen.getByLabelText(ds.inputs.emailLabel)
     await user.type(emailInput, 'test@example.com')
     expect(emailInput).toHaveValue('test@example.com')
   })
