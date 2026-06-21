@@ -17,17 +17,21 @@ const Header: FC = () => {
       id="header__container--main"
       className="sticky top-0 z-50 w-full bg-surface border-b border-border h-14 flex items-center px-4 md:px-6"
     >
-      <div className="flex items-center gap-3 w-full mx-auto">
-        {/* Logo + brand + nav links */}
+      <div className="flex items-center gap-3 w-full">
+        {/* Brand: logo + nom + nav desktop */}
         <div id="header__brand--wrapper" className="flex items-center gap-2 shrink-0">
-          <BreveLogo className="h-6 w-auto" />
+          <BreveLogo className="h-5 w-auto" />
           <span
             id="header__logo--breve"
-            className="font-display font-bold text-primary text-base tracking-tight select-none"
+            className="font-display font-bold text-primary text-sm md:text-base tracking-tight select-none"
           >
             {t.app.name}
           </span>
-          <span className="hidden md:block text-border mx-1 select-none">|</span>
+
+          {/* Nav desktop uniquement */}
+          <span className="hidden md:block text-border mx-1 select-none" aria-hidden="true">
+            |
+          </span>
           <nav
             id="header__nav--links"
             className="hidden md:flex items-center gap-3"
@@ -55,26 +59,26 @@ const Header: FC = () => {
           </nav>
         </div>
 
-        {/* Search */}
+        {/* Search: visible partout, prend l'espace restant */}
         <div
           id="header__search--wrapper"
-          className="flex-1 flex items-center gap-2 bg-surface-2 border border-border rounded-full px-4 h-9 max-w-md mx-auto"
+          className="flex-1 flex items-center gap-2 bg-surface-2 border border-border rounded-full px-3 h-9 min-w-0"
         >
           <MagnifyingGlassIcon className="w-4 h-4 text-text-faint shrink-0" aria-hidden="true" />
           <input
             id="header__input--search"
             type="search"
             placeholder={t.nav.searchPlaceholder}
-            className="flex-1 bg-transparent text-text placeholder:text-text-faint text-sm outline-none"
+            className="flex-1 min-w-0 bg-transparent text-text placeholder:text-text-faint text-sm outline-none"
             aria-label="Rechercher des articles"
           />
         </div>
 
-        {/* Right actions */}
-        <div id="header__actions--right" className="flex items-center gap-2 shrink-0">
+        {/* Actions desktop uniquement */}
+        <div id="header__actions--desktop" className="hidden md:flex items-center gap-2 shrink-0">
           <span
             id="header__time--display"
-            className="hidden md:block text-text-muted text-sm font-mono tabular-nums"
+            className="text-text-muted text-sm font-mono tabular-nums"
             aria-label="Heure actuelle"
           >
             {timeString}
@@ -83,7 +87,6 @@ const Header: FC = () => {
             variant="icon"
             onClick={toggle}
             aria-label={isDark ? 'Passer en mode clair' : 'Passer en mode sombre'}
-            className="hidden md:inline-flex"
           >
             {isDark ? (
               <SunIcon className="w-5 h-5" aria-hidden="true" />
@@ -94,10 +97,25 @@ const Header: FC = () => {
           <Link
             to="/auth"
             id="header__button--connexion"
-            className="inline-flex items-center justify-center bg-primary hover:bg-primary-hover text-white text-sm font-semibold rounded-full px-4 h-9 transition-colors duration-150"
+            className="inline-flex items-center justify-center bg-primary hover:bg-primary-hover text-white text-sm font-semibold rounded-full px-4 h-9 transition-colors duration-150 shrink-0"
           >
             {t.nav.connexion}
           </Link>
+        </div>
+
+        {/* Toggle dark/light mode mobile uniquement */}
+        <div id="header__actions--mobile" className="md:hidden shrink-0">
+          <Button
+            variant="icon"
+            onClick={toggle}
+            aria-label={isDark ? 'Passer en mode clair' : 'Passer en mode sombre'}
+          >
+            {isDark ? (
+              <SunIcon className="w-5 h-5" aria-hidden="true" />
+            ) : (
+              <MoonIcon className="w-5 h-5" aria-hidden="true" />
+            )}
+          </Button>
         </div>
       </div>
     </header>

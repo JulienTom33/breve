@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import Header from './Header'
 
@@ -16,9 +17,9 @@ const renderWithRouter = () =>
   )
 
 describe('Header', () => {
-  it('renders logo Brève', () => {
+  it('renders logo Brèves', () => {
     renderWithRouter()
-    expect(screen.getByText('Brève')).toBeInTheDocument()
+    expect(screen.getByText('Brèves')).toBeInTheDocument()
   })
 
   it('renders search input', () => {
@@ -59,9 +60,19 @@ describe('Header', () => {
     expect(screen.getByLabelText('Heure actuelle')).toBeInTheDocument()
   })
 
-  it('renders dark mode toggle button', () => {
+  it('renders dark mode toggle buttons', () => {
     renderWithRouter()
-    expect(screen.getByRole('button', { name: /mode clair|mode sombre/ })).toBeInTheDocument()
+    const btns = screen.getAllByRole('button', { name: /mode clair|mode sombre/ })
+    expect(btns.length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('toggles theme on click', async () => {
+    const user = userEvent.setup()
+    renderWithRouter()
+    const btn = screen.getAllByRole('button', { name: /mode clair|mode sombre/ })[0]
+    const initialLabel = btn.getAttribute('aria-label')
+    await user.click(btn)
+    expect(btn.getAttribute('aria-label')).not.toBe(initialLabel)
   })
 
   it('has sticky positioning', () => {
