@@ -45,9 +45,10 @@ describe('AuthPage', () => {
     expect(screen.getByRole('button', { name: /Se connecter/i })).toBeInTheDocument()
   })
 
-  it('renders app logo', () => {
+  it('renders app logo and name', () => {
     renderPage()
     expect(document.getElementById('auth-page__icon--logo')).toBeInTheDocument()
+    expect(screen.getByText('Brèves')).toBeInTheDocument()
   })
 
   it('shows "Mot de passe oublié" in login mode', () => {

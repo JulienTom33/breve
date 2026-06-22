@@ -85,10 +85,13 @@ const AuthPage: FC = () => {
       <div id="auth-page__header--main" className="mb-8 text-center">
         <div
           id="auth-page__icon--logo"
-          className="mx-auto mb-5 w-14 h-14 bg-surface border border-border rounded-xl flex items-center justify-center"
+          className="mx-auto mb-4 w-14 h-14 bg-surface border border-border rounded-xl flex items-center justify-center"
         >
-          <BreveLogo className="w-8 h-5" />
+          <BreveLogo className="w-8 h-6" />
         </div>
+        <p id="auth-page__app-name--main" className="text-primary font-semibold text-sm mb-3">
+          {t.app.title}
+        </p>
         <h1 id="auth-page__title--main" className="text-2xl font-bold mb-2">
           {meta.title}
         </h1>
@@ -102,32 +105,32 @@ const AuthPage: FC = () => {
         className="w-full max-w-sm bg-surface border border-border rounded-2xl p-6"
       >
         <div id="auth-page__tabs--main" className="flex bg-surface-2 rounded-lg p-1 mb-6 gap-1">
-          <button
+          <Button
             id="auth-page__tab--login"
             type="button"
+            variant="tab"
             onClick={() => switchMode('login')}
-            className={[
-              'flex-1 py-2 text-sm font-medium rounded-md transition-colors duration-150',
+            className={
               mode === 'login'
                 ? 'bg-surface-offset text-text shadow-sm'
-                : 'text-text-muted hover:text-text',
-            ].join(' ')}
+                : 'text-text-muted hover:text-text'
+            }
           >
             {t.auth.tabs.login}
-          </button>
-          <button
+          </Button>
+          <Button
             id="auth-page__tab--register"
             type="button"
+            variant="tab"
             onClick={() => switchMode('register')}
-            className={[
-              'flex-1 py-2 text-sm font-medium rounded-md transition-colors duration-150',
+            className={
               mode === 'register'
                 ? 'bg-surface-offset text-text shadow-sm'
-                : 'text-text-muted hover:text-text',
-            ].join(' ')}
+                : 'text-text-muted hover:text-text'
+            }
           >
             {t.auth.tabs.register}
-          </button>
+          </Button>
         </div>
 
         <form id="auth-page__form--main" onSubmit={handleSubmit} noValidate>
@@ -181,6 +184,7 @@ const AuthPage: FC = () => {
             )}
 
             <Button
+              id="auth-page__button--submit"
               type="submit"
               variant="primary"
               disabled={submitting}
@@ -197,15 +201,16 @@ const AuthPage: FC = () => {
             </Button>
 
             {mode === 'login' && (
-              <button
+              <Button
                 id="auth-page__link--forgot-password"
                 type="button"
+                variant="ghost"
                 onClick={handleResetPassword}
                 disabled={submitting}
-                className="text-text-muted text-xs text-center hover:text-text transition-colors"
+                className="w-full justify-center !border-0 !bg-transparent !text-text-muted !text-xs hover:!text-text hover:!bg-transparent"
               >
                 {t.auth.actions.forgotPassword}
-              </button>
+              </Button>
             )}
           </div>
         </form>

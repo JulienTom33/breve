@@ -1,8 +1,9 @@
 import { FC, ReactNode } from 'react'
 
 interface ButtonProps {
+  id?: string
   children: ReactNode
-  variant?: 'primary' | 'ghost' | 'icon'
+  variant?: 'primary' | 'ghost' | 'icon' | 'tab'
   onClick?: () => void
   disabled?: boolean
   className?: string
@@ -19,9 +20,11 @@ const variants: Record<NonNullable<ButtonProps['variant']>, string> = {
   ghost:
     'bg-transparent border border-border text-text hover:bg-surface-2 rounded-md px-4 py-2.5 text-sm',
   icon: 'w-10 h-10 bg-surface-2 hover:bg-surface-offset rounded-md text-text',
+  tab: 'flex-1 py-2 text-sm rounded-md',
 }
 
 const Button: FC<ButtonProps> = ({
+  id,
   children,
   variant = 'primary',
   onClick,
@@ -31,6 +34,7 @@ const Button: FC<ButtonProps> = ({
   type = 'button',
 }) => (
   <button
+    id={id}
     type={type}
     onClick={onClick}
     disabled={disabled}
