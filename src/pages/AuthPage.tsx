@@ -130,11 +130,11 @@ const AuthPage: FC = () => {
       <div id="auth-page__header--main" className="mb-8 text-center">
         <div
           id="auth-page__icon--logo"
-          className="mx-auto mb-4 w-14 h-14 bg-surface border border-border rounded-xl flex items-center justify-center"
+          className="mx-auto mb-2 w-14 h-14 bg-surface border border-border rounded-xl flex items-center justify-center"
         >
           <BreveLogo className="w-8 h-6" />
         </div>
-        <p id="auth-page__app-name--main" className="text-primary font-semibold text-sm mb-3">
+        <p id="auth-page__app-name--main" className="text-primary font-semibold text-lg mb-3">
           {t.app.title}
         </p>
         <h1 id="auth-page__title--main" className="text-2xl font-bold mb-2">
