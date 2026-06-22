@@ -100,29 +100,28 @@ describe('useAuth', () => {
     expect(error).toEqual(authError)
   })
 
-  it('signUp creates profile with firstName and lastName on success', async () => {
+  it('signUp passes firstName and lastName in user_metadata', async () => {
     const mockUser = { id: 'new-user', email: 'new@test.com' }
-    const mockInsert = vi.fn().mockResolvedValue({ error: null })
     mockSignUp.mockResolvedValue({ data: { user: mockUser }, error: null })
-    mockFrom.mockReturnValue({ insert: mockInsert })
 
     const { result } = renderHook(() => useAuth())
     await waitFor(() => expect(result.current.loading).toBe(false))
 
+    let error: unknown
     await act(async () => {
-      await result.current.signUp('new@test.com', 'pass123', 'Alexis', 'Bernard')
+      error = await result.current.signUp('new@test.com', 'pass123', 'Alexis', 'Bernard')
     })
-    expect(mockFrom).toHaveBeenCalledWith('profiles')
-    expect(mockInsert).toHaveBeenCalledWith({
-      id: mockUser.id,
-      email: mockUser.email,
-      first_name: 'Alexis',
-      last_name: 'Bernard',
-      full_name: 'Alexis Bernard',
+    expect(error).toBeNull()
+    expect(mockSignUp).toHaveBeenCalledWith({
+      email: 'new@test.com',
+      password: 'pass123',
+      options: {
+        data: { first_name: 'Alexis', last_name: 'Bernard', full_name: 'Alexis Bernard' },
+      },
     })
   })
 
-  it('signUp returns error without creating profile', async () => {
+  it('signUp returns error on failure', async () => {
     const authError = { message: 'Email already registered' }
     mockSignUp.mockResolvedValue({ data: { user: null }, error: authError })
 
@@ -134,7 +133,6 @@ describe('useAuth', () => {
       error = await result.current.signUp('existing@test.com', 'pass', 'Test', 'User')
     })
     expect(error).toEqual(authError)
-    expect(mockFrom).not.toHaveBeenCalled()
   })
 
   it('signOut calls supabase signOut', async () => {
