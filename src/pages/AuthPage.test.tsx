@@ -113,7 +113,9 @@ describe('AuthPage', () => {
     await user.type(screen.getByLabelText('Adresse e-mail'), 'a@b.com')
     await user.type(screen.getByLabelText('Mot de passe'), 'wrong')
     await user.click(screen.getByRole('button', { name: /Se connecter/i }))
-    await waitFor(() => expect(screen.getByText('Invalid login credentials')).toBeInTheDocument())
+    await waitFor(() =>
+      expect(screen.getByText('Email ou mot de passe incorrect.')).toBeInTheDocument(),
+    )
     expect(mockNavigate).not.toHaveBeenCalled()
   })
 
@@ -124,10 +126,44 @@ describe('AuthPage', () => {
     await user.click(screen.getByRole('button', { name: 'Inscription' }))
     await user.type(screen.getByLabelText('Nom complet'), 'Alexis Bernard')
     await user.type(screen.getByLabelText('Adresse e-mail'), 'a@b.com')
-    await user.type(screen.getByLabelText('Mot de passe'), 'pass123')
+    await user.type(screen.getByLabelText('Mot de passe'), 'Pass123!')
     await user.click(screen.getByRole('button', { name: /Créer mon compte/i }))
     await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/'))
-    expect(mockSignUp).toHaveBeenCalledWith('a@b.com', 'pass123', 'Alexis Bernard')
+    expect(mockSignUp).toHaveBeenCalledWith('a@b.com', 'Pass123!', 'Alexis Bernard')
+  })
+
+  it('shows password rules in register mode', async () => {
+    const user = userEvent.setup()
+    renderPage()
+    await user.click(screen.getByRole('button', { name: 'Inscription' }))
+    expect(screen.getByText('6 caractères minimum')).toBeInTheDocument()
+    expect(screen.getByText('1 chiffre minimum')).toBeInTheDocument()
+    expect(screen.getByText(/1 caractère spécial/i)).toBeInTheDocument()
+  })
+
+  it('blocks submit when password rules not met', async () => {
+    const user = userEvent.setup()
+    renderPage()
+    await user.click(screen.getByRole('button', { name: 'Inscription' }))
+    await user.type(screen.getByLabelText('Adresse e-mail'), 'a@b.com')
+    await user.type(screen.getByLabelText('Mot de passe'), 'abc')
+    await user.click(screen.getByRole('button', { name: /Créer mon compte/i }))
+    expect(
+      screen.getByText('Le mot de passe ne respecte pas les conditions requises.'),
+    ).toBeInTheDocument()
+    expect(mockSignUp).not.toHaveBeenCalled()
+  })
+
+  it('translates Supabase error to French', async () => {
+    mockSignIn.mockResolvedValue({ message: 'Invalid login credentials' })
+    const user = userEvent.setup()
+    renderPage()
+    await user.type(screen.getByLabelText('Adresse e-mail'), 'a@b.com')
+    await user.type(screen.getByLabelText('Mot de passe'), 'wrong')
+    await user.click(screen.getByRole('button', { name: /Se connecter/i }))
+    await waitFor(() =>
+      expect(screen.getByText('Email ou mot de passe incorrect.')).toBeInTheDocument(),
+    )
   })
 
   it('shows reset confirmation message', async () => {

@@ -1,6 +1,12 @@
 import { FC, FormEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { EyeIcon, EyeSlashIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
+import {
+  EyeIcon,
+  EyeSlashIcon,
+  ArrowRightIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+} from '@heroicons/react/24/outline'
 import Button from '@/components/ui/Button/Button'
 import Input from '@/components/ui/Input/Input'
 import BreveLogo from '@/components/ui/BreveLogo/BreveLogo'
@@ -8,6 +14,35 @@ import { useAuth } from '@/hooks/useAuth'
 import { t } from '@/lib/i18n'
 
 type Mode = 'login' | 'register'
+
+const SUPABASE_ERRORS: Record<string, string> = {
+  'Invalid login credentials': 'Email ou mot de passe incorrect.',
+  'Email not confirmed': 'Veuillez confirmer votre adresse email.',
+  'User already registered': 'Un compte existe déjà avec cet email.',
+  'Email already in use': 'Un compte existe déjà avec cet email.',
+  'Password should be at least 6 characters':
+    'Le mot de passe doit contenir au moins 6 caractères.',
+  'Signup requires a valid password': 'Mot de passe invalide.',
+  'Unable to validate email address: invalid format': 'Adresse email invalide.',
+  'Email rate limit exceeded': 'Trop de tentatives. Réessayez dans quelques minutes.',
+  'For security purposes, you can only request this once every 60 seconds':
+    'Attendez 60 secondes avant de réessayer.',
+  'Token has expired or is invalid': 'Le lien est expiré ou invalide.',
+}
+
+const translateError = (message: string): string =>
+  SUPABASE_ERRORS[message] ?? 'Une erreur est survenue. Veuillez réessayer.'
+
+interface PasswordRule {
+  label: string
+  test: (pw: string) => boolean
+}
+
+const PASSWORD_RULES: PasswordRule[] = [
+  { label: '6 caractères minimum', test: (pw) => pw.length >= 6 },
+  { label: '1 chiffre minimum', test: (pw) => /\d/.test(pw) },
+  { label: '1 caractère spécial (!@#$…)', test: (pw) => /[^a-zA-Z0-9]/.test(pw) },
+]
 
 const AuthPage: FC = () => {
   const navigate = useNavigate()
@@ -36,12 +71,18 @@ const AuthPage: FC = () => {
     setResetSent(false)
     setSubmitting(true)
 
+    if (mode === 'register' && !PASSWORD_RULES.every((r) => r.test(password))) {
+      setError('Le mot de passe ne respecte pas les conditions requises.')
+      setSubmitting(false)
+      return
+    }
+
     const err =
       mode === 'login' ? await signIn(email, password) : await signUp(email, password, fullName)
 
     setSubmitting(false)
     if (err) {
-      setError(err.message)
+      setError(translateError(err.message))
     } else {
       navigate('/')
     }
@@ -56,7 +97,7 @@ const AuthPage: FC = () => {
     const err = await resetPassword(email)
     setSubmitting(false)
     if (err) {
-      setError(err.message)
+      setError(translateError(err.message))
     } else {
       setResetSent(true)
       setError('')
@@ -170,6 +211,27 @@ const AuthPage: FC = () => {
               endAdornment={EyeToggle}
               required
             />
+
+            {mode === 'register' && (
+              <div id="auth-page__password-rules--main" className="flex flex-col gap-1.5 px-1">
+                {PASSWORD_RULES.map((rule) => {
+                  const ok = rule.test(password)
+                  return (
+                    <div
+                      key={rule.label}
+                      className={`flex items-center gap-2 text-xs transition-colors duration-200 ${ok ? 'text-success' : password.length === 0 ? 'text-text-faint' : 'text-error'}`}
+                    >
+                      {ok ? (
+                        <CheckCircleIcon className="w-3.5 h-3.5 flex-shrink-0" />
+                      ) : (
+                        <XCircleIcon className="w-3.5 h-3.5 flex-shrink-0" />
+                      )}
+                      <span>{rule.label}</span>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
 
             {error && (
               <p id="auth-page__error--main" className="text-error text-sm">
