@@ -39,17 +39,13 @@ beforeEach(() => {
 })
 
 describe('AuthPage', () => {
-  it('renders login form by default', () => {
+  it('renders login mode by default', () => {
     renderPage()
+    expect(screen.getByText('Bon retour')).toBeInTheDocument()
     expect(screen.getByText('Connexion')).toBeInTheDocument()
-    expect(screen.getByLabelText('Email')).toBeInTheDocument()
+    expect(screen.getByLabelText('Adresse e-mail')).toBeInTheDocument()
     expect(screen.getByLabelText('Mot de passe')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Se connecter/i })).toBeInTheDocument()
-  })
-
-  it('renders the Brève title', () => {
-    renderPage()
-    expect(screen.getByText('Brève')).toBeInTheDocument()
   })
 
   it('renders "Continuer sans compte" button', () => {
@@ -57,22 +53,37 @@ describe('AuthPage', () => {
     expect(screen.getByRole('button', { name: /Continuer sans compte/i })).toBeInTheDocument()
   })
 
-  it('shows "Mot de passe oublié" link in login mode', () => {
+  it('shows "Mot de passe oublié" in login mode', () => {
     renderPage()
     expect(screen.getByRole('button', { name: /Mot de passe oublié/i })).toBeInTheDocument()
   })
 
-  it('toggles to register form', async () => {
+  it('shows password eye toggle button', () => {
+    renderPage()
+    expect(screen.getByRole('button', { name: /Afficher le mot de passe/i })).toBeInTheDocument()
+  })
+
+  it('toggles password visibility', async () => {
+    const user = userEvent.setup()
+    renderPage()
+    const input = screen.getByLabelText('Mot de passe')
+    expect(input).toHaveAttribute('type', 'password')
+    await user.click(screen.getByRole('button', { name: /Afficher le mot de passe/i }))
+    expect(input).toHaveAttribute('type', 'text')
+  })
+
+  it('switches to register mode', async () => {
     const user = userEvent.setup()
     renderPage()
     await user.click(screen.getByRole('button', { name: 'Inscription' }))
-    expect(screen.getByLabelText('Confirmer le mot de passe')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Créer un compte/i })).toBeInTheDocument()
+    expect(screen.getByText('Créer un compte')).toBeInTheDocument()
+    expect(screen.getByLabelText('Nom complet')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Créer mon compte/i })).toBeInTheDocument()
   })
 
-  it('hides confirm field in login mode', () => {
+  it('hides "Nom complet" in login mode', () => {
     renderPage()
-    expect(screen.queryByLabelText('Confirmer le mot de passe')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('Nom complet')).not.toBeInTheDocument()
   })
 
   it('hides "Mot de passe oublié" in register mode', async () => {
@@ -82,23 +93,11 @@ describe('AuthPage', () => {
     expect(screen.queryByRole('button', { name: /Mot de passe oublié/i })).not.toBeInTheDocument()
   })
 
-  it('shows error when passwords do not match', async () => {
-    const user = userEvent.setup()
-    renderPage()
-    await user.click(screen.getByRole('button', { name: 'Inscription' }))
-    await user.type(screen.getByLabelText('Email'), 'test@test.com')
-    await user.type(screen.getByLabelText('Mot de passe'), 'password1')
-    await user.type(screen.getByLabelText('Confirmer le mot de passe'), 'password2')
-    await user.click(screen.getByRole('button', { name: /Créer un compte/i }))
-    expect(screen.getByText('Les mots de passe ne correspondent pas.')).toBeInTheDocument()
-    expect(mockSignUp).not.toHaveBeenCalled()
-  })
-
   it('calls signIn and navigates on success', async () => {
     mockSignIn.mockResolvedValue(null)
     const user = userEvent.setup()
     renderPage()
-    await user.type(screen.getByLabelText('Email'), 'a@b.com')
+    await user.type(screen.getByLabelText('Adresse e-mail'), 'a@b.com')
     await user.type(screen.getByLabelText('Mot de passe'), 'pass123')
     await user.click(screen.getByRole('button', { name: /Se connecter/i }))
     await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/'))
@@ -108,14 +107,27 @@ describe('AuthPage', () => {
     mockSignIn.mockResolvedValue({ message: 'Invalid login credentials' })
     const user = userEvent.setup()
     renderPage()
-    await user.type(screen.getByLabelText('Email'), 'a@b.com')
+    await user.type(screen.getByLabelText('Adresse e-mail'), 'a@b.com')
     await user.type(screen.getByLabelText('Mot de passe'), 'wrong')
     await user.click(screen.getByRole('button', { name: /Se connecter/i }))
     await waitFor(() => expect(screen.getByText('Invalid login credentials')).toBeInTheDocument())
     expect(mockNavigate).not.toHaveBeenCalled()
   })
 
-  it('calls signInAnonymously and navigates on anonymous access', async () => {
+  it('calls signUp with fullName and navigates on success', async () => {
+    mockSignUp.mockResolvedValue(null)
+    const user = userEvent.setup()
+    renderPage()
+    await user.click(screen.getByRole('button', { name: 'Inscription' }))
+    await user.type(screen.getByLabelText('Nom complet'), 'Alexis Bernard')
+    await user.type(screen.getByLabelText('Adresse e-mail'), 'a@b.com')
+    await user.type(screen.getByLabelText('Mot de passe'), 'pass123')
+    await user.click(screen.getByRole('button', { name: /Créer mon compte/i }))
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/'))
+    expect(mockSignUp).toHaveBeenCalledWith('a@b.com', 'pass123', 'Alexis Bernard')
+  })
+
+  it('calls signInAnonymously and navigates', async () => {
     mockSignInAnonymously.mockResolvedValue(null)
     const user = userEvent.setup()
     renderPage()
@@ -127,14 +139,14 @@ describe('AuthPage', () => {
     mockResetPassword.mockResolvedValue(null)
     const user = userEvent.setup()
     renderPage()
-    await user.type(screen.getByLabelText('Email'), 'a@b.com')
+    await user.type(screen.getByLabelText('Adresse e-mail'), 'a@b.com')
     await user.click(screen.getByRole('button', { name: /Mot de passe oublié/i }))
     await waitFor(() =>
       expect(screen.getByText('Email de réinitialisation envoyé.')).toBeInTheDocument(),
     )
   })
 
-  it('shows error when reset password called without email', async () => {
+  it('shows error when reset called without email', async () => {
     const user = userEvent.setup()
     renderPage()
     await user.click(screen.getByRole('button', { name: /Mot de passe oublié/i }))

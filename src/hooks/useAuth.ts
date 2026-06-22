@@ -6,7 +6,7 @@ interface UseAuthReturn {
   user: User | null
   loading: boolean
   signIn: (email: string, password: string) => Promise<AuthError | null>
-  signUp: (email: string, password: string) => Promise<AuthError | null>
+  signUp: (email: string, password: string, fullName: string) => Promise<AuthError | null>
   signInAnonymously: () => Promise<AuthError | null>
   signOut: () => Promise<void>
   resetPassword: (email: string) => Promise<AuthError | null>
@@ -34,10 +34,16 @@ export function useAuth(): UseAuthReturn {
     return error
   }, [])
 
-  const signUp = useCallback(async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signUp({ email, password })
+  const signUp = useCallback(async (email: string, password: string, fullName: string) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { full_name: fullName } },
+    })
     if (!error && data.user) {
-      await supabase.from('profiles').insert({ id: data.user.id, email: data.user.email })
+      await supabase
+        .from('profiles')
+        .insert({ id: data.user.id, email: data.user.email, full_name: fullName })
     }
     return error
   }, [])
