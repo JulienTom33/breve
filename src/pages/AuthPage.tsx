@@ -14,7 +14,11 @@ import BreveLogo from '@/components/ui/BreveLogo/BreveLogo'
 import { useAuth } from '@/hooks/useAuth'
 import { t } from '@/lib/i18n'
 
-type Mode = 'login' | 'register' | 'reset'
+enum Mode {
+  Login = 'login',
+  Register = 'register',
+  Reset = 'reset',
+}
 
 const SUPABASE_ERRORS: Record<string, string> = {
   'Invalid login credentials': 'Email ou mot de passe incorrect.',
@@ -40,16 +44,16 @@ interface PasswordRule {
 }
 
 const PASSWORD_RULES: PasswordRule[] = [
-  { label: '6 caractères minimum', test: (pw) => pw.length >= 6 },
-  { label: '1 chiffre minimum', test: (pw) => /\d/.test(pw) },
-  { label: '1 caractère spécial (!@#$…)', test: (pw) => /[^a-zA-Z0-9]/.test(pw) },
+  { label: t.auth.passwordRules.minLength, test: (pw) => pw.length >= 6 },
+  { label: t.auth.passwordRules.minDigit, test: (pw) => /\d/.test(pw) },
+  { label: t.auth.passwordRules.minSpecial, test: (pw) => /[^a-zA-Z0-9]/.test(pw) },
 ]
 
 const AuthPage: FC = () => {
   const navigate = useNavigate()
   const { signIn, signUp, resetPassword } = useAuth()
 
-  const [mode, setMode] = useState<Mode>('login')
+  const [mode, setMode] = useState<Mode>(Mode.Login)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
@@ -74,7 +78,7 @@ const AuthPage: FC = () => {
     setError('')
     setSubmitting(true)
 
-    if (mode === 'reset') {
+    if (mode === Mode.Reset) {
       const err = await resetPassword(email)
       setSubmitting(false)
       if (err) {
@@ -85,14 +89,14 @@ const AuthPage: FC = () => {
       return
     }
 
-    if (mode === 'register' && !PASSWORD_RULES.every((r) => r.test(password))) {
+    if (mode === Mode.Register && !PASSWORD_RULES.every((r) => r.test(password))) {
       setError('Le mot de passe ne respecte pas les conditions requises.')
       setSubmitting(false)
       return
     }
 
     const err =
-      mode === 'login'
+      mode === Mode.Login
         ? await signIn(email, password)
         : await signUp(email, password, firstName, lastName)
 
@@ -105,21 +109,21 @@ const AuthPage: FC = () => {
   }
 
   const EyeToggle = (
-    <button
+    <Button
       id="auth-page__button--toggle-password"
-      type="button"
+      variant="icon"
       onClick={() => setShowPassword((v) => !v)}
       aria-label={showPassword ? t.auth.actions.hidePassword : t.auth.actions.showPassword}
-      className="text-text-faint hover:text-text-muted transition-colors"
+      className="!w-auto !h-auto !bg-transparent !rounded-none text-text-faint hover:text-text-muted"
     >
       {showPassword ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
-    </button>
+    </Button>
   )
 
   const headerMeta = {
-    login: { title: t.auth.login.title, subtitle: t.auth.login.subtitle },
-    register: { title: t.auth.register.title, subtitle: t.auth.register.subtitle },
-    reset: { title: t.auth.reset.title, subtitle: t.auth.reset.subtitle },
+    [Mode.Login]: { title: t.auth.login.title, subtitle: t.auth.login.subtitle },
+    [Mode.Register]: { title: t.auth.register.title, subtitle: t.auth.register.subtitle },
+    [Mode.Reset]: { title: t.auth.reset.title, subtitle: t.auth.reset.subtitle },
   }[mode]
 
   return (
@@ -149,15 +153,15 @@ const AuthPage: FC = () => {
         id="auth-page__card--main"
         className="w-full max-w-sm bg-surface border border-border rounded-2xl p-6"
       >
-        {mode !== 'reset' && (
+        {mode !== Mode.Reset && (
           <div id="auth-page__tabs--main" className="flex bg-surface-2 rounded-lg p-1 mb-6 gap-1">
             <Button
               id="auth-page__tab--login"
               type="button"
               variant="tab"
-              onClick={() => switchMode('login')}
+              onClick={() => switchMode(Mode.Login)}
               className={
-                mode === 'login'
+                mode === Mode.Login
                   ? 'bg-surface-offset text-text shadow-sm'
                   : 'text-text-muted hover:text-text'
               }
@@ -168,9 +172,9 @@ const AuthPage: FC = () => {
               id="auth-page__tab--register"
               type="button"
               variant="tab"
-              onClick={() => switchMode('register')}
+              onClick={() => switchMode(Mode.Register)}
               className={
-                mode === 'register'
+                mode === Mode.Register
                   ? 'bg-surface-offset text-text shadow-sm'
                   : 'text-text-muted hover:text-text'
               }
@@ -182,7 +186,7 @@ const AuthPage: FC = () => {
 
         <form id="auth-page__form--main" onSubmit={handleSubmit} noValidate>
           <div className="flex flex-col gap-4">
-            {mode === 'register' && (
+            {mode === Mode.Register && (
               <div className="flex gap-3">
                 <Input
                   id="auth-page__input--firstname"
@@ -218,7 +222,7 @@ const AuthPage: FC = () => {
               required
             />
 
-            {mode !== 'reset' && (
+            {mode !== Mode.Reset && (
               <>
                 <Input
                   id="auth-page__input--password"
@@ -227,12 +231,12 @@ const AuthPage: FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder={t.auth.fields.passwordPlaceholder}
-                  autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+                  autoComplete={mode === Mode.Login ? 'current-password' : 'new-password'}
                   endAdornment={EyeToggle}
                   required
                 />
 
-                {mode === 'register' && (
+                {mode === Mode.Register && (
                   <div id="auth-page__password-rules--main" className="flex flex-col gap-1.5 px-1">
                     {PASSWORD_RULES.map((rule) => {
                       const ok = rule.test(password)
@@ -271,16 +275,16 @@ const AuthPage: FC = () => {
               id="auth-page__button--submit"
               type="submit"
               variant="primary"
-              disabled={submitting || (mode === 'reset' && resetSent)}
+              disabled={submitting || (mode === Mode.Reset && resetSent)}
               className="w-full justify-center !rounded-full !py-3"
             >
               {submitting ? (
                 'Chargement…'
               ) : (
                 <>
-                  {mode === 'reset'
+                  {mode === Mode.Reset
                     ? t.auth.reset.submit
-                    : mode === 'login'
+                    : mode === Mode.Login
                       ? t.auth.login.submit
                       : t.auth.register.submit}
                   <ArrowRightIcon className="w-4 h-4 ml-2" />
@@ -288,24 +292,24 @@ const AuthPage: FC = () => {
               )}
             </Button>
 
-            {mode === 'login' && (
+            {mode === Mode.Login && (
               <Button
                 id="auth-page__link--forgot-password"
                 type="button"
                 variant="ghost"
-                onClick={() => switchMode('reset')}
+                onClick={() => switchMode(Mode.Reset)}
                 className="w-full justify-center !border-0 !bg-transparent !text-text-muted !text-xs hover:!text-text hover:!bg-transparent"
               >
                 {t.auth.actions.forgotPassword}
               </Button>
             )}
 
-            {mode === 'reset' && (
+            {mode === Mode.Reset && (
               <Button
                 id="auth-page__link--back-to-login"
                 type="button"
                 variant="ghost"
-                onClick={() => switchMode('login')}
+                onClick={() => switchMode(Mode.Login)}
                 className="w-full justify-center !border-0 !bg-transparent !text-text-muted !text-xs hover:!text-text hover:!bg-transparent"
               >
                 <ArrowLeftIcon className="w-3.5 h-3.5 mr-1.5" />

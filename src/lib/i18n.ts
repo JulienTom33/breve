@@ -68,6 +68,11 @@ const translations = {
         hidePassword: 'Masquer le mot de passe',
         backToLogin: 'Retour à la connexion',
       },
+      passwordRules: {
+        minLength: '6 caractères minimum',
+        minDigit: '1 chiffre minimum',
+        minSpecial: '1 caractère spécial (!@#$…)',
+      },
     },
     designSystem: {
       title: 'Design System — Brève',
@@ -169,6 +174,11 @@ const translations = {
         showPassword: 'Show password',
         hidePassword: 'Hide password',
         backToLogin: 'Back to sign in',
+      },
+      passwordRules: {
+        minLength: 'At least 6 characters',
+        minDigit: 'At least 1 number',
+        minSpecial: 'At least 1 special character (!@#$…)',
       },
     },
     designSystem: {
