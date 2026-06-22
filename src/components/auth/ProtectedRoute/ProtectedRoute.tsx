@@ -1,10 +1,11 @@
 import { FC } from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
+import { useAuth } from '@/hooks/useAuth'
 
 const ProtectedRoute: FC = () => {
-  // Placeholder : sera remplacé par Supabase Auth
-  const isAuthenticated = !!localStorage.getItem('auth')
-  return isAuthenticated ? <Outlet /> : <Navigate to="/auth" replace />
+  const { user, loading } = useAuth()
+  if (loading) return null
+  return user ? <Outlet /> : <Navigate to="/auth" replace />
 }
 
 export default ProtectedRoute
