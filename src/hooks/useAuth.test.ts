@@ -7,7 +7,6 @@ const {
   mockOnAuthStateChange,
   mockSignInWithPassword,
   mockSignUp,
-  mockSignInAnonymously,
   mockSignOut,
   mockResetPasswordForEmail,
   mockFrom,
@@ -16,7 +15,6 @@ const {
   mockOnAuthStateChange: vi.fn(),
   mockSignInWithPassword: vi.fn(),
   mockSignUp: vi.fn(),
-  mockSignInAnonymously: vi.fn(),
   mockSignOut: vi.fn(),
   mockResetPasswordForEmail: vi.fn(),
   mockFrom: vi.fn(),
@@ -29,7 +27,6 @@ vi.mock('@/lib/supabase', () => ({
       onAuthStateChange: mockOnAuthStateChange,
       signInWithPassword: mockSignInWithPassword,
       signUp: mockSignUp,
-      signInAnonymously: mockSignInAnonymously,
       signOut: mockSignOut,
       resetPasswordForEmail: mockResetPasswordForEmail,
     },
@@ -147,18 +144,6 @@ describe('useAuth', () => {
       await result.current.signOut()
     })
     expect(mockSignOut).toHaveBeenCalled()
-  })
-
-  it('signInAnonymously returns null on success', async () => {
-    mockSignInAnonymously.mockResolvedValue({ error: null })
-    const { result } = renderHook(() => useAuth())
-    await waitFor(() => expect(result.current.loading).toBe(false))
-
-    let error: unknown
-    await act(async () => {
-      error = await result.current.signInAnonymously()
-    })
-    expect(error).toBeNull()
   })
 
   it('resetPassword returns null on success', async () => {

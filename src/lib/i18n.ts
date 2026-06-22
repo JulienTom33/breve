@@ -30,6 +30,37 @@ const translations = {
       tech: 'Tech',
       environment: 'Environnement',
     },
+    auth: {
+      login: {
+        title: 'Bon retour',
+        subtitle: 'Connectez-vous pour accéder à votre profil.',
+        submit: 'Se connecter',
+      },
+      register: {
+        title: 'Créer un compte',
+        subtitle: 'Rejoignez Brèves et personnalisez vos actualités.',
+        submit: 'Créer mon compte',
+      },
+      tabs: {
+        login: 'Connexion',
+        register: 'Inscription',
+      },
+      fields: {
+        fullName: 'Nom complet',
+        email: 'Adresse e-mail',
+        password: 'Mot de passe',
+        fullNamePlaceholder: 'Alexis Bernard',
+        emailPlaceholder: 'vous@exemple.fr',
+        passwordPlaceholder: '••••••••',
+      },
+      actions: {
+        forgotPassword: 'Mot de passe oublié ?',
+        resetSent: 'Email de réinitialisation envoyé.',
+        resetEmailRequired: 'Entrez votre email pour réinitialiser le mot de passe.',
+        showPassword: 'Afficher le mot de passe',
+        hidePassword: 'Masquer le mot de passe',
+      },
+    },
     designSystem: {
       title: 'Design System — Brève',
       sections: {
@@ -92,6 +123,37 @@ const translations = {
       science: 'Science',
       tech: 'Tech',
       environment: 'Environment',
+    },
+    auth: {
+      login: {
+        title: 'Welcome back',
+        subtitle: 'Sign in to access your profile.',
+        submit: 'Sign in',
+      },
+      register: {
+        title: 'Create an account',
+        subtitle: 'Join Brèves and personalize your news.',
+        submit: 'Create my account',
+      },
+      tabs: {
+        login: 'Sign in',
+        register: 'Sign up',
+      },
+      fields: {
+        fullName: 'Full name',
+        email: 'Email address',
+        password: 'Password',
+        fullNamePlaceholder: 'Alex Smith',
+        emailPlaceholder: 'you@example.com',
+        passwordPlaceholder: '••••••••',
+      },
+      actions: {
+        forgotPassword: 'Forgot password?',
+        resetSent: 'Reset email sent.',
+        resetEmailRequired: 'Enter your email to reset your password.',
+        showPassword: 'Show password',
+        hidePassword: 'Hide password',
+      },
     },
     designSystem: {
       title: 'Design System — Brève',

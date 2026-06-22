@@ -1,27 +1,17 @@
 import { FC, FormEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { RssIcon, EyeIcon, EyeSlashIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
+import { EyeIcon, EyeSlashIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
+import Button from '@/components/ui/Button/Button'
 import Input from '@/components/ui/Input/Input'
+import BreveLogo from '@/components/ui/BreveLogo/BreveLogo'
 import { useAuth } from '@/hooks/useAuth'
+import { t } from '@/lib/i18n'
 
 type Mode = 'login' | 'register'
 
-const MODES = {
-  login: {
-    title: 'Bon retour',
-    subtitle: 'Connectez-vous pour accéder à votre profil.',
-    submit: 'Se connecter',
-  },
-  register: {
-    title: 'Créer un compte',
-    subtitle: 'Rejoignez Brève et personnalisez vos actualités.',
-    submit: 'Créer mon compte',
-  },
-}
-
 const AuthPage: FC = () => {
   const navigate = useNavigate()
-  const { signIn, signUp, signInAnonymously, resetPassword } = useAuth()
+  const { signIn, signUp, resetPassword } = useAuth()
 
   const [mode, setMode] = useState<Mode>('login')
   const [fullName, setFullName] = useState('')
@@ -57,20 +47,9 @@ const AuthPage: FC = () => {
     }
   }
 
-  const handleAnonymous = async () => {
-    setSubmitting(true)
-    const err = await signInAnonymously()
-    setSubmitting(false)
-    if (err) {
-      setError(err.message)
-    } else {
-      navigate('/')
-    }
-  }
-
   const handleResetPassword = async () => {
     if (!email) {
-      setError('Entrez votre email pour réinitialiser le mot de passe.')
+      setError(t.auth.actions.resetEmailRequired)
       return
     }
     setSubmitting(true)
@@ -84,32 +63,31 @@ const AuthPage: FC = () => {
     }
   }
 
+  const meta = mode === 'login' ? t.auth.login : t.auth.register
+
   const EyeToggle = (
     <button
       id="auth-page__button--toggle-password"
       type="button"
       onClick={() => setShowPassword((v) => !v)}
-      aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+      aria-label={showPassword ? t.auth.actions.hidePassword : t.auth.actions.showPassword}
       className="text-text-faint hover:text-text-muted transition-colors"
     >
       {showPassword ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
     </button>
   )
 
-  const meta = MODES[mode]
-
   return (
     <div
       id="auth-page__container--main"
       className="min-h-screen bg-bg flex flex-col items-center justify-center p-6"
     >
-      {/* Header: icon + title + subtitle */}
       <div id="auth-page__header--main" className="mb-8 text-center">
         <div
           id="auth-page__icon--logo"
           className="mx-auto mb-5 w-14 h-14 bg-surface border border-border rounded-xl flex items-center justify-center"
         >
-          <RssIcon className="w-6 h-6 text-primary" />
+          <BreveLogo className="w-8 h-5" />
         </div>
         <h1 id="auth-page__title--main" className="text-2xl font-bold mb-2">
           {meta.title}
@@ -119,12 +97,10 @@ const AuthPage: FC = () => {
         </p>
       </div>
 
-      {/* Card */}
       <div
         id="auth-page__card--main"
         className="w-full max-w-sm bg-surface border border-border rounded-2xl p-6"
       >
-        {/* Tabs */}
         <div id="auth-page__tabs--main" className="flex bg-surface-2 rounded-lg p-1 mb-6 gap-1">
           <button
             id="auth-page__tab--login"
@@ -137,7 +113,7 @@ const AuthPage: FC = () => {
                 : 'text-text-muted hover:text-text',
             ].join(' ')}
           >
-            Connexion
+            {t.auth.tabs.login}
           </button>
           <button
             id="auth-page__tab--register"
@@ -150,7 +126,7 @@ const AuthPage: FC = () => {
                 : 'text-text-muted hover:text-text',
             ].join(' ')}
           >
-            Inscription
+            {t.auth.tabs.register}
           </button>
         </div>
 
@@ -159,11 +135,11 @@ const AuthPage: FC = () => {
             {mode === 'register' && (
               <Input
                 id="auth-page__input--name"
-                label="Nom complet"
+                label={t.auth.fields.fullName}
                 type="text"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                placeholder="Alexis Bernard"
+                placeholder={t.auth.fields.fullNamePlaceholder}
                 autoComplete="name"
                 required
               />
@@ -171,22 +147,22 @@ const AuthPage: FC = () => {
 
             <Input
               id="auth-page__input--email"
-              label="Adresse e-mail"
+              label={t.auth.fields.email}
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="vous@exemple.fr"
+              placeholder={t.auth.fields.emailPlaceholder}
               autoComplete="email"
               required
             />
 
             <Input
               id="auth-page__input--password"
-              label="Mot de passe"
+              label={t.auth.fields.password}
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
+              placeholder={t.auth.fields.passwordPlaceholder}
               autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
               endAdornment={EyeToggle}
               required
@@ -200,19 +176,25 @@ const AuthPage: FC = () => {
 
             {resetSent && (
               <p id="auth-page__reset-confirm--main" className="text-success text-sm">
-                Email de réinitialisation envoyé.
+                {t.auth.actions.resetSent}
               </p>
             )}
 
-            <button
-              id="auth-page__button--submit"
+            <Button
               type="submit"
+              variant="primary"
               disabled={submitting}
-              className="w-full flex items-center justify-center gap-2 rounded-full bg-primary text-white py-3 font-semibold text-sm transition-colors hover:bg-primary-hover active:bg-primary-active disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full justify-center !rounded-full !py-3"
             >
-              {submitting ? 'Chargement…' : meta.submit}
-              {!submitting && <ArrowRightIcon className="w-4 h-4" />}
-            </button>
+              {submitting ? (
+                'Chargement…'
+              ) : (
+                <>
+                  {meta.submit}
+                  <ArrowRightIcon className="w-4 h-4 ml-2" />
+                </>
+              )}
+            </Button>
 
             {mode === 'login' && (
               <button
@@ -222,23 +204,12 @@ const AuthPage: FC = () => {
                 disabled={submitting}
                 className="text-text-muted text-xs text-center hover:text-text transition-colors"
               >
-                Mot de passe oublié ?
+                {t.auth.actions.forgotPassword}
               </button>
             )}
           </div>
         </form>
       </div>
-
-      {/* Anonymous access */}
-      <button
-        id="auth-page__button--anonymous"
-        type="button"
-        onClick={handleAnonymous}
-        disabled={submitting}
-        className="mt-5 text-text-muted text-sm hover:text-text transition-colors disabled:opacity-50"
-      >
-        Continuer sans compte
-      </button>
     </div>
   )
 }

@@ -7,7 +7,6 @@ interface UseAuthReturn {
   loading: boolean
   signIn: (email: string, password: string) => Promise<AuthError | null>
   signUp: (email: string, password: string, fullName: string) => Promise<AuthError | null>
-  signInAnonymously: () => Promise<AuthError | null>
   signOut: () => Promise<void>
   resetPassword: (email: string) => Promise<AuthError | null>
 }
@@ -48,11 +47,6 @@ export function useAuth(): UseAuthReturn {
     return error
   }, [])
 
-  const signInAnonymously = useCallback(async () => {
-    const { error } = await supabase.auth.signInAnonymously()
-    return error
-  }, [])
-
   const signOut = useCallback(async () => {
     await supabase.auth.signOut()
   }, [])
@@ -64,5 +58,5 @@ export function useAuth(): UseAuthReturn {
     return error
   }, [])
 
-  return { user, loading, signIn, signUp, signInAnonymously, signOut, resetPassword }
+  return { user, loading, signIn, signUp, signOut, resetPassword }
 }

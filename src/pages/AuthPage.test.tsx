@@ -6,7 +6,6 @@ import AuthPage from './AuthPage'
 
 const mockSignIn = vi.fn()
 const mockSignUp = vi.fn()
-const mockSignInAnonymously = vi.fn()
 const mockResetPassword = vi.fn()
 
 vi.mock('@/hooks/useAuth', () => ({
@@ -15,7 +14,6 @@ vi.mock('@/hooks/useAuth', () => ({
     loading: false,
     signIn: mockSignIn,
     signUp: mockSignUp,
-    signInAnonymously: mockSignInAnonymously,
     signOut: vi.fn(),
     resetPassword: mockResetPassword,
   }),
@@ -42,15 +40,14 @@ describe('AuthPage', () => {
   it('renders login mode by default', () => {
     renderPage()
     expect(screen.getByText('Bon retour')).toBeInTheDocument()
-    expect(screen.getByText('Connexion')).toBeInTheDocument()
     expect(screen.getByLabelText('Adresse e-mail')).toBeInTheDocument()
     expect(screen.getByLabelText('Mot de passe')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Se connecter/i })).toBeInTheDocument()
   })
 
-  it('renders "Continuer sans compte" button', () => {
+  it('renders app logo', () => {
     renderPage()
-    expect(screen.getByRole('button', { name: /Continuer sans compte/i })).toBeInTheDocument()
+    expect(document.getElementById('auth-page__icon--logo')).toBeInTheDocument()
   })
 
   it('shows "Mot de passe oublié" in login mode', () => {
@@ -93,6 +90,11 @@ describe('AuthPage', () => {
     expect(screen.queryByRole('button', { name: /Mot de passe oublié/i })).not.toBeInTheDocument()
   })
 
+  it('does not render "Continuer sans compte" button', () => {
+    renderPage()
+    expect(screen.queryByRole('button', { name: /Continuer sans compte/i })).not.toBeInTheDocument()
+  })
+
   it('calls signIn and navigates on success', async () => {
     mockSignIn.mockResolvedValue(null)
     const user = userEvent.setup()
@@ -125,14 +127,6 @@ describe('AuthPage', () => {
     await user.click(screen.getByRole('button', { name: /Créer mon compte/i }))
     await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/'))
     expect(mockSignUp).toHaveBeenCalledWith('a@b.com', 'pass123', 'Alexis Bernard')
-  })
-
-  it('calls signInAnonymously and navigates', async () => {
-    mockSignInAnonymously.mockResolvedValue(null)
-    const user = userEvent.setup()
-    renderPage()
-    await user.click(screen.getByRole('button', { name: /Continuer sans compte/i }))
-    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/'))
   })
 
   it('shows reset confirmation message', async () => {
