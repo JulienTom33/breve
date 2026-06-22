@@ -6,7 +6,12 @@ interface UseAuthReturn {
   user: User | null
   loading: boolean
   signIn: (email: string, password: string) => Promise<AuthError | null>
-  signUp: (email: string, password: string, fullName: string) => Promise<AuthError | null>
+  signUp: (
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string,
+  ) => Promise<AuthError | null>
   signOut: () => Promise<void>
   resetPassword: (email: string) => Promise<AuthError | null>
 }
@@ -33,19 +38,27 @@ export function useAuth(): UseAuthReturn {
     return error
   }, [])
 
-  const signUp = useCallback(async (email: string, password: string, fullName: string) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { full_name: fullName } },
-    })
-    if (!error && data.user) {
-      await supabase
-        .from('profiles')
-        .insert({ id: data.user.id, email: data.user.email, full_name: fullName })
-    }
-    return error
-  }, [])
+  const signUp = useCallback(
+    async (email: string, password: string, firstName: string, lastName: string) => {
+      const fullName = `${firstName} ${lastName}`.trim()
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { first_name: firstName, last_name: lastName, full_name: fullName } },
+      })
+      if (!error && data.user) {
+        await supabase.from('profiles').insert({
+          id: data.user.id,
+          email: data.user.email,
+          first_name: firstName,
+          last_name: lastName,
+          full_name: fullName,
+        })
+      }
+      return error
+    },
+    [],
+  )
 
   const signOut = useCallback(async () => {
     await supabase.auth.signOut()

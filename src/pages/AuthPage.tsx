@@ -49,7 +49,8 @@ const AuthPage: FC = () => {
   const { signIn, signUp, resetPassword } = useAuth()
 
   const [mode, setMode] = useState<Mode>('login')
-  const [fullName, setFullName] = useState('')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -59,6 +60,8 @@ const AuthPage: FC = () => {
 
   const switchMode = (next: Mode) => {
     setMode(next)
+    setFirstName('')
+    setLastName('')
     setPassword('')
     setError('')
     setResetSent(false)
@@ -78,7 +81,9 @@ const AuthPage: FC = () => {
     }
 
     const err =
-      mode === 'login' ? await signIn(email, password) : await signUp(email, password, fullName)
+      mode === 'login'
+        ? await signIn(email, password)
+        : await signUp(email, password, firstName, lastName)
 
     setSubmitting(false)
     if (err) {
@@ -177,16 +182,28 @@ const AuthPage: FC = () => {
         <form id="auth-page__form--main" onSubmit={handleSubmit} noValidate>
           <div className="flex flex-col gap-4">
             {mode === 'register' && (
-              <Input
-                id="auth-page__input--name"
-                label={t.auth.fields.fullName}
-                type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                placeholder={t.auth.fields.fullNamePlaceholder}
-                autoComplete="name"
-                required
-              />
+              <div className="flex gap-3">
+                <Input
+                  id="auth-page__input--firstname"
+                  label={t.auth.fields.firstName}
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder={t.auth.fields.firstNamePlaceholder}
+                  autoComplete="given-name"
+                  required
+                />
+                <Input
+                  id="auth-page__input--lastname"
+                  label={t.auth.fields.lastName}
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder={t.auth.fields.lastNamePlaceholder}
+                  autoComplete="family-name"
+                  required
+                />
+              </div>
             )}
 
             <Input

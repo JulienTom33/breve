@@ -100,7 +100,7 @@ describe('useAuth', () => {
     expect(error).toEqual(authError)
   })
 
-  it('signUp creates profile with fullName on success', async () => {
+  it('signUp creates profile with firstName and lastName on success', async () => {
     const mockUser = { id: 'new-user', email: 'new@test.com' }
     const mockInsert = vi.fn().mockResolvedValue({ error: null })
     mockSignUp.mockResolvedValue({ data: { user: mockUser }, error: null })
@@ -110,12 +110,14 @@ describe('useAuth', () => {
     await waitFor(() => expect(result.current.loading).toBe(false))
 
     await act(async () => {
-      await result.current.signUp('new@test.com', 'pass123', 'Alexis Bernard')
+      await result.current.signUp('new@test.com', 'pass123', 'Alexis', 'Bernard')
     })
     expect(mockFrom).toHaveBeenCalledWith('profiles')
     expect(mockInsert).toHaveBeenCalledWith({
       id: mockUser.id,
       email: mockUser.email,
+      first_name: 'Alexis',
+      last_name: 'Bernard',
       full_name: 'Alexis Bernard',
     })
   })
@@ -129,7 +131,7 @@ describe('useAuth', () => {
 
     let error: unknown
     await act(async () => {
-      error = await result.current.signUp('existing@test.com', 'pass', 'Test User')
+      error = await result.current.signUp('existing@test.com', 'pass', 'Test', 'User')
     })
     expect(error).toEqual(authError)
     expect(mockFrom).not.toHaveBeenCalled()

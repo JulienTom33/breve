@@ -75,13 +75,15 @@ describe('AuthPage', () => {
     renderPage()
     await user.click(screen.getByRole('button', { name: 'Inscription' }))
     expect(screen.getByText('Créer un compte')).toBeInTheDocument()
-    expect(screen.getByLabelText('Nom complet')).toBeInTheDocument()
+    expect(screen.getByLabelText('Prénom')).toBeInTheDocument()
+    expect(screen.getByLabelText('Nom')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Créer mon compte/i })).toBeInTheDocument()
   })
 
-  it('hides "Nom complet" in login mode', () => {
+  it('hides "Prénom" and "Nom" in login mode', () => {
     renderPage()
-    expect(screen.queryByLabelText('Nom complet')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('Prénom')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('Nom')).not.toBeInTheDocument()
   })
 
   it('hides "Mot de passe oublié" in register mode', async () => {
@@ -119,17 +121,18 @@ describe('AuthPage', () => {
     expect(mockNavigate).not.toHaveBeenCalled()
   })
 
-  it('calls signUp with fullName and navigates on success', async () => {
+  it('calls signUp with firstName and lastName and navigates on success', async () => {
     mockSignUp.mockResolvedValue(null)
     const user = userEvent.setup()
     renderPage()
     await user.click(screen.getByRole('button', { name: 'Inscription' }))
-    await user.type(screen.getByLabelText('Nom complet'), 'Alexis Bernard')
+    await user.type(screen.getByLabelText('Prénom'), 'Alexis')
+    await user.type(screen.getByLabelText('Nom'), 'Bernard')
     await user.type(screen.getByLabelText('Adresse e-mail'), 'a@b.com')
     await user.type(screen.getByLabelText('Mot de passe'), 'Pass123!')
     await user.click(screen.getByRole('button', { name: /Créer mon compte/i }))
     await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/'))
-    expect(mockSignUp).toHaveBeenCalledWith('a@b.com', 'Pass123!', 'Alexis Bernard')
+    expect(mockSignUp).toHaveBeenCalledWith('a@b.com', 'Pass123!', 'Alexis', 'Bernard')
   })
 
   it('shows password rules in register mode', async () => {
@@ -145,6 +148,7 @@ describe('AuthPage', () => {
     const user = userEvent.setup()
     renderPage()
     await user.click(screen.getByRole('button', { name: 'Inscription' }))
+    await user.type(screen.getByLabelText('Prénom'), 'Alexis')
     await user.type(screen.getByLabelText('Adresse e-mail'), 'a@b.com')
     await user.type(screen.getByLabelText('Mot de passe'), 'abc')
     await user.click(screen.getByRole('button', { name: /Créer mon compte/i }))
