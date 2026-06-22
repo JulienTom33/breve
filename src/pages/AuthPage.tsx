@@ -4,6 +4,7 @@ import {
   EyeIcon,
   EyeSlashIcon,
   ArrowRightIcon,
+  ArrowLeftIcon,
   CheckCircleIcon,
   XCircleIcon,
 } from '@heroicons/react/24/outline'
@@ -13,7 +14,7 @@ import BreveLogo from '@/components/ui/BreveLogo/BreveLogo'
 import { useAuth } from '@/hooks/useAuth'
 import { t } from '@/lib/i18n'
 
-type Mode = 'login' | 'register'
+type Mode = 'login' | 'register' | 'reset'
 
 const SUPABASE_ERRORS: Record<string, string> = {
   'Invalid login credentials': 'Email ou mot de passe incorrect.',
@@ -71,8 +72,18 @@ const AuthPage: FC = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
-    setResetSent(false)
     setSubmitting(true)
+
+    if (mode === 'reset') {
+      const err = await resetPassword(email)
+      setSubmitting(false)
+      if (err) {
+        setError(translateError(err.message))
+      } else {
+        setResetSent(true)
+      }
+      return
+    }
 
     if (mode === 'register' && !PASSWORD_RULES.every((r) => r.test(password))) {
       setError('Le mot de passe ne respecte pas les conditions requises.')
@@ -93,24 +104,6 @@ const AuthPage: FC = () => {
     }
   }
 
-  const handleResetPassword = async () => {
-    if (!email) {
-      setError(t.auth.actions.resetEmailRequired)
-      return
-    }
-    setSubmitting(true)
-    const err = await resetPassword(email)
-    setSubmitting(false)
-    if (err) {
-      setError(translateError(err.message))
-    } else {
-      setResetSent(true)
-      setError('')
-    }
-  }
-
-  const meta = mode === 'login' ? t.auth.login : t.auth.register
-
   const EyeToggle = (
     <button
       id="auth-page__button--toggle-password"
@@ -122,6 +115,12 @@ const AuthPage: FC = () => {
       {showPassword ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
     </button>
   )
+
+  const headerMeta = {
+    login: { title: t.auth.login.title, subtitle: t.auth.login.subtitle },
+    register: { title: t.auth.register.title, subtitle: t.auth.register.subtitle },
+    reset: { title: t.auth.reset.title, subtitle: t.auth.reset.subtitle },
+  }[mode]
 
   return (
     <div
@@ -139,10 +138,10 @@ const AuthPage: FC = () => {
           {t.app.title}
         </p>
         <h1 id="auth-page__title--main" className="text-2xl font-bold mb-2">
-          {meta.title}
+          {headerMeta.title}
         </h1>
         <p id="auth-page__subtitle--main" className="text-text-muted text-sm">
-          {meta.subtitle}
+          {headerMeta.subtitle}
         </p>
       </div>
 
@@ -150,34 +149,36 @@ const AuthPage: FC = () => {
         id="auth-page__card--main"
         className="w-full max-w-sm bg-surface border border-border rounded-2xl p-6"
       >
-        <div id="auth-page__tabs--main" className="flex bg-surface-2 rounded-lg p-1 mb-6 gap-1">
-          <Button
-            id="auth-page__tab--login"
-            type="button"
-            variant="tab"
-            onClick={() => switchMode('login')}
-            className={
-              mode === 'login'
-                ? 'bg-surface-offset text-text shadow-sm'
-                : 'text-text-muted hover:text-text'
-            }
-          >
-            {t.auth.tabs.login}
-          </Button>
-          <Button
-            id="auth-page__tab--register"
-            type="button"
-            variant="tab"
-            onClick={() => switchMode('register')}
-            className={
-              mode === 'register'
-                ? 'bg-surface-offset text-text shadow-sm'
-                : 'text-text-muted hover:text-text'
-            }
-          >
-            {t.auth.tabs.register}
-          </Button>
-        </div>
+        {mode !== 'reset' && (
+          <div id="auth-page__tabs--main" className="flex bg-surface-2 rounded-lg p-1 mb-6 gap-1">
+            <Button
+              id="auth-page__tab--login"
+              type="button"
+              variant="tab"
+              onClick={() => switchMode('login')}
+              className={
+                mode === 'login'
+                  ? 'bg-surface-offset text-text shadow-sm'
+                  : 'text-text-muted hover:text-text'
+              }
+            >
+              {t.auth.tabs.login}
+            </Button>
+            <Button
+              id="auth-page__tab--register"
+              type="button"
+              variant="tab"
+              onClick={() => switchMode('register')}
+              className={
+                mode === 'register'
+                  ? 'bg-surface-offset text-text shadow-sm'
+                  : 'text-text-muted hover:text-text'
+              }
+            >
+              {t.auth.tabs.register}
+            </Button>
+          </div>
+        )}
 
         <form id="auth-page__form--main" onSubmit={handleSubmit} noValidate>
           <div className="flex flex-col gap-4">
@@ -217,37 +218,41 @@ const AuthPage: FC = () => {
               required
             />
 
-            <Input
-              id="auth-page__input--password"
-              label={t.auth.fields.password}
-              type={showPassword ? 'text' : 'password'}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder={t.auth.fields.passwordPlaceholder}
-              autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-              endAdornment={EyeToggle}
-              required
-            />
+            {mode !== 'reset' && (
+              <>
+                <Input
+                  id="auth-page__input--password"
+                  label={t.auth.fields.password}
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder={t.auth.fields.passwordPlaceholder}
+                  autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+                  endAdornment={EyeToggle}
+                  required
+                />
 
-            {mode === 'register' && (
-              <div id="auth-page__password-rules--main" className="flex flex-col gap-1.5 px-1">
-                {PASSWORD_RULES.map((rule) => {
-                  const ok = rule.test(password)
-                  return (
-                    <div
-                      key={rule.label}
-                      className={`flex items-center gap-2 text-xs transition-colors duration-200 ${ok ? 'text-success' : password.length === 0 ? 'text-text-faint' : 'text-error'}`}
-                    >
-                      {ok ? (
-                        <CheckCircleIcon className="w-3.5 h-3.5 flex-shrink-0" />
-                      ) : (
-                        <XCircleIcon className="w-3.5 h-3.5 flex-shrink-0" />
-                      )}
-                      <span>{rule.label}</span>
-                    </div>
-                  )
-                })}
-              </div>
+                {mode === 'register' && (
+                  <div id="auth-page__password-rules--main" className="flex flex-col gap-1.5 px-1">
+                    {PASSWORD_RULES.map((rule) => {
+                      const ok = rule.test(password)
+                      return (
+                        <div
+                          key={rule.label}
+                          className={`flex items-center gap-2 text-xs transition-colors duration-200 ${ok ? 'text-success' : password.length === 0 ? 'text-text-faint' : 'text-error'}`}
+                        >
+                          {ok ? (
+                            <CheckCircleIcon className="w-3.5 h-3.5 flex-shrink-0" />
+                          ) : (
+                            <XCircleIcon className="w-3.5 h-3.5 flex-shrink-0" />
+                          )}
+                          <span>{rule.label}</span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
+              </>
             )}
 
             {error && (
@@ -266,14 +271,18 @@ const AuthPage: FC = () => {
               id="auth-page__button--submit"
               type="submit"
               variant="primary"
-              disabled={submitting}
+              disabled={submitting || (mode === 'reset' && resetSent)}
               className="w-full justify-center !rounded-full !py-3"
             >
               {submitting ? (
                 'Chargement…'
               ) : (
                 <>
-                  {meta.submit}
+                  {mode === 'reset'
+                    ? t.auth.reset.submit
+                    : mode === 'login'
+                      ? t.auth.login.submit
+                      : t.auth.register.submit}
                   <ArrowRightIcon className="w-4 h-4 ml-2" />
                 </>
               )}
@@ -284,11 +293,23 @@ const AuthPage: FC = () => {
                 id="auth-page__link--forgot-password"
                 type="button"
                 variant="ghost"
-                onClick={handleResetPassword}
-                disabled={submitting}
+                onClick={() => switchMode('reset')}
                 className="w-full justify-center !border-0 !bg-transparent !text-text-muted !text-xs hover:!text-text hover:!bg-transparent"
               >
                 {t.auth.actions.forgotPassword}
+              </Button>
+            )}
+
+            {mode === 'reset' && (
+              <Button
+                id="auth-page__link--back-to-login"
+                type="button"
+                variant="ghost"
+                onClick={() => switchMode('login')}
+                className="w-full justify-center !border-0 !bg-transparent !text-text-muted !text-xs hover:!text-text hover:!bg-transparent"
+              >
+                <ArrowLeftIcon className="w-3.5 h-3.5 mr-1.5" />
+                {t.auth.actions.backToLogin}
               </Button>
             )}
           </div>

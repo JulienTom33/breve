@@ -45,6 +45,11 @@ const translations = {
         login: 'Connexion',
         register: 'Inscription',
       },
+      reset: {
+        title: 'Mot de passe oublié',
+        subtitle: 'Entrez votre email pour recevoir un lien de réinitialisation.',
+        submit: 'Réinitialiser',
+      },
       fields: {
         firstName: 'Prénom',
         lastName: 'Nom',
@@ -61,6 +66,7 @@ const translations = {
         resetEmailRequired: 'Entrez votre email pour réinitialiser le mot de passe.',
         showPassword: 'Afficher le mot de passe',
         hidePassword: 'Masquer le mot de passe',
+        backToLogin: 'Retour à la connexion',
       },
     },
     designSystem: {
@@ -141,6 +147,11 @@ const translations = {
         login: 'Sign in',
         register: 'Sign up',
       },
+      reset: {
+        title: 'Forgot password',
+        subtitle: 'Enter your email to receive a reset link.',
+        submit: 'Reset password',
+      },
       fields: {
         firstName: 'First name',
         lastName: 'Last name',
@@ -157,6 +168,7 @@ const translations = {
         resetEmailRequired: 'Enter your email to reset your password.',
         showPassword: 'Show password',
         hidePassword: 'Hide password',
+        backToLogin: 'Back to sign in',
       },
     },
     designSystem: {

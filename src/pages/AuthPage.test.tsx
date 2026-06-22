@@ -56,6 +56,32 @@ describe('AuthPage', () => {
     expect(screen.getByRole('button', { name: /Mot de passe oublié/i })).toBeInTheDocument()
   })
 
+  it('switches to reset mode on "Mot de passe oublié" click', async () => {
+    const user = userEvent.setup()
+    renderPage()
+    await user.click(screen.getByRole('button', { name: /Mot de passe oublié/i }))
+    expect(screen.getByText('Mot de passe oublié')).toBeInTheDocument()
+    expect(screen.getByLabelText('Adresse e-mail')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Réinitialiser/i })).toBeInTheDocument()
+    expect(screen.queryByLabelText('Mot de passe')).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /^Connexion$/ })).not.toBeInTheDocument()
+  })
+
+  it('shows back to login button in reset mode', async () => {
+    const user = userEvent.setup()
+    renderPage()
+    await user.click(screen.getByRole('button', { name: /Mot de passe oublié/i }))
+    expect(screen.getByRole('button', { name: /Retour à la connexion/i })).toBeInTheDocument()
+  })
+
+  it('goes back to login from reset mode', async () => {
+    const user = userEvent.setup()
+    renderPage()
+    await user.click(screen.getByRole('button', { name: /Mot de passe oublié/i }))
+    await user.click(screen.getByRole('button', { name: /Retour à la connexion/i }))
+    expect(screen.getByText('Bon retour')).toBeInTheDocument()
+  })
+
   it('shows password eye toggle button', () => {
     renderPage()
     expect(screen.getByRole('button', { name: /Afficher le mot de passe/i })).toBeInTheDocument()
@@ -174,20 +200,12 @@ describe('AuthPage', () => {
     mockResetPassword.mockResolvedValue(null)
     const user = userEvent.setup()
     renderPage()
-    await user.type(screen.getByLabelText('Adresse e-mail'), 'a@b.com')
     await user.click(screen.getByRole('button', { name: /Mot de passe oublié/i }))
+    await user.type(screen.getByLabelText('Adresse e-mail'), 'a@b.com')
+    await user.click(screen.getByRole('button', { name: /Réinitialiser/i }))
     await waitFor(() =>
       expect(screen.getByText('Email de réinitialisation envoyé.')).toBeInTheDocument(),
     )
-  })
-
-  it('shows error when reset called without email', async () => {
-    const user = userEvent.setup()
-    renderPage()
-    await user.click(screen.getByRole('button', { name: /Mot de passe oublié/i }))
-    expect(
-      screen.getByText('Entrez votre email pour réinitialiser le mot de passe.'),
-    ).toBeInTheDocument()
   })
 
   it('has main container with correct id', () => {
