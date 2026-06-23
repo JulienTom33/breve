@@ -7,6 +7,7 @@ import AuthPage from './AuthPage'
 const mockSignIn = vi.fn()
 const mockSignUp = vi.fn()
 const mockResetPassword = vi.fn()
+const mockSignInWithGoogle = vi.fn()
 
 vi.mock('@/hooks/useAuth', () => ({
   useAuth: () => ({
@@ -16,6 +17,7 @@ vi.mock('@/hooks/useAuth', () => ({
     signUp: mockSignUp,
     signOut: vi.fn(),
     resetPassword: mockResetPassword,
+    signInWithGoogle: mockSignInWithGoogle,
   }),
 }))
 
@@ -122,6 +124,33 @@ describe('AuthPage', () => {
   it('does not render "Continuer sans compte" button', () => {
     renderPage()
     expect(screen.queryByRole('button', { name: /Continuer sans compte/i })).not.toBeInTheDocument()
+  })
+
+  it('renders Google OAuth button in login mode', () => {
+    renderPage()
+    expect(screen.getByRole('button', { name: /Continuer avec Google/i })).toBeInTheDocument()
+  })
+
+  it('renders Google OAuth button in register mode', async () => {
+    const user = userEvent.setup()
+    renderPage()
+    await user.click(screen.getByRole('button', { name: 'Inscription' }))
+    expect(screen.getByRole('button', { name: /Continuer avec Google/i })).toBeInTheDocument()
+  })
+
+  it('does not render Google OAuth button in reset mode', async () => {
+    const user = userEvent.setup()
+    renderPage()
+    await user.click(screen.getByRole('button', { name: /Mot de passe oublié/i }))
+    expect(screen.queryByRole('button', { name: /Continuer avec Google/i })).not.toBeInTheDocument()
+  })
+
+  it('calls signInWithGoogle on Google button click', async () => {
+    mockSignInWithGoogle.mockResolvedValue(null)
+    const user = userEvent.setup()
+    renderPage()
+    await user.click(screen.getByRole('button', { name: /Continuer avec Google/i }))
+    expect(mockSignInWithGoogle).toHaveBeenCalled()
   })
 
   it('calls signIn and navigates on success', async () => {

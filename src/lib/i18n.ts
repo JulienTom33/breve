@@ -68,6 +68,8 @@ const translations = {
         hidePassword: 'Masquer le mot de passe',
         backToLogin: 'Retour à la connexion',
         loading: 'Chargement…',
+        continueWithGoogle: 'Continuer avec Google',
+        orDivider: 'ou',
       },
       passwordRules: {
         minLength: '6 caractères minimum',
@@ -206,6 +208,8 @@ const translations = {
         hidePassword: 'Hide password',
         backToLogin: 'Back to sign in',
         loading: 'Loading…',
+        continueWithGoogle: 'Continue with Google',
+        orDivider: 'or',
       },
       passwordRules: {
         minLength: 'At least 6 characters',
