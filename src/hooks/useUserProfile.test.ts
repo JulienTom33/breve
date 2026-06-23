@@ -14,11 +14,16 @@ vi.mock('@/hooks/useAuth', () => ({
   useAuth: () => ({ user: mockUser, loading: false }),
 }))
 
-const makeChain = (result: unknown) => ({
+const makeReadChain = (result: unknown) => ({
   select: vi.fn().mockReturnThis(),
   eq: vi.fn().mockReturnThis(),
   single: vi.fn().mockResolvedValue(result),
-  upsert: vi.fn().mockResolvedValue(result),
+})
+
+const makeUpdateChain = (result: unknown) => ({
+  update: vi.fn().mockReturnValue({
+    eq: vi.fn().mockResolvedValue(result),
+  }),
 })
 
 beforeEach(() => {
@@ -27,7 +32,10 @@ beforeEach(() => {
 
 describe('useUserProfile', () => {
   it('loads preferred categories from profile', async () => {
-    const chain = makeChain({ data: { preferred_categories: ['monde', 'france'] }, error: null })
+    const chain = makeReadChain({
+      data: { preferred_categories: ['monde', 'france'] },
+      error: null,
+    })
     mockFrom.mockReturnValue(chain)
 
     const { result } = renderHook(() => useUserProfile())
@@ -37,7 +45,7 @@ describe('useUserProfile', () => {
   })
 
   it('defaults to empty array when no profile data', async () => {
-    const chain = makeChain({ data: null, error: null })
+    const chain = makeReadChain({ data: null, error: null })
     mockFrom.mockReturnValue(chain)
 
     const { result } = renderHook(() => useUserProfile())
@@ -47,8 +55,8 @@ describe('useUserProfile', () => {
   })
 
   it('saves preferred categories successfully', async () => {
-    const loadChain = makeChain({ data: { preferred_categories: [] }, error: null })
-    const saveChain = { upsert: vi.fn().mockResolvedValue({ error: null }) }
+    const loadChain = makeReadChain({ data: { preferred_categories: [] }, error: null })
+    const saveChain = makeUpdateChain({ error: null })
     mockFrom.mockReturnValueOnce(loadChain).mockReturnValueOnce(saveChain)
 
     const { result } = renderHook(() => useUserProfile())
@@ -56,15 +64,13 @@ describe('useUserProfile', () => {
 
     const err = await result.current.savePreferredCategories(['science', 'tech'])
     expect(err).toBeNull()
-    expect(saveChain.upsert).toHaveBeenCalledWith({
-      id: 'user-123',
-      preferred_categories: ['science', 'tech'],
-    })
+    expect(saveChain.update).toHaveBeenCalledWith({ preferred_categories: ['science', 'tech'] })
+    expect(saveChain.update().eq).toHaveBeenCalledWith('id', 'user-123')
   })
 
   it('returns error when save fails', async () => {
-    const loadChain = makeChain({ data: null, error: null })
-    const saveChain = { upsert: vi.fn().mockResolvedValue({ error: { message: 'DB error' } }) }
+    const loadChain = makeReadChain({ data: null, error: null })
+    const saveChain = makeUpdateChain({ error: { message: 'DB error' } })
     mockFrom.mockReturnValueOnce(loadChain).mockReturnValueOnce(saveChain)
 
     const { result } = renderHook(() => useUserProfile())

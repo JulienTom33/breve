@@ -36,7 +36,8 @@ export function useUserProfile(): UseUserProfileReturn {
 
       const { error } = await supabase
         .from('profiles')
-        .upsert({ id: user.id, preferred_categories: categories })
+        .update({ preferred_categories: categories })
+        .eq('id', user.id)
 
       if (error) return new Error(error.message)
 
