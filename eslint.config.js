@@ -22,4 +22,12 @@ export default tseslint.config(
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     },
   },
+  {
+    files: ['**/*.{ts,tsx}'],
+    ignores: ['**/*.test.{ts,tsx}', 'src/test/**', '*.config.{ts,js}'],
+    rules: {
+      'no-inline-comments': 'error',
+      'no-console': 'error',
+    },
+  },
 )
