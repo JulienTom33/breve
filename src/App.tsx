@@ -7,6 +7,7 @@ import SettingsPage from '@/pages/SettingsPage'
 import ArticlePage from '@/pages/ArticlePage'
 import NotFoundPage from '@/pages/NotFoundPage'
 import AuthPage from '@/pages/AuthPage'
+import OnboardingCategoriesPage from '@/pages/OnboardingCategoriesPage'
 import DesignSystem from '@/pages/DesignSystem'
 
 const router = createBrowserRouter([
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
   {
     path: '/auth',
     element: <AuthPage />,
+  },
+  {
+    path: '/onboarding/categories',
+    element: <OnboardingCategoriesPage />,
   },
   {
     path: '/',

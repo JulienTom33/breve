@@ -103,7 +103,7 @@ const AuthPage: FC = () => {
     if (err) {
       setError(translateError(err.message))
     } else {
-      navigate('/')
+      navigate(mode === Mode.Register ? '/onboarding/categories' : '/')
     }
   }
 
