@@ -147,7 +147,7 @@ describe('AuthPage', () => {
     expect(mockNavigate).not.toHaveBeenCalled()
   })
 
-  it('calls signUp with firstName and lastName and navigates on success', async () => {
+  it('calls signUp with firstName and lastName and navigates to onboarding on success', async () => {
     mockSignUp.mockResolvedValue(null)
     const user = userEvent.setup()
     renderPage()
@@ -157,7 +157,7 @@ describe('AuthPage', () => {
     await user.type(screen.getByLabelText('Adresse e-mail'), 'a@b.com')
     await user.type(screen.getByLabelText('Mot de passe'), 'Pass123!')
     await user.click(screen.getByRole('button', { name: /Créer mon compte/i }))
-    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/'))
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/onboarding/categories'))
     expect(mockSignUp).toHaveBeenCalledWith('a@b.com', 'Pass123!', 'Alexis', 'Bernard')
   })
 

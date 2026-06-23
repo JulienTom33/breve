@@ -88,6 +88,23 @@ const translations = {
         generic: 'Une erreur est survenue. Veuillez réessayer.',
       },
     },
+    onboarding: {
+      step: 'Étape 2 sur 2',
+      title: "Vos centres d'intérêt",
+      subtitle: 'Choisissez vos catégories préférées pour personnaliser votre fil.',
+      skip: 'Passer cette étape',
+      submit: 'Commencer',
+      saveError: 'Impossible de sauvegarder vos préférences.',
+    },
+    settings: {
+      categories: {
+        title: 'Mes catégories',
+        subtitle: "Catégories affichées par défaut dans votre fil d'actualité.",
+        save: 'Sauvegarder',
+        saved: 'Préférences sauvegardées.',
+        saveError: 'Impossible de sauvegarder vos préférences.',
+      },
+    },
     designSystem: {
       title: 'Design System — Brève',
       sections: {
@@ -207,6 +224,23 @@ const translations = {
         tokenExpired: 'The link has expired or is invalid.',
         passwordRulesNotMet: 'Password does not meet the required conditions.',
         generic: 'An error occurred. Please try again.',
+      },
+    },
+    onboarding: {
+      step: 'Step 2 of 2',
+      title: 'Your interests',
+      subtitle: 'Choose your favourite categories to personalise your feed.',
+      skip: 'Skip this step',
+      submit: 'Get started',
+      saveError: 'Unable to save your preferences.',
+    },
+    settings: {
+      categories: {
+        title: 'My categories',
+        subtitle: 'Categories shown by default in your news feed.',
+        save: 'Save',
+        saved: 'Preferences saved.',
+        saveError: 'Unable to save your preferences.',
       },
     },
     designSystem: {
