@@ -21,22 +21,21 @@ enum Mode {
 }
 
 const SUPABASE_ERRORS: Record<string, string> = {
-  'Invalid login credentials': 'Email ou mot de passe incorrect.',
-  'Email not confirmed': 'Veuillez confirmer votre adresse email.',
-  'User already registered': 'Un compte existe déjà avec cet email.',
-  'Email already in use': 'Un compte existe déjà avec cet email.',
-  'Password should be at least 6 characters':
-    'Le mot de passe doit contenir au moins 6 caractères.',
-  'Signup requires a valid password': 'Mot de passe invalide.',
-  'Unable to validate email address: invalid format': 'Adresse email invalide.',
-  'Email rate limit exceeded': 'Trop de tentatives. Réessayez dans quelques minutes.',
+  'Invalid login credentials': t.auth.errors.invalidCredentials,
+  'Email not confirmed': t.auth.errors.emailNotConfirmed,
+  'User already registered': t.auth.errors.userAlreadyRegistered,
+  'Email already in use': t.auth.errors.userAlreadyRegistered,
+  'Password should be at least 6 characters': t.auth.errors.passwordTooShort,
+  'Signup requires a valid password': t.auth.errors.invalidPassword,
+  'Unable to validate email address: invalid format': t.auth.errors.invalidEmail,
+  'Email rate limit exceeded': t.auth.errors.rateLimitExceeded,
   'For security purposes, you can only request this once every 60 seconds':
-    'Attendez 60 secondes avant de réessayer.',
-  'Token has expired or is invalid': 'Le lien est expiré ou invalide.',
+    t.auth.errors.rateLimitSeconds,
+  'Token has expired or is invalid': t.auth.errors.tokenExpired,
 }
 
 const translateError = (message: string): string =>
-  SUPABASE_ERRORS[message] ?? 'Une erreur est survenue. Veuillez réessayer.'
+  SUPABASE_ERRORS[message] ?? t.auth.errors.generic
 
 interface PasswordRule {
   label: string
@@ -90,7 +89,7 @@ const AuthPage: FC = () => {
     }
 
     if (mode === Mode.Register && !PASSWORD_RULES.every((r) => r.test(password))) {
-      setError('Le mot de passe ne respecte pas les conditions requises.')
+      setError(t.auth.errors.passwordRulesNotMet)
       setSubmitting(false)
       return
     }
@@ -279,7 +278,7 @@ const AuthPage: FC = () => {
               className="w-full justify-center !rounded-full !py-3"
             >
               {submitting ? (
-                'Chargement…'
+                t.auth.actions.loading
               ) : (
                 <>
                   {mode === Mode.Reset
