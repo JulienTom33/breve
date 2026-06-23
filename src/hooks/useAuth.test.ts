@@ -9,6 +9,7 @@ const {
   mockSignUp,
   mockSignOut,
   mockResetPasswordForEmail,
+  mockSignInWithOAuth,
   mockFrom,
 } = vi.hoisted(() => ({
   mockGetSession: vi.fn(),
@@ -17,6 +18,7 @@ const {
   mockSignUp: vi.fn(),
   mockSignOut: vi.fn(),
   mockResetPasswordForEmail: vi.fn(),
+  mockSignInWithOAuth: vi.fn(),
   mockFrom: vi.fn(),
 }))
 
@@ -29,6 +31,7 @@ vi.mock('@/lib/supabase', () => ({
       signUp: mockSignUp,
       signOut: mockSignOut,
       resetPasswordForEmail: mockResetPasswordForEmail,
+      signInWithOAuth: mockSignInWithOAuth,
     },
     from: mockFrom,
   },
@@ -144,6 +147,35 @@ describe('useAuth', () => {
       await result.current.signOut()
     })
     expect(mockSignOut).toHaveBeenCalled()
+  })
+
+  it('signInWithGoogle returns null on success', async () => {
+    mockSignInWithOAuth.mockResolvedValue({ error: null })
+    const { result } = renderHook(() => useAuth())
+    await waitFor(() => expect(result.current.loading).toBe(false))
+
+    let error: unknown
+    await act(async () => {
+      error = await result.current.signInWithGoogle()
+    })
+    expect(error).toBeNull()
+    expect(mockSignInWithOAuth).toHaveBeenCalledWith({
+      provider: 'google',
+      options: { redirectTo: window.location.origin },
+    })
+  })
+
+  it('signInWithGoogle returns error on failure', async () => {
+    const authError = { message: 'OAuth error' }
+    mockSignInWithOAuth.mockResolvedValue({ error: authError })
+    const { result } = renderHook(() => useAuth())
+    await waitFor(() => expect(result.current.loading).toBe(false))
+
+    let error: unknown
+    await act(async () => {
+      error = await result.current.signInWithGoogle()
+    })
+    expect(error).toEqual(authError)
   })
 
   it('resetPassword returns null on success', async () => {
