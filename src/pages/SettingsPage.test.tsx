@@ -5,6 +5,12 @@ import { MemoryRouter } from 'react-router-dom'
 import type { User } from '@supabase/supabase-js'
 import SettingsPage from './SettingsPage'
 
+const mockNavigate = vi.fn()
+vi.mock('react-router-dom', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('react-router-dom')>()
+  return { ...actual, useNavigate: () => mockNavigate }
+})
+
 const mockSavePreferredCategories = vi.fn()
 let mockPreferredCategories: string[] = []
 let mockLoading = false
@@ -18,6 +24,7 @@ vi.mock('@/hooks/useUserProfile', () => ({
 }))
 
 const mockUpdateUserMetadata = vi.fn()
+const mockUpdateEmail = vi.fn()
 let mockUser: User | null = null
 
 vi.mock('@/hooks/useAuth', () => ({
@@ -30,6 +37,7 @@ vi.mock('@/hooks/useAuth', () => ({
     signOut: vi.fn(),
     resetPassword: vi.fn(),
     updateUserMetadata: mockUpdateUserMetadata,
+    updateEmail: mockUpdateEmail,
   }),
 }))
 
@@ -103,6 +111,16 @@ describe('SettingsPage', () => {
       expect(chip).toHaveAttribute('aria-pressed', 'true')
     })
 
+    it('categories stay active after save', async () => {
+      mockSavePreferredCategories.mockResolvedValue(null)
+      const user = userEvent.setup()
+      renderPage()
+      await user.click(screen.getByRole('button', { name: 'Monde' }))
+      await user.click(screen.getByRole('button', { name: 'Sauvegarder' }))
+      await waitFor(() => expect(screen.getByText('Préférences sauvegardées.')).toBeInTheDocument())
+      expect(screen.getByRole('button', { name: 'Monde' })).toHaveAttribute('aria-pressed', 'true')
+    })
+
     it('saves and shows success message', async () => {
       mockSavePreferredCategories.mockResolvedValue(null)
       const user = userEvent.setup()
@@ -131,25 +149,16 @@ describe('SettingsPage', () => {
       expect(screen.getByText(/Modifiez vos informations personnelles/i)).toBeInTheDocument()
     })
 
-    it('renders avatar image', () => {
+    it('renders cat avatar image', () => {
       renderPage()
-      expect(screen.getByAltText('Photo de profil')).toBeInTheDocument()
+      expect(screen.getByAltText('Photo de profil')).toHaveAttribute('src', 'default-avatar.png')
     })
 
-    it('shows default avatar when no avatar_url', () => {
-      mockUser = {
-        ...baseUser,
-        user_metadata: { first_name: 'Alice', last_name: 'Bernard' },
-      } as User
-      renderPage()
-      const img = screen.getByAltText('Photo de profil')
-      expect(img).toHaveAttribute('src', 'default-avatar.png')
-    })
-
-    it('pre-fills first name and last name from user metadata', () => {
+    it('pre-fills first name, last name and email from user', () => {
       renderPage()
       expect(screen.getByLabelText('Prénom')).toHaveValue('Alice')
       expect(screen.getByLabelText('Nom')).toHaveValue('Bernard')
+      expect(screen.getByLabelText('Adresse e-mail')).toHaveValue('alice@example.com')
     })
 
     it('allows editing first name', async () => {
@@ -161,20 +170,47 @@ describe('SettingsPage', () => {
       expect(input).toHaveValue('Bob')
     })
 
-    it('saves profile and shows success message', async () => {
+    it('allows editing email', async () => {
+      const user = userEvent.setup()
+      renderPage()
+      const input = screen.getByLabelText('Adresse e-mail')
+      await user.clear(input)
+      await user.type(input, 'bob@example.com')
+      expect(input).toHaveValue('bob@example.com')
+    })
+
+    it('saves profile metadata and shows success message', async () => {
       mockUpdateUserMetadata.mockResolvedValue(null)
       const user = userEvent.setup()
       renderPage()
-      const input = screen.getByLabelText('Prénom')
-      await user.clear(input)
-      await user.type(input, 'Bob')
       await user.click(screen.getByRole('button', { name: 'Sauvegarder le profil' }))
       await waitFor(() => expect(screen.getByText('Profil mis à jour.')).toBeInTheDocument())
       expect(mockUpdateUserMetadata).toHaveBeenCalledWith({
-        first_name: 'Bob',
+        first_name: 'Alice',
         last_name: 'Bernard',
-        full_name: 'Bob Bernard',
+        full_name: 'Alice Bernard',
       })
+    })
+
+    it('calls updateEmail when email is changed', async () => {
+      mockUpdateUserMetadata.mockResolvedValue(null)
+      mockUpdateEmail.mockResolvedValue(null)
+      const user = userEvent.setup()
+      renderPage()
+      const emailInput = screen.getByLabelText('Adresse e-mail')
+      await user.clear(emailInput)
+      await user.type(emailInput, 'new@example.com')
+      await user.click(screen.getByRole('button', { name: 'Sauvegarder le profil' }))
+      await waitFor(() => expect(mockUpdateEmail).toHaveBeenCalledWith('new@example.com'))
+    })
+
+    it('does not call updateEmail when email is unchanged', async () => {
+      mockUpdateUserMetadata.mockResolvedValue(null)
+      const user = userEvent.setup()
+      renderPage()
+      await user.click(screen.getByRole('button', { name: 'Sauvegarder le profil' }))
+      await waitFor(() => expect(screen.getByText('Profil mis à jour.')).toBeInTheDocument())
+      expect(mockUpdateEmail).not.toHaveBeenCalled()
     })
 
     it('shows error when profile save fails', async () => {
@@ -185,6 +221,20 @@ describe('SettingsPage', () => {
       await waitFor(() =>
         expect(screen.getByText('Impossible de mettre à jour le profil.')).toBeInTheDocument(),
       )
+    })
+  })
+
+  describe('navigation', () => {
+    it('renders close button', () => {
+      renderPage()
+      expect(screen.getByRole('button', { name: 'Fermer les paramètres' })).toBeInTheDocument()
+    })
+
+    it('navigates to / on close button click', async () => {
+      const user = userEvent.setup()
+      renderPage()
+      await user.click(screen.getByRole('button', { name: 'Fermer les paramètres' }))
+      expect(mockNavigate).toHaveBeenCalledWith('/')
     })
   })
 

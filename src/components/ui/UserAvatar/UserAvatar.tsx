@@ -1,22 +1,13 @@
 import { FC } from 'react'
 import type { User } from '@supabase/supabase-js'
 import Button from '@/components/ui/Button/Button'
+import defaultAvatar from '@/assets/default-avatar.png'
 
 interface Props {
   user: User
   size?: 'sm' | 'md'
   onClick?: () => void
   isOpen?: boolean
-}
-
-function getInitials(user: User): string {
-  const fullName = user.user_metadata?.full_name as string | undefined
-  if (fullName) {
-    const parts = fullName.trim().split(' ')
-    if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
-    return parts[0][0].toUpperCase()
-  }
-  return (user.email?.[0] ?? '?').toUpperCase()
 }
 
 const sizeClasses: Record<NonNullable<Props['size']>, string> = {
@@ -46,13 +37,12 @@ const UserAvatar: FC<Props> = ({ user, size = 'md', onClick, isOpen = false }) =
           className="w-full h-full object-cover"
         />
       ) : (
-        <span
-          id="user-avatar__span--initials"
-          className="flex items-center justify-center w-full h-full bg-primary-subtle text-primary font-semibold"
-          aria-hidden="true"
-        >
-          {getInitials(user)}
-        </span>
+        <img
+          id="user-avatar__img--default"
+          src={defaultAvatar}
+          alt="Avatar utilisateur"
+          className="w-full h-full object-cover"
+        />
       )}
     </Button>
   )

@@ -1,4 +1,6 @@
 import { FC, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { XMarkIcon } from '@heroicons/react/24/outline'
 import Button from '@/components/ui/Button/Button'
 import { useUserProfile } from '@/hooks/useUserProfile'
 import { useAuth } from '@/hooks/useAuth'
@@ -7,12 +9,13 @@ import { t } from '@/lib/i18n'
 import defaultAvatar from '@/assets/default-avatar.png'
 
 const SettingsPage: FC = () => {
+  const navigate = useNavigate()
   const {
     preferredCategories,
     loading: categoriesLoading,
     savePreferredCategories,
   } = useUserProfile()
-  const { user, updateUserMetadata } = useAuth()
+  const { user, updateUserMetadata, updateEmail } = useAuth()
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [savingCategories, setSavingCategories] = useState(false)
@@ -21,6 +24,7 @@ const SettingsPage: FC = () => {
 
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
+  const [email, setEmail] = useState('')
   const [savingProfile, setSavingProfile] = useState(false)
   const [savedProfile, setSavedProfile] = useState(false)
   const [profileError, setProfileError] = useState('')
@@ -33,13 +37,14 @@ const SettingsPage: FC = () => {
     if (user) {
       setFirstName((user.user_metadata?.first_name as string | undefined) ?? '')
       setLastName((user.user_metadata?.last_name as string | undefined) ?? '')
+      setEmail(user.email ?? '')
     }
   }, [user])
 
   const toggleCategory = (cat: string) => {
     setSavedCategories(false)
     setSelectedCategories((prev) =>
-      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat],
+      prev.includes(cat) ? prev.filter((category) => category !== cat) : [...prev, cat],
     )
   }
 
@@ -60,13 +65,14 @@ const SettingsPage: FC = () => {
     setProfileError('')
     setSavedProfile(false)
     setSavingProfile(true)
-    const err = await updateUserMetadata({
+    const metaErr = await updateUserMetadata({
       first_name: firstName,
       last_name: lastName,
       full_name: `${firstName} ${lastName}`.trim(),
     })
+    const emailErr = email !== user?.email ? await updateEmail(email) : null
     setSavingProfile(false)
-    if (err) {
+    if (metaErr || emailErr) {
       setProfileError(t.settings.profile.saveError)
     } else {
       setSavedProfile(true)
@@ -77,9 +83,19 @@ const SettingsPage: FC = () => {
 
   return (
     <div id="settings-page__container--main" className="p-4 md:p-6 max-w-2xl mx-auto">
-      <h1 id="settings-page__title--main" className="mb-6">
-        Paramètres
-      </h1>
+      <div id="settings-page__header--top" className="flex items-center justify-between mb-6">
+        <h1 id="settings-page__title--main" className="m-0">
+          Paramètres
+        </h1>
+        <Button
+          id="settings-page__button--close"
+          variant="icon"
+          onClick={() => navigate('/')}
+          aria-label="Fermer les paramètres"
+        >
+          <XMarkIcon className="w-5 h-5" aria-hidden="true" />
+        </Button>
+      </div>
 
       {/* Section profil */}
       <section id="settings-page__section--profile" className="mb-8">
@@ -114,9 +130,9 @@ const SettingsPage: FC = () => {
               id="settings-page__input--firstname"
               type="text"
               value={firstName}
-              onChange={(e) => {
+              onChange={(event) => {
                 setSavedProfile(false)
-                setFirstName(e.target.value)
+                setFirstName(event.target.value)
               }}
               className="w-full bg-surface-2 border border-border rounded-md px-3 py-2 text-sm text-text placeholder:text-text-faint outline-none focus:border-primary transition-colors duration-150"
             />
@@ -133,9 +149,28 @@ const SettingsPage: FC = () => {
               id="settings-page__input--lastname"
               type="text"
               value={lastName}
-              onChange={(e) => {
+              onChange={(event) => {
                 setSavedProfile(false)
-                setLastName(e.target.value)
+                setLastName(event.target.value)
+              }}
+              className="w-full bg-surface-2 border border-border rounded-md px-3 py-2 text-sm text-text placeholder:text-text-faint outline-none focus:border-primary transition-colors duration-150"
+            />
+          </div>
+
+          <div id="settings-page__profile-field--email">
+            <label
+              htmlFor="settings-page__input--email"
+              className="block text-sm font-medium text-text mb-1"
+            >
+              {t.settings.profile.email}
+            </label>
+            <input
+              id="settings-page__input--email"
+              type="email"
+              value={email}
+              onChange={(event) => {
+                setSavedProfile(false)
+                setEmail(event.target.value)
               }}
               className="w-full bg-surface-2 border border-border rounded-md px-3 py-2 text-sm text-text placeholder:text-text-faint outline-none focus:border-primary transition-colors duration-150"
             />

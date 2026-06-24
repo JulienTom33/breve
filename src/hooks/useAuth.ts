@@ -16,6 +16,7 @@ interface UseAuthReturn {
   signOut: () => Promise<void>
   resetPassword: (email: string) => Promise<AuthError | null>
   updateUserMetadata: (data: Record<string, unknown>) => Promise<AuthError | null>
+  updateEmail: (email: string) => Promise<AuthError | null>
 }
 
 export function useAuth(): UseAuthReturn {
@@ -77,6 +78,11 @@ export function useAuth(): UseAuthReturn {
     return error
   }, [])
 
+  const updateEmail = useCallback(async (email: string) => {
+    const { error } = await supabase.auth.updateUser({ email })
+    return error
+  }, [])
+
   return {
     user,
     loading,
@@ -86,5 +92,6 @@ export function useAuth(): UseAuthReturn {
     signOut,
     resetPassword,
     updateUserMetadata,
+    updateEmail,
   }
 }

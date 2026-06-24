@@ -4,6 +4,8 @@ import userEvent from '@testing-library/user-event'
 import type { User } from '@supabase/supabase-js'
 import UserAvatar from './UserAvatar'
 
+vi.mock('@/assets/default-avatar.png', () => ({ default: 'default-avatar.png' }))
+
 const baseUser = {
   id: 'user-1',
   email: 'alice@example.com',
@@ -14,31 +16,20 @@ const baseUser = {
 } as User
 
 describe('UserAvatar', () => {
-  it('renders initials when no avatar_url', () => {
-    const user = { ...baseUser, user_metadata: { full_name: 'Alice Bernard' } } as User
-    render(<UserAvatar user={user} />)
-    expect(screen.getByText('AB')).toBeInTheDocument()
-  })
-
-  it('renders single initial when single name', () => {
-    const user = { ...baseUser, user_metadata: { full_name: 'Alice' } } as User
-    render(<UserAvatar user={user} />)
-    expect(screen.getByText('A')).toBeInTheDocument()
-  })
-
-  it('falls back to email initial when no full_name', () => {
+  it('renders default cat avatar when no avatar_url', () => {
     render(<UserAvatar user={baseUser} />)
-    expect(screen.getByText('A')).toBeInTheDocument()
+    const img = screen.getByRole('img', { name: 'Avatar utilisateur' })
+    expect(img).toHaveAttribute('src', 'default-avatar.png')
   })
 
-  it('renders img when avatar_url is present', () => {
+  it('renders user photo when avatar_url is present', () => {
     const user = {
       ...baseUser,
-      user_metadata: { avatar_url: 'https://example.com/photo.jpg', full_name: 'Alice Bernard' },
+      user_metadata: { avatar_url: 'https://example.com/photo.jpg' },
     } as User
     render(<UserAvatar user={user} />)
-    expect(screen.getByRole('img', { name: 'Avatar utilisateur' })).toBeInTheDocument()
-    expect(screen.queryByText('AB')).not.toBeInTheDocument()
+    const img = screen.getByRole('img', { name: 'Avatar utilisateur' })
+    expect(img).toHaveAttribute('src', 'https://example.com/photo.jpg')
   })
 
   it('has aria-label "Menu utilisateur"', () => {

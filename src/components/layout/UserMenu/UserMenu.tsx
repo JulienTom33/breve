@@ -30,8 +30,8 @@ const UserMenu: FC<Props> = ({ user }) => {
   }, [isOpen, close])
 
   const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === 'Escape') close()
+    (event: React.KeyboardEvent) => {
+      if (event.key === 'Escape') close()
     },
     [close],
   )

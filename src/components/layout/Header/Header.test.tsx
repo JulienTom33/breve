@@ -139,9 +139,10 @@ describe('Header', () => {
       expect(screen.queryByRole('link', { name: 'Connexion' })).not.toBeInTheDocument()
     })
 
-    it('shows initials when no avatar_url', () => {
+    it('shows default cat avatar when no avatar_url', () => {
       renderWithRouter()
-      expect(screen.getAllByText('AB').length).toBeGreaterThan(0)
+      const avatars = screen.getAllByRole('img', { name: 'Avatar utilisateur' })
+      expect(avatars.length).toBeGreaterThan(0)
     })
 
     it('opens dropdown on avatar click', async () => {
