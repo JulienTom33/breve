@@ -42,6 +42,12 @@ vi.mock('@/hooks/useAuth', () => ({
 }))
 
 vi.mock('@/assets/default-avatar.png', () => ({ default: 'default-avatar.png' }))
+vi.mock('@/assets/avatars/avatar-cat.svg', () => ({ default: 'avatar-cat.svg' }))
+vi.mock('@/assets/avatars/avatar-dog.svg', () => ({ default: 'avatar-dog.svg' }))
+vi.mock('@/assets/avatars/avatar-bird.svg', () => ({ default: 'avatar-bird.svg' }))
+vi.mock('@/assets/avatars/avatar-fox.svg', () => ({ default: 'avatar-fox.svg' }))
+vi.mock('@/assets/avatars/avatar-rabbit.svg', () => ({ default: 'avatar-rabbit.svg' }))
+vi.mock('@/assets/avatars/avatar-bear.svg', () => ({ default: 'avatar-bear.svg' }))
 
 const baseUser = {
   id: 'user-1',
@@ -221,6 +227,54 @@ describe('SettingsPage', () => {
       await waitFor(() =>
         expect(screen.getByText('Impossible de mettre à jour le profil.')).toBeInTheDocument(),
       )
+    })
+
+    it('renders 6 preset avatar options', () => {
+      renderPage()
+      const grid = screen.getByRole('group', { name: 'Choisir un avatar' })
+      expect(grid.querySelectorAll('button').length).toBe(6)
+    })
+
+    it('selects a preset avatar on click', async () => {
+      const user = userEvent.setup()
+      renderPage()
+      const catBtn = screen.getByRole('button', { name: 'Chat' })
+      await user.click(catBtn)
+      expect(catBtn).toHaveAttribute('aria-pressed', 'true')
+    })
+
+    it('deselects other presets when one is selected', async () => {
+      const user = userEvent.setup()
+      renderPage()
+      await user.click(screen.getByRole('button', { name: 'Chat' }))
+      await user.click(screen.getByRole('button', { name: 'Chien' }))
+      expect(screen.getByRole('button', { name: 'Chat' })).toHaveAttribute('aria-pressed', 'false')
+      expect(screen.getByRole('button', { name: 'Chien' })).toHaveAttribute('aria-pressed', 'true')
+    })
+
+    it('includes avatar_url when a preset is selected and saved', async () => {
+      mockUpdateUserMetadata.mockResolvedValue(null)
+      const user = userEvent.setup()
+      renderPage()
+      await user.click(screen.getByRole('button', { name: 'Renard' }))
+      await user.click(screen.getByRole('button', { name: 'Sauvegarder le profil' }))
+      await waitFor(() =>
+        expect(mockUpdateUserMetadata).toHaveBeenCalledWith(
+          expect.objectContaining({ avatar_url: 'avatar-fox.svg' }),
+        ),
+      )
+    })
+
+    it('updates main avatar preview when a preset is selected', async () => {
+      const user = userEvent.setup()
+      renderPage()
+      await user.click(screen.getByRole('button', { name: 'Ours' }))
+      expect(screen.getByAltText('Photo de profil')).toHaveAttribute('src', 'avatar-bear.svg')
+    })
+
+    it('renders upload photo option', () => {
+      renderPage()
+      expect(screen.getByText('Importer une photo')).toBeInTheDocument()
     })
   })
 

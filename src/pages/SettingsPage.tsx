@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import Button from '@/components/ui/Button/Button'
@@ -7,6 +7,21 @@ import { useAuth } from '@/hooks/useAuth'
 import { SELECTABLE_CATEGORIES } from '@/lib/categories'
 import { t } from '@/lib/i18n'
 import defaultAvatar from '@/assets/default-avatar.png'
+import avatarCat from '@/assets/avatars/avatar-cat.svg'
+import avatarDog from '@/assets/avatars/avatar-dog.svg'
+import avatarBird from '@/assets/avatars/avatar-bird.svg'
+import avatarFox from '@/assets/avatars/avatar-fox.svg'
+import avatarRabbit from '@/assets/avatars/avatar-rabbit.svg'
+import avatarBear from '@/assets/avatars/avatar-bear.svg'
+
+const PRESET_AVATARS = [
+  { name: 'cat', label: 'Chat', url: avatarCat },
+  { name: 'dog', label: 'Chien', url: avatarDog },
+  { name: 'bird', label: 'Oiseau', url: avatarBird },
+  { name: 'fox', label: 'Renard', url: avatarFox },
+  { name: 'rabbit', label: 'Lapin', url: avatarRabbit },
+  { name: 'bear', label: 'Ours', url: avatarBear },
+]
 
 const SettingsPage: FC = () => {
   const navigate = useNavigate()
@@ -25,9 +40,11 @@ const SettingsPage: FC = () => {
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
+  const [pendingAvatarUrl, setPendingAvatarUrl] = useState<string | undefined>(undefined)
   const [savingProfile, setSavingProfile] = useState(false)
   const [savedProfile, setSavedProfile] = useState(false)
   const [profileError, setProfileError] = useState('')
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     setSelectedCategories(preferredCategories)
@@ -38,8 +55,20 @@ const SettingsPage: FC = () => {
       setFirstName((user.user_metadata?.first_name as string | undefined) ?? '')
       setLastName((user.user_metadata?.last_name as string | undefined) ?? '')
       setEmail(user.email ?? '')
+      setPendingAvatarUrl(user.user_metadata?.avatar_url as string | undefined)
     }
   }, [user])
+
+  const handleFileUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (readerEvent) => {
+      setPendingAvatarUrl(readerEvent.target?.result as string)
+      setSavedProfile(false)
+    }
+    reader.readAsDataURL(file)
+  }, [])
 
   const toggleCategory = (cat: string) => {
     setSavedCategories(false)
@@ -69,6 +98,7 @@ const SettingsPage: FC = () => {
       first_name: firstName,
       last_name: lastName,
       full_name: `${firstName} ${lastName}`.trim(),
+      ...(pendingAvatarUrl !== undefined ? { avatar_url: pendingAvatarUrl } : {}),
     })
     const emailErr = email !== user?.email ? await updateEmail(email) : null
     setSavingProfile(false)
@@ -78,8 +108,6 @@ const SettingsPage: FC = () => {
       setSavedProfile(true)
     }
   }
-
-  const avatarUrl = user?.user_metadata?.avatar_url as string | undefined
 
   return (
     <div id="settings-page__container--main" className="p-4 md:p-6 max-w-2xl mx-auto">
@@ -106,16 +134,62 @@ const SettingsPage: FC = () => {
           {t.settings.profile.subtitle}
         </p>
 
-        <div id="settings-page__profile-avatar--wrapper" className="flex items-center gap-4 mb-6">
-          <img
-            id="settings-page__profile-avatar--img"
-            src={avatarUrl ?? defaultAvatar}
-            alt={t.settings.profile.avatar}
-            className="w-16 h-16 rounded-full object-cover border-2 border-border"
-          />
-          <span id="settings-page__profile-avatar--label" className="text-sm text-text-muted">
-            {t.settings.profile.avatar}
-          </span>
+        <div id="settings-page__profile-avatar--wrapper" className="mb-6">
+          <div className="flex items-center gap-4 mb-4">
+            <img
+              id="settings-page__profile-avatar--img"
+              src={pendingAvatarUrl ?? defaultAvatar}
+              alt={t.settings.profile.avatar}
+              className="w-16 h-16 rounded-full object-cover border-2 border-border"
+            />
+            <div>
+              <p className="text-sm font-medium text-text mb-2">{t.settings.profile.avatar}</p>
+              <label
+                id="settings-page__label--upload"
+                htmlFor="settings-page__input--upload"
+                className="cursor-pointer text-sm text-primary underline hover:opacity-80"
+              >
+                {t.settings.profile.uploadPhoto}
+              </label>
+              <input
+                ref={fileInputRef}
+                id="settings-page__input--upload"
+                type="file"
+                accept="image/*"
+                className="sr-only"
+                onChange={handleFileUpload}
+              />
+            </div>
+          </div>
+
+          <div
+            id="settings-page__avatar-presets--grid"
+            className="grid grid-cols-6 gap-2"
+            role="group"
+            aria-label={t.settings.profile.chooseAvatar}
+          >
+            {PRESET_AVATARS.map((preset) => (
+              <button
+                key={preset.name}
+                id={`settings-page__avatar-preset--${preset.name}`}
+                type="button"
+                onClick={() => {
+                  setPendingAvatarUrl(preset.url)
+                  setSavedProfile(false)
+                }}
+                aria-pressed={pendingAvatarUrl === preset.url}
+                aria-label={preset.label}
+                className={[
+                  'w-full aspect-square rounded-full overflow-hidden border-2 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface',
+                  pendingAvatarUrl === preset.url
+                    ? 'border-primary'
+                    : 'border-transparent hover:border-border',
+                ].join(' ')}
+              >
+                <img src={preset.url} alt={preset.label} className="w-full h-full object-cover" />
+              </button>
+            ))}
+          </div>
         </div>
 
         <div id="settings-page__profile-fields--wrapper" className="flex flex-col gap-4 mb-4">
