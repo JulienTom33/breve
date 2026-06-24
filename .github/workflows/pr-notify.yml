@@ -5,6 +5,30 @@ on:
     types: [opened, reopened, synchronize, closed]
 
 jobs:
+  update-issue-label:
+    runs-on: ubuntu-latest
+    if: github.event.action == 'opened' || github.event.action == 'reopened'
+    permissions:
+      issues: write
+    steps:
+      - name: Move issue to In Review
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+          REPO: ${{ github.repository }}
+        run: |
+          # Extraire le numéro d'issue depuis feature/<number>-<slug>
+          ISSUE_NUMBER=$(echo "$BRANCH" | grep -oP '(?<=feature/)\d+')
+          if [ -z "$ISSUE_NUMBER" ]; then
+            echo "Aucun numéro d'issue trouvé dans la branche $BRANCH, skip."
+            exit 0
+          fi
+          echo "Issue #$ISSUE_NUMBER détectée"
+          gh issue edit "$ISSUE_NUMBER" \
+            --repo "$REPO" \
+            --add-label "status: in-review" \
+            --remove-label "status: in-progress" || true
+
   notify-discord:
     runs-on: ubuntu-latest
 
