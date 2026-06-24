@@ -112,6 +112,7 @@ const translations = {
         uploadPhoto: 'Importer une photo',
         save: 'Sauvegarder le profil',
         saved: 'Profil mis à jour.',
+        emailConfirmSent: 'Un lien de confirmation a été envoyé à votre nouvelle adresse.',
         saveError: 'Impossible de mettre à jour le profil.',
       },
       categories: {
@@ -267,6 +268,7 @@ const translations = {
         uploadPhoto: 'Upload a photo',
         save: 'Save profile',
         saved: 'Profile updated.',
+        emailConfirmSent: 'A confirmation link has been sent to your new address.',
         saveError: 'Unable to update profile.',
       },
       categories: {

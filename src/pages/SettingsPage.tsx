@@ -42,6 +42,7 @@ const SettingsPage: FC = () => {
   const [pendingAvatarUrl, setPendingAvatarUrl] = useState<string | undefined>(undefined)
   const [savingProfile, setSavingProfile] = useState(false)
   const [savedProfile, setSavedProfile] = useState(false)
+  const [emailConfirmSent, setEmailConfirmSent] = useState(false)
   const [profileError, setProfileError] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -92,19 +93,22 @@ const SettingsPage: FC = () => {
   const handleSaveProfile = async () => {
     setProfileError('')
     setSavedProfile(false)
+    setEmailConfirmSent(false)
     setSavingProfile(true)
+    const emailChanged = email !== user?.email
     const metaErr = await updateUserMetadata({
       first_name: firstName,
       last_name: lastName,
       full_name: `${firstName} ${lastName}`.trim(),
       ...(pendingAvatarUrl !== undefined ? { avatar_url: pendingAvatarUrl } : {}),
     })
-    const emailErr = email !== user?.email ? await updateEmail(email) : null
+    const emailErr = emailChanged ? await updateEmail(email) : null
     setSavingProfile(false)
     if (metaErr || emailErr) {
       setProfileError(t.settings.profile.saveError)
     } else {
       setSavedProfile(true)
+      if (emailChanged) setEmailConfirmSent(true)
     }
   }
 
@@ -258,6 +262,11 @@ const SettingsPage: FC = () => {
         {savedProfile && (
           <p id="settings-page__saved--profile" className="text-success text-sm mb-3">
             {t.settings.profile.saved}
+          </p>
+        )}
+        {emailConfirmSent && (
+          <p id="settings-page__info--email-confirm" className="text-text-muted text-sm mb-3">
+            {t.settings.profile.emailConfirmSent}
           </p>
         )}
 
