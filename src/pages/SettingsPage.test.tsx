@@ -42,12 +42,11 @@ vi.mock('@/hooks/useAuth', () => ({
 }))
 
 vi.mock('@/assets/default-avatar.png', () => ({ default: 'default-avatar.png' }))
-vi.mock('@/assets/avatars/avatar-cat.svg', () => ({ default: 'avatar-cat.svg' }))
-vi.mock('@/assets/avatars/avatar-dog.svg', () => ({ default: 'avatar-dog.svg' }))
-vi.mock('@/assets/avatars/avatar-bird.svg', () => ({ default: 'avatar-bird.svg' }))
-vi.mock('@/assets/avatars/avatar-fox.svg', () => ({ default: 'avatar-fox.svg' }))
-vi.mock('@/assets/avatars/avatar-rabbit.svg', () => ({ default: 'avatar-rabbit.svg' }))
-vi.mock('@/assets/avatars/avatar-bear.svg', () => ({ default: 'avatar-bear.svg' }))
+vi.mock('@/assets/avatars/avatar-1.png', () => ({ default: 'avatar-1.png' }))
+vi.mock('@/assets/avatars/avatar-2.png', () => ({ default: 'avatar-2.png' }))
+vi.mock('@/assets/avatars/avatar-3.png', () => ({ default: 'avatar-3.png' }))
+vi.mock('@/assets/avatars/avatar-4.png', () => ({ default: 'avatar-4.png' }))
+vi.mock('@/assets/avatars/avatar-5.png', () => ({ default: 'avatar-5.png' }))
 
 const baseUser = {
   id: 'user-1',
@@ -238,29 +237,35 @@ describe('SettingsPage', () => {
     it('selects a preset avatar on click', async () => {
       const user = userEvent.setup()
       renderPage()
-      const catBtn = screen.getByRole('button', { name: 'Chat' })
-      await user.click(catBtn)
-      expect(catBtn).toHaveAttribute('aria-pressed', 'true')
+      const btn = screen.getByRole('button', { name: 'Avatar 2' })
+      await user.click(btn)
+      expect(btn).toHaveAttribute('aria-pressed', 'true')
     })
 
     it('deselects other presets when one is selected', async () => {
       const user = userEvent.setup()
       renderPage()
-      await user.click(screen.getByRole('button', { name: 'Chat' }))
-      await user.click(screen.getByRole('button', { name: 'Chien' }))
-      expect(screen.getByRole('button', { name: 'Chat' })).toHaveAttribute('aria-pressed', 'false')
-      expect(screen.getByRole('button', { name: 'Chien' })).toHaveAttribute('aria-pressed', 'true')
+      await user.click(screen.getByRole('button', { name: 'Avatar 2' }))
+      await user.click(screen.getByRole('button', { name: 'Avatar 3' }))
+      expect(screen.getByRole('button', { name: 'Avatar 2' })).toHaveAttribute(
+        'aria-pressed',
+        'false',
+      )
+      expect(screen.getByRole('button', { name: 'Avatar 3' })).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      )
     })
 
     it('includes avatar_url when a preset is selected and saved', async () => {
       mockUpdateUserMetadata.mockResolvedValue(null)
       const user = userEvent.setup()
       renderPage()
-      await user.click(screen.getByRole('button', { name: 'Renard' }))
+      await user.click(screen.getByRole('button', { name: 'Avatar 4' }))
       await user.click(screen.getByRole('button', { name: 'Sauvegarder le profil' }))
       await waitFor(() =>
         expect(mockUpdateUserMetadata).toHaveBeenCalledWith(
-          expect.objectContaining({ avatar_url: 'avatar-fox.svg' }),
+          expect.objectContaining({ avatar_url: 'avatar-3.png' }),
         ),
       )
     })
@@ -268,8 +273,8 @@ describe('SettingsPage', () => {
     it('updates main avatar preview when a preset is selected', async () => {
       const user = userEvent.setup()
       renderPage()
-      await user.click(screen.getByRole('button', { name: 'Ours' }))
-      expect(screen.getByAltText('Photo de profil')).toHaveAttribute('src', 'avatar-bear.svg')
+      await user.click(screen.getByRole('button', { name: 'Avatar 6' }))
+      expect(screen.getByAltText('Photo de profil')).toHaveAttribute('src', 'avatar-5.png')
     })
 
     it('renders upload photo option', () => {

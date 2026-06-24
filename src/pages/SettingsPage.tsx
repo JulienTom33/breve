@@ -7,20 +7,19 @@ import { useAuth } from '@/hooks/useAuth'
 import { SELECTABLE_CATEGORIES } from '@/lib/categories'
 import { t } from '@/lib/i18n'
 import defaultAvatar from '@/assets/default-avatar.png'
-import avatarCat from '@/assets/avatars/avatar-cat.svg'
-import avatarDog from '@/assets/avatars/avatar-dog.svg'
-import avatarBird from '@/assets/avatars/avatar-bird.svg'
-import avatarFox from '@/assets/avatars/avatar-fox.svg'
-import avatarRabbit from '@/assets/avatars/avatar-rabbit.svg'
-import avatarBear from '@/assets/avatars/avatar-bear.svg'
+import avatar1 from '@/assets/avatars/avatar-1.png'
+import avatar2 from '@/assets/avatars/avatar-2.png'
+import avatar3 from '@/assets/avatars/avatar-3.png'
+import avatar4 from '@/assets/avatars/avatar-4.png'
+import avatar5 from '@/assets/avatars/avatar-5.png'
 
 const PRESET_AVATARS = [
-  { name: 'cat', label: 'Chat', url: avatarCat },
-  { name: 'dog', label: 'Chien', url: avatarDog },
-  { name: 'bird', label: 'Oiseau', url: avatarBird },
-  { name: 'fox', label: 'Renard', url: avatarFox },
-  { name: 'rabbit', label: 'Lapin', url: avatarRabbit },
-  { name: 'bear', label: 'Ours', url: avatarBear },
+  { name: 'avatar-default', label: 'Avatar 1', url: defaultAvatar },
+  { name: 'avatar-1', label: 'Avatar 2', url: avatar1 },
+  { name: 'avatar-2', label: 'Avatar 3', url: avatar2 },
+  { name: 'avatar-3', label: 'Avatar 4', url: avatar3 },
+  { name: 'avatar-4', label: 'Avatar 5', url: avatar4 },
+  { name: 'avatar-5', label: 'Avatar 6', url: avatar5 },
 ]
 
 const SettingsPage: FC = () => {
