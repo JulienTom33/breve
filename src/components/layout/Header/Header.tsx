@@ -62,7 +62,7 @@ const Header: FC = () => {
 
         <div
           id="header__search--wrapper"
-          className="w-40 flex items-center gap-2 bg-surface-2 border border-border rounded-full px-3 h-9 min-w-0"
+          className="w-80 flex items-center gap-2 bg-surface-2 border border-border rounded-full px-3 h-9 min-w-0"
         >
           <MagnifyingGlassIcon className="w-4 h-4 text-text-faint shrink-0" aria-hidden="true" />
           <input
