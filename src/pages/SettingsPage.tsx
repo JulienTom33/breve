@@ -29,7 +29,7 @@ const SettingsPage: FC = () => {
     loading: categoriesLoading,
     savePreferredCategories,
   } = useUserProfile()
-  const { user, updateUserMetadata, updateEmail } = useAuth()
+  const { user, updateUserMetadata } = useAuth()
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [savingCategories, setSavingCategories] = useState(false)
@@ -38,11 +38,9 @@ const SettingsPage: FC = () => {
 
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
-  const [email, setEmail] = useState('')
   const [pendingAvatarUrl, setPendingAvatarUrl] = useState<string | undefined>(undefined)
   const [savingProfile, setSavingProfile] = useState(false)
   const [savedProfile, setSavedProfile] = useState(false)
-  const [emailConfirmSent, setEmailConfirmSent] = useState(false)
   const [profileError, setProfileError] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -54,7 +52,6 @@ const SettingsPage: FC = () => {
     if (user) {
       setFirstName((user.user_metadata?.first_name as string | undefined) ?? '')
       setLastName((user.user_metadata?.last_name as string | undefined) ?? '')
-      setEmail(user.email ?? '')
       setPendingAvatarUrl(user.user_metadata?.avatar_url as string | undefined)
     }
   }, [user])
@@ -93,22 +90,18 @@ const SettingsPage: FC = () => {
   const handleSaveProfile = async () => {
     setProfileError('')
     setSavedProfile(false)
-    setEmailConfirmSent(false)
     setSavingProfile(true)
-    const emailChanged = email !== user?.email
     const metaErr = await updateUserMetadata({
       first_name: firstName,
       last_name: lastName,
       full_name: `${firstName} ${lastName}`.trim(),
       ...(pendingAvatarUrl !== undefined ? { avatar_url: pendingAvatarUrl } : {}),
     })
-    const emailErr = emailChanged ? await updateEmail(email) : null
     setSavingProfile(false)
-    if (metaErr || emailErr) {
+    if (metaErr) {
       setProfileError(t.settings.profile.saveError)
     } else {
       setSavedProfile(true)
-      if (emailChanged) setEmailConfirmSent(true)
     }
   }
 
@@ -233,25 +226,6 @@ const SettingsPage: FC = () => {
               className="w-full bg-surface-2 border border-border rounded-md px-3 py-2 text-sm text-text placeholder:text-text-faint outline-none focus:border-primary transition-colors duration-150"
             />
           </div>
-
-          <div id="settings-page__profile-field--email">
-            <label
-              htmlFor="settings-page__input--email"
-              className="block text-sm font-medium text-text mb-1"
-            >
-              {t.settings.profile.email}
-            </label>
-            <input
-              id="settings-page__input--email"
-              type="email"
-              value={email}
-              onChange={(event) => {
-                setSavedProfile(false)
-                setEmail(event.target.value)
-              }}
-              className="w-full bg-surface-2 border border-border rounded-md px-3 py-2 text-sm text-text placeholder:text-text-faint outline-none focus:border-primary transition-colors duration-150"
-            />
-          </div>
         </div>
 
         {profileError && (
@@ -262,11 +236,6 @@ const SettingsPage: FC = () => {
         {savedProfile && (
           <p id="settings-page__saved--profile" className="text-success text-sm mb-3">
             {t.settings.profile.saved}
-          </p>
-        )}
-        {emailConfirmSent && (
-          <p id="settings-page__info--email-confirm" className="text-text-muted text-sm mb-3">
-            {t.settings.profile.emailConfirmSent}
           </p>
         )}
 

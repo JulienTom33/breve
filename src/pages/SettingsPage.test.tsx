@@ -24,7 +24,6 @@ vi.mock('@/hooks/useUserProfile', () => ({
 }))
 
 const mockUpdateUserMetadata = vi.fn()
-const mockUpdateEmail = vi.fn()
 let mockUser: User | null = null
 
 vi.mock('@/hooks/useAuth', () => ({
@@ -37,7 +36,6 @@ vi.mock('@/hooks/useAuth', () => ({
     signOut: vi.fn(),
     resetPassword: vi.fn(),
     updateUserMetadata: mockUpdateUserMetadata,
-    updateEmail: mockUpdateEmail,
   }),
 }))
 
@@ -159,11 +157,10 @@ describe('SettingsPage', () => {
       expect(screen.getByAltText('Photo de profil')).toHaveAttribute('src', 'default-avatar.png')
     })
 
-    it('pre-fills first name, last name and email from user', () => {
+    it('pre-fills first name and last name from user', () => {
       renderPage()
       expect(screen.getByLabelText('Prénom')).toHaveValue('Alice')
       expect(screen.getByLabelText('Nom')).toHaveValue('Bernard')
-      expect(screen.getByLabelText('Adresse e-mail')).toHaveValue('alice@example.com')
     })
 
     it('allows editing first name', async () => {
@@ -173,15 +170,6 @@ describe('SettingsPage', () => {
       await user.clear(input)
       await user.type(input, 'Bob')
       expect(input).toHaveValue('Bob')
-    })
-
-    it('allows editing email', async () => {
-      const user = userEvent.setup()
-      renderPage()
-      const input = screen.getByLabelText('Adresse e-mail')
-      await user.clear(input)
-      await user.type(input, 'bob@example.com')
-      expect(input).toHaveValue('bob@example.com')
     })
 
     it('saves profile metadata and shows success message', async () => {
@@ -195,27 +183,6 @@ describe('SettingsPage', () => {
         last_name: 'Bernard',
         full_name: 'Alice Bernard',
       })
-    })
-
-    it('calls updateEmail when email is changed', async () => {
-      mockUpdateUserMetadata.mockResolvedValue(null)
-      mockUpdateEmail.mockResolvedValue(null)
-      const user = userEvent.setup()
-      renderPage()
-      const emailInput = screen.getByLabelText('Adresse e-mail')
-      await user.clear(emailInput)
-      await user.type(emailInput, 'new@example.com')
-      await user.click(screen.getByRole('button', { name: 'Sauvegarder le profil' }))
-      await waitFor(() => expect(mockUpdateEmail).toHaveBeenCalledWith('new@example.com'))
-    })
-
-    it('does not call updateEmail when email is unchanged', async () => {
-      mockUpdateUserMetadata.mockResolvedValue(null)
-      const user = userEvent.setup()
-      renderPage()
-      await user.click(screen.getByRole('button', { name: 'Sauvegarder le profil' }))
-      await waitFor(() => expect(screen.getByText('Profil mis à jour.')).toBeInTheDocument())
-      expect(mockUpdateEmail).not.toHaveBeenCalled()
     })
 
     it('shows error when profile save fails', async () => {

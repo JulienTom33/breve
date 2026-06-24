@@ -13,7 +13,6 @@ vi.mock('@/hooks/useAuth', () => ({
     signOut: vi.fn(),
     resetPassword: vi.fn(),
     updateUserMetadata: vi.fn(),
-    updateEmail: vi.fn(),
   }),
 }))
 
