@@ -8,7 +8,7 @@ const FeedPage: FC = () => {
   const { stories, loading, loadingMore, sentinelRef } = useFeed()
 
   return (
-    <div id="feed-page__container--main" className="p-4 md:p-6 max-w-4xl mx-auto">
+    <div id="feed-page__container--main" className="p-4 md:p-6">
       {loading && (
         <>
           <StoryCardSkeleton variant="hero" />
