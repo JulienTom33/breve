@@ -38,9 +38,18 @@ create policy "Public read on news_clusters"
   using (true);
 
 -- 4. FK articles.cluster_id → news_clusters
-alter table public.articles
-  add constraint articles_cluster_id_fkey
-  foreign key (cluster_id) references public.news_clusters(id) on delete set null;
+do $$
+begin
+  if not exists (
+    select 1 from information_schema.table_constraints
+    where constraint_name = 'articles_cluster_id_fkey'
+    and table_schema = 'public'
+  ) then
+    alter table public.articles
+      add constraint articles_cluster_id_fkey
+      foreign key (cluster_id) references public.news_clusters(id) on delete set null;
+  end if;
+end $$;
 
 -- 5. Table cluster_sources
 create table if not exists public.cluster_sources (
