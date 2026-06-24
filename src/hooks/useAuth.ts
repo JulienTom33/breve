@@ -79,7 +79,10 @@ export function useAuth(): UseAuthReturn {
   }, [])
 
   const updateEmail = useCallback(async (email: string) => {
-    const { error } = await supabase.auth.updateUser({ email })
+    const { error } = await supabase.auth.updateUser(
+      { email },
+      { emailRedirectTo: `${window.location.origin}/auth` },
+    )
     return error
   }, [])
 
