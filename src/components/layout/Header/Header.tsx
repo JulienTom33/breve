@@ -3,14 +3,17 @@ import { Link, NavLink } from 'react-router-dom'
 import { SunIcon, MoonIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import Button from '@/components/ui/Button/Button'
 import BreveLogo from '@/components/ui/BreveLogo/BreveLogo'
+import UserMenu from '@/components/layout/UserMenu/UserMenu'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { useTime } from '@/hooks/useTime'
+import { useAuth } from '@/hooks/useAuth'
 import { t } from '@/lib/i18n'
 
 const Header: FC = () => {
   const { isDark, toggle } = useDarkMode()
   const time = useTime()
   const timeString = time.toLocaleTimeString('fr-FR')
+  const { user, loading } = useAuth()
 
   return (
     <header
@@ -94,17 +97,23 @@ const Header: FC = () => {
               <MoonIcon className="w-5 h-5" aria-hidden="true" />
             )}
           </Button>
-          <Link
-            to="/auth"
-            id="header__button--connexion"
-            className="inline-flex items-center justify-center bg-primary hover:bg-primary-hover text-white text-sm font-semibold rounded-full px-4 h-9 transition-colors duration-150 shrink-0"
-          >
-            {t.nav.connexion}
-          </Link>
+
+          {!loading &&
+            (user ? (
+              <UserMenu user={user} />
+            ) : (
+              <Link
+                to="/auth"
+                id="header__button--connexion"
+                className="inline-flex items-center justify-center bg-primary hover:bg-primary-hover text-white text-sm font-semibold rounded-full px-4 h-9 transition-colors duration-150 shrink-0"
+              >
+                {t.nav.connexion}
+              </Link>
+            ))}
         </div>
 
-        {/* Toggle dark/light mode mobile uniquement */}
-        <div id="header__actions--mobile" className="md:hidden shrink-0">
+        {/* Toggle dark/light mode mobile uniquement + avatar si connecté */}
+        <div id="header__actions--mobile" className="md:hidden flex items-center gap-2 shrink-0">
           <Button
             variant="icon"
             onClick={toggle}
@@ -116,6 +125,19 @@ const Header: FC = () => {
               <MoonIcon className="w-5 h-5" aria-hidden="true" />
             )}
           </Button>
+
+          {!loading &&
+            (user ? (
+              <UserMenu user={user} />
+            ) : (
+              <Link
+                to="/auth"
+                id="header__button--connexion-mobile"
+                className="inline-flex items-center justify-center bg-primary hover:bg-primary-hover text-white text-sm font-semibold rounded-full px-3 h-8 transition-colors duration-150 shrink-0"
+              >
+                {t.nav.connexion}
+              </Link>
+            ))}
         </div>
       </div>
     </header>

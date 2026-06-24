@@ -11,6 +11,8 @@ const translations = {
       actualites: 'Actualités',
       meteo: 'Météo',
       connexion: 'Connexion',
+      preferences: 'Préférences',
+      signOut: 'Se déconnecter',
       searchPlaceholder: 'Rechercher...',
       categories: {
         tout: 'Tout',
@@ -151,6 +153,8 @@ const translations = {
       actualites: 'News',
       meteo: 'Weather',
       connexion: 'Sign in',
+      preferences: 'Preferences',
+      signOut: 'Sign out',
       searchPlaceholder: 'Search...',
       categories: {
         tout: 'All',
