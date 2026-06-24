@@ -1,6 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import type { Story, StorySource, StoryTag } from '@/types/story'
+import { MOCK_STORIES } from './mockStories'
+
+// TODO: retirer quand le flux RSS est câblé
+const USE_MOCK = true
 
 const PAGE_SIZE = 20
 
@@ -78,6 +82,11 @@ export function useFeed(): UseFeedReturn {
   const sentinelRef = useRef<HTMLDivElement | null>(null)
 
   const fetchPage = useCallback(async (page: number): Promise<Story[]> => {
+    if (USE_MOCK) {
+      const start = page * PAGE_SIZE
+      return MOCK_STORIES.slice(start, start + PAGE_SIZE)
+    }
+
     const { data, error } = await supabase
       .from('stories')
       .select(

@@ -9,6 +9,21 @@ vi.mock('@/lib/supabase', () => ({
   },
 }))
 
+vi.mock('./mockStories', () => ({
+  MOCK_STORIES: [
+    {
+      id: 'story-1',
+      title: 'Test Story',
+      summary: 'Test summary',
+      category: 'monde',
+      published_at: '2026-06-24T10:00:00Z',
+      source_count: 1,
+      sources: [{ name: 'Le Monde', url: 'https://lemonde.fr' }],
+      tags: [{ label: 'Tech', slug: 'tech' }],
+    },
+  ],
+}))
+
 const mockRawStory = {
   id: 'story-1',
   title: 'Test Story',
@@ -88,30 +103,15 @@ describe('useFeed', () => {
     expect(result.current.stories[0].tags[0].slug).toBe('tech')
   })
 
-  it('shows empty stories when fetch returns empty array', async () => {
+  it('returns mock stories (mock mode active)', async () => {
     const { result } = renderHook(() => useFeed())
     await waitFor(() => expect(result.current.loading).toBe(false))
 
-    expect(result.current.stories).toHaveLength(0)
-    expect(result.current.hasMore).toBe(false)
-  })
-
-  it('returns empty array on fetch error', async () => {
-    vi.mocked(supabase.from).mockImplementation(() =>
-      makeChain({ data: null, error: new Error('DB error') }),
-    )
-
-    const { result } = renderHook(() => useFeed())
-    await waitFor(() => expect(result.current.loading).toBe(false))
-
-    expect(result.current.stories).toHaveLength(0)
+    expect(result.current.stories).toHaveLength(1)
+    expect(result.current.stories[0].id).toBe('story-1')
   })
 
   it('sets hasMore to false when fewer than PAGE_SIZE stories returned', async () => {
-    vi.mocked(supabase.from).mockImplementation(() =>
-      makeChain({ data: [mockRawStory], error: null }),
-    )
-
     const { result } = renderHook(() => useFeed())
     await waitFor(() => expect(result.current.loading).toBe(false))
 
