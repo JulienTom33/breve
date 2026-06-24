@@ -32,6 +32,7 @@ create index on public.news_clusters (published_at desc);
 
 alter table public.news_clusters enable row level security;
 
+drop policy if exists "Public read on news_clusters" on public.news_clusters;
 create policy "Public read on news_clusters"
   on public.news_clusters for select
   using (true);
@@ -52,6 +53,7 @@ create table if not exists public.cluster_sources (
 
 alter table public.cluster_sources enable row level security;
 
+drop policy if exists "Public read on cluster_sources" on public.cluster_sources;
 create policy "Public read on cluster_sources"
   on public.cluster_sources for select
   using (true);
