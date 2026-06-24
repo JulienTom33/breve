@@ -5,17 +5,17 @@ import type { Story } from '@/types/story'
 
 const mockStories: Story[] = [
   {
-    id: 'hero-story',
-    title: 'Hero Story Title',
-    summary: 'Hero story summary text.',
+    id: 'story-1',
+    title: 'First Story Title',
+    summary: 'First story summary text.',
     category: 'monde',
     published_at: '2026-06-24T10:00:00Z',
     source_count: 2,
-    sources: [{ name: 'BBC', url: 'https://bbc.com/hero' }],
+    sources: [{ name: 'BBC', url: 'https://bbc.com/story1' }],
     tags: [{ label: 'Monde', slug: 'monde' }],
   },
   {
-    id: 'second-story',
+    id: 'story-2',
     title: 'Second Story Title',
     summary: 'Second story summary.',
     category: 'france',
@@ -54,8 +54,7 @@ describe('FeedPage', () => {
     })
 
     render(<FeedPage />)
-    expect(screen.getByLabelText('Chargement de la story principale')).toBeInTheDocument()
-    expect(screen.getAllByLabelText("Chargement d'une story")).toHaveLength(3)
+    expect(screen.getAllByLabelText("Chargement d'une story")).toHaveLength(4)
   })
 
   it('shows empty state when no stories', async () => {
@@ -72,7 +71,7 @@ describe('FeedPage', () => {
     expect(screen.getByText('Aucune story disponible pour le moment.')).toBeInTheDocument()
   })
 
-  it('renders hero card as first story', async () => {
+  it('renders all stories as cards', async () => {
     const { useFeed } = await import('@/features/feed/useFeed')
     vi.mocked(useFeed).mockReturnValue({
       stories: mockStories,
@@ -83,11 +82,11 @@ describe('FeedPage', () => {
     })
 
     render(<FeedPage />)
-    expect(screen.getByText('Hero Story Title')).toBeInTheDocument()
-    expect(screen.getByRole('article')).toBeInTheDocument()
+    expect(screen.getByText('First Story Title')).toBeInTheDocument()
+    expect(screen.getByText('Second Story Title')).toBeInTheDocument()
   })
 
-  it('renders secondary story cards', async () => {
+  it('renders stories list as grid', async () => {
     const { useFeed } = await import('@/features/feed/useFeed')
     vi.mocked(useFeed).mockReturnValue({
       stories: mockStories,
@@ -97,8 +96,9 @@ describe('FeedPage', () => {
       sentinelRef: mockSentinelRef,
     })
 
-    render(<FeedPage />)
-    expect(screen.getByText('Second Story Title')).toBeInTheDocument()
+    const { container } = render(<FeedPage />)
+    const list = container.querySelector('#feed-page__list--stories')
+    expect(list).toHaveClass('grid', 'md:grid-cols-2')
   })
 
   it('shows loadingMore skeletons when paginating', async () => {
