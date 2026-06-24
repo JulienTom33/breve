@@ -101,6 +101,16 @@ const translations = {
       saveError: 'Impossible de sauvegarder vos préférences.',
     },
     settings: {
+      profile: {
+        title: 'Mon profil',
+        subtitle: 'Modifiez vos informations personnelles.',
+        firstName: 'Prénom',
+        lastName: 'Nom',
+        avatar: 'Photo de profil',
+        save: 'Sauvegarder le profil',
+        saved: 'Profil mis à jour.',
+        saveError: 'Impossible de mettre à jour le profil.',
+      },
       categories: {
         title: 'Mes catégories',
         subtitle: "Catégories affichées par défaut dans votre fil d'actualité.",
@@ -243,6 +253,16 @@ const translations = {
       saveError: 'Unable to save your preferences.',
     },
     settings: {
+      profile: {
+        title: 'My profile',
+        subtitle: 'Edit your personal information.',
+        firstName: 'First name',
+        lastName: 'Last name',
+        avatar: 'Profile picture',
+        save: 'Save profile',
+        saved: 'Profile updated.',
+        saveError: 'Unable to update profile.',
+      },
       categories: {
         title: 'My categories',
         subtitle: 'Categories shown by default in your news feed.',

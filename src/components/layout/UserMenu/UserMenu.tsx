@@ -2,6 +2,7 @@ import { FC, useEffect, useRef, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { User } from '@supabase/supabase-js'
 import { Cog6ToothIcon, ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/outline'
+import Button from '@/components/ui/Button/Button'
 import UserAvatar from '@/components/ui/UserAvatar/UserAvatar'
 import { useAuth } from '@/hooks/useAuth'
 import { t } from '@/lib/i18n'
@@ -48,7 +49,11 @@ const UserMenu: FC<Props> = ({ user }) => {
 
   return (
     <div ref={containerRef} className="relative" onKeyDown={handleKeyDown}>
-      <UserAvatar user={user} isOpen={isOpen} onClick={() => setIsOpen((v) => !v)} />
+      <UserAvatar
+        user={user}
+        isOpen={isOpen}
+        onClick={() => setIsOpen((isCurrentlyOpen) => !isCurrentlyOpen)}
+      />
 
       {isOpen && (
         <div
@@ -57,29 +62,28 @@ const UserMenu: FC<Props> = ({ user }) => {
           aria-label="Menu utilisateur"
           className="absolute right-0 top-full mt-2 w-48 bg-surface border border-border rounded-xl shadow-md overflow-hidden z-50"
         >
-          <button
+          <Button
             id="user-menu__item--preferences"
+            variant="menuItem"
             role="menuitem"
-            type="button"
             onClick={handlePreferences}
-            className="w-full flex items-center gap-2 px-4 py-3 text-sm text-text hover:bg-surface-2 transition-colors duration-150 focus:outline-none focus:bg-surface-2"
           >
             <Cog6ToothIcon className="w-4 h-4 text-text-muted shrink-0" aria-hidden="true" />
             {t.nav.preferences}
-          </button>
+          </Button>
 
           <div className="border-t border-divider" />
 
-          <button
+          <Button
             id="user-menu__item--signout"
+            variant="menuItem"
             role="menuitem"
-            type="button"
             onClick={handleSignOut}
-            className="w-full flex items-center gap-2 px-4 py-3 text-sm text-error hover:bg-error-subtle transition-colors duration-150 focus:outline-none focus:bg-error-subtle"
+            className="text-error hover:bg-error-subtle"
           >
             <ArrowRightStartOnRectangleIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
             {t.nav.signOut}
-          </button>
+          </Button>
         </div>
       )}
     </div>

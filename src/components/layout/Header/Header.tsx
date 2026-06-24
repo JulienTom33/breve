@@ -112,7 +112,6 @@ const Header: FC = () => {
             ))}
         </div>
 
-        {/* Toggle dark/light mode mobile uniquement + avatar si connecté */}
         <div id="header__actions--mobile" className="md:hidden flex items-center gap-2 shrink-0">
           <Button
             variant="icon"

@@ -1,5 +1,6 @@
 import { FC } from 'react'
 import type { User } from '@supabase/supabase-js'
+import Button from '@/components/ui/Button/Button'
 
 interface Props {
   user: User
@@ -28,14 +29,14 @@ const UserAvatar: FC<Props> = ({ user, size = 'md', onClick, isOpen = false }) =
   const sizeClass = sizeClasses[size]
 
   return (
-    <button
+    <Button
       id="user-avatar__button--trigger"
-      type="button"
+      variant="avatar"
       onClick={onClick}
       aria-label="Menu utilisateur"
       aria-expanded={isOpen}
       aria-haspopup="menu"
-      className={`${sizeClass} rounded-full overflow-hidden border-2 transition-all duration-150 shrink-0 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface ${isOpen ? 'border-primary' : 'border-border hover:border-primary'}`}
+      className={`${sizeClass} ${isOpen ? 'border-primary' : 'border-border hover:border-primary'}`}
     >
       {avatarUrl ? (
         <img
@@ -53,7 +54,7 @@ const UserAvatar: FC<Props> = ({ user, size = 'md', onClick, isOpen = false }) =
           {getInitials(user)}
         </span>
       )}
-    </button>
+    </Button>
   )
 }
 
