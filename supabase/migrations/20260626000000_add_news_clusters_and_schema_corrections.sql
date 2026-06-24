@@ -1,5 +1,13 @@
 -- 1. Corrections table sources
-alter table public.sources rename column url to rss_url;
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'sources' and column_name = 'url'
+  ) then
+    alter table public.sources rename column url to rss_url;
+  end if;
+end $$;
 alter table public.sources add column if not exists country text not null default 'FR';
 
 -- 2. Corrections table articles
