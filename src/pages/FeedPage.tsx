@@ -12,9 +12,11 @@ const FeedPage: FC = () => {
       {loading && (
         <>
           <StoryCardSkeleton variant="hero" />
-          {[0, 1, 2].map((i) => (
-            <StoryCardSkeleton key={i} variant="card" />
-          ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {[0, 1, 2].map((i) => (
+              <StoryCardSkeleton key={i} variant="card" />
+            ))}
+          </div>
         </>
       )}
 
@@ -29,18 +31,21 @@ const FeedPage: FC = () => {
       {!loading && stories.length > 0 && (
         <>
           <HeroStoryCard story={stories[0]} />
-          <ul id="feed-page__list--stories" className="p-0 m-0">
+          <ul
+            id="feed-page__list--stories"
+            className="p-0 m-0 grid grid-cols-1 md:grid-cols-2 gap-3"
+          >
             {stories.slice(1).map((story) => (
               <StoryCard key={story.id} story={story} />
             ))}
           </ul>
           <div ref={sentinelRef} id="feed-page__sentinel--scroll" aria-hidden="true" />
           {loadingMore && (
-            <>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {[0, 1, 2].map((i) => (
                 <StoryCardSkeleton key={i} variant="card" />
               ))}
-            </>
+            </div>
           )}
         </>
       )}

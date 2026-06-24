@@ -19,7 +19,7 @@ const StoryCard: FC<StoryCardProps> = ({ story }) => {
   return (
     <li
       id={`story-card__container--${story.id}`}
-      className="bg-surface rounded-lg shadow-card overflow-hidden p-4 mb-3 list-none"
+      className="bg-surface rounded-lg shadow-card overflow-hidden p-4 list-none"
     >
       <div id={`story-card__meta--${story.id}`} className="flex items-center gap-2 mb-2">
         <Badge category={badgeCategory} />
