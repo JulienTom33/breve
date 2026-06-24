@@ -3,11 +3,14 @@ import { FC, ReactNode } from 'react'
 interface ButtonProps {
   id?: string
   children: ReactNode
-  variant?: 'primary' | 'ghost' | 'icon' | 'tab'
+  variant?: 'primary' | 'ghost' | 'icon' | 'tab' | 'menuItem' | 'avatar'
   onClick?: () => void
   disabled?: boolean
   className?: string
   'aria-label'?: string
+  'aria-expanded'?: boolean
+  'aria-haspopup'?: boolean | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog'
+  role?: string
   type?: 'button' | 'submit' | 'reset'
 }
 
@@ -21,6 +24,10 @@ const variants: Record<NonNullable<ButtonProps['variant']>, string> = {
     'bg-transparent border border-border text-text hover:bg-surface-2 rounded-md px-4 py-2.5 text-sm',
   icon: 'w-10 h-10 bg-surface-2 hover:bg-surface-offset rounded-md text-text',
   tab: 'flex-1 py-2 text-sm rounded-md',
+  menuItem:
+    'bg-transparent w-full justify-start font-normal px-4 py-3 text-sm text-text hover:bg-surface-2',
+  avatar:
+    'rounded-full overflow-hidden border-2 bg-transparent hover:bg-transparent p-0 focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface focus:outline-none shrink-0',
 }
 
 const Button: FC<ButtonProps> = ({
@@ -31,6 +38,9 @@ const Button: FC<ButtonProps> = ({
   disabled = false,
   className = '',
   'aria-label': ariaLabel,
+  'aria-expanded': ariaExpanded,
+  'aria-haspopup': ariaHasPopup,
+  role,
   type = 'button',
 }) => (
   <button
@@ -39,6 +49,9 @@ const Button: FC<ButtonProps> = ({
     onClick={onClick}
     disabled={disabled}
     aria-label={ariaLabel}
+    aria-expanded={ariaExpanded}
+    aria-haspopup={ariaHasPopup}
+    role={role}
     className={`${base} ${variants[variant]} ${className}`.trim()}
   >
     {children}

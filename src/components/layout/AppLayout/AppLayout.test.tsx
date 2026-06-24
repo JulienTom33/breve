@@ -1,7 +1,20 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import AppLayout from './AppLayout'
+
+vi.mock('@/hooks/useAuth', () => ({
+  useAuth: () => ({
+    user: null,
+    loading: false,
+    signIn: vi.fn(),
+    signUp: vi.fn(),
+    signInWithGoogle: vi.fn(),
+    signOut: vi.fn(),
+    resetPassword: vi.fn(),
+    updateUserMetadata: vi.fn(),
+  }),
+}))
 
 const renderLayout = (initialPath = '/') => {
   const router = createMemoryRouter(
