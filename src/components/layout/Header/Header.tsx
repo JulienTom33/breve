@@ -20,8 +20,7 @@ const Header: FC = () => {
       id="header__container--main"
       className="sticky top-0 z-50 w-full bg-surface border-b border-border h-14 flex items-center px-4 md:px-6"
     >
-      <div className="flex items-center gap-3 w-full">
-        {/* Brand: logo + nom + nav desktop */}
+      <div className="flex items-center justify-between gap-3 w-full">
         <div id="header__brand--wrapper" className="flex items-center gap-2 shrink-0">
           <BreveLogo className="h-5 w-auto" />
           <span
@@ -31,7 +30,6 @@ const Header: FC = () => {
             {t.app.name}
           </span>
 
-          {/* Nav desktop uniquement */}
           <span className="hidden md:block text-border mx-1 select-none" aria-hidden="true">
             |
           </span>
@@ -62,10 +60,9 @@ const Header: FC = () => {
           </nav>
         </div>
 
-        {/* Search: visible partout, prend l'espace restant */}
         <div
           id="header__search--wrapper"
-          className="flex-1 flex items-center gap-2 bg-surface-2 border border-border rounded-full px-3 h-9 min-w-0"
+          className="w-80 flex items-center gap-2 bg-surface-2 border border-border rounded-full px-3 h-9 min-w-0"
         >
           <MagnifyingGlassIcon className="w-4 h-4 text-text-faint shrink-0" aria-hidden="true" />
           <input
@@ -77,7 +74,6 @@ const Header: FC = () => {
           />
         </div>
 
-        {/* Actions desktop uniquement */}
         <div id="header__actions--desktop" className="hidden md:flex items-center gap-2 shrink-0">
           <span
             id="header__time--display"
