@@ -1,5 +1,6 @@
 import { FC, useState } from 'react'
 import Badge from '@/components/ui/Badge/Badge'
+import Button from '@/components/ui/Button/Button'
 import SourcePill from '@/components/ui/SourcePill/SourcePill'
 import TagChip from '@/components/ui/TagChip/TagChip'
 import type { Story } from '@/types/story'
@@ -58,15 +59,16 @@ const StoryCard: FC<StoryCardProps> = ({ story }) => {
           >
             {story.summary}
           </p>
-          <button
+          <Button
             id={`story-card__expand-btn--${story.id}`}
+            variant="ghost"
             onClick={() => setExpanded((prev) => !prev)}
-            className="mt-1 text-xs text-text-faint hover:text-text transition-colors cursor-pointer"
+            className="mt-1 px-0 py-0 border-none text-xs text-text-faint hover:text-text hover:bg-transparent"
             aria-expanded={expanded}
             aria-controls={`story-card__summary--${story.id}`}
           >
             {expanded ? 'Réduire ↑' : 'Lire plus ↓'}
-          </button>
+          </Button>
         </div>
 
         {story.tags.length > 0 && (

@@ -1,4 +1,5 @@
 import { FC } from 'react'
+import Button from '@/components/ui/Button/Button'
 
 interface TagChipProps {
   label: string
@@ -6,24 +7,20 @@ interface TagChipProps {
   onClick?: (slug: string) => void
 }
 
-const TagChip: FC<TagChipProps> = ({ label, slug, onClick }) => {
-  const baseClass =
-    'inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-surface-2 border border-border text-text-muted transition-colors duration-150'
+const chipClass =
+  'inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-surface-2 border border-border text-text-muted transition-colors duration-150'
 
+const TagChip: FC<TagChipProps> = ({ label, slug, onClick }) => {
   if (onClick) {
     return (
-      <button
-        id={`tag-chip__button--${slug}`}
-        onClick={() => onClick(slug)}
-        className={`${baseClass} hover:bg-surface-offset hover:text-text cursor-pointer`}
-      >
+      <Button id={`tag-chip__button--${slug}`} variant="chip" onClick={() => onClick(slug)}>
         #{label}
-      </button>
+      </Button>
     )
   }
 
   return (
-    <span id={`tag-chip__label--${slug}`} className={baseClass}>
+    <span id={`tag-chip__label--${slug}`} className={chipClass}>
       #{label}
     </span>
   )
