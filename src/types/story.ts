@@ -17,6 +17,7 @@ export interface Story {
   category: string
   published_at: string
   source_count: number
+  image_url?: string
   sources: StorySource[]
   tags: StoryTag[]
 }

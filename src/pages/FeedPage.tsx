@@ -7,7 +7,7 @@ const FeedPage: FC = () => {
   const { stories, loading, loadingMore, sentinelRef } = useFeed()
 
   return (
-    <div id="feed-page__container--main" className="p-4 md:p-6">
+    <div id="feed-page__container--main" className="px-4 md:px-8 py-4 md:py-6 max-w-6xl mx-auto">
       {loading && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {[0, 1, 2, 3].map((i) => (
