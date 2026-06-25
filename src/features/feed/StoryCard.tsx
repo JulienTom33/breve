@@ -63,7 +63,7 @@ const StoryCard: FC<StoryCardProps> = ({ story }) => {
             id={`story-card__expand-btn--${story.id}`}
             variant="ghost"
             onClick={() => setExpanded((prev) => !prev)}
-            className="mt-1 px-0 py-0 border-none text-xs text-text-faint hover:text-text hover:bg-transparent"
+            className="mt-1 pl-0 px-0 py-0 border-none text-xs text-text-faint hover:text-text hover:bg-transparent"
             aria-expanded={expanded}
             aria-controls={`story-card__summary--${story.id}`}
           >
