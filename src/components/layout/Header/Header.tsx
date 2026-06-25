@@ -84,6 +84,7 @@ const Header: FC = () => {
           </span>
           <Button
             variant="icon"
+            className="cursor-pointer"
             onClick={toggle}
             aria-label={isDark ? 'Passer en mode clair' : 'Passer en mode sombre'}
           >
@@ -111,6 +112,7 @@ const Header: FC = () => {
         <div id="header__actions--mobile" className="md:hidden flex items-center gap-2 shrink-0">
           <Button
             variant="icon"
+            className="cursor-pointer"
             onClick={toggle}
             aria-label={isDark ? 'Passer en mode clair' : 'Passer en mode sombre'}
           >

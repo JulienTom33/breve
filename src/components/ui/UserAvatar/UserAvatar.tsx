@@ -27,7 +27,7 @@ const UserAvatar: FC<Props> = ({ user, size = 'md', onClick, isOpen = false }) =
       aria-label="Menu utilisateur"
       aria-expanded={isOpen}
       aria-haspopup="menu"
-      className={`${sizeClass} ${isOpen ? 'border-primary' : 'border-border hover:border-primary'}`}
+      className={`${sizeClass} ${isOpen ? 'border-primary' : 'border-border hover:border-primary cursor-pointer'}`}
     >
       {avatarUrl ? (
         <img

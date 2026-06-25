@@ -114,6 +114,7 @@ const SettingsPage: FC = () => {
         <Button
           id="settings-page__button--close"
           variant="icon"
+          className="cursor-pointer"
           onClick={() => navigate('/')}
           aria-label="Fermer les paramètres"
         >
@@ -178,8 +179,8 @@ const SettingsPage: FC = () => {
                 className={[
                   'w-full aspect-square rounded-full overflow-hidden border-2 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface',
                   pendingAvatarUrl === preset.url
-                    ? 'border-primary'
-                    : 'border-transparent hover:border-border',
+                    ? 'border-primary cursor-pointer'
+                    : 'border-transparent hover:border-border cursor-pointer',
                 ].join(' ')}
               >
                 <img src={preset.url} alt={preset.label} className="w-full h-full object-cover" />
@@ -245,7 +246,7 @@ const SettingsPage: FC = () => {
           variant="primary"
           onClick={handleSaveProfile}
           disabled={savingProfile}
-          className="!rounded-full !px-6"
+          className="!rounded-full !px-6 cursor-pointer"
         >
           {savingProfile ? t.auth.actions.loading : t.settings.profile.save}
         </Button>
@@ -253,7 +254,6 @@ const SettingsPage: FC = () => {
 
       <div id="settings-page__divider--sections" className="border-t border-divider mb-8" />
 
-      {/* Section catégories */}
       <section id="settings-page__section--categories" className="mb-8">
         <h2 id="settings-page__section-title--categories" className="text-base font-semibold mb-1">
           {t.settings.categories.title}
@@ -289,8 +289,8 @@ const SettingsPage: FC = () => {
                     className={[
                       'w-full py-3 px-4 rounded-xl text-sm font-medium border transition-all duration-150 text-left',
                       isSelected
-                        ? 'bg-primary text-white border-primary'
-                        : 'bg-surface-2 text-text border-border hover:border-primary/50 hover:text-primary',
+                        ? 'bg-primary text-white border-primary cursor-pointer'
+                        : 'bg-surface-2 text-text border-border hover:border-primary/50 hover:text-primary cursor-pointer',
                     ].join(' ')}
                   >
                     {label}
@@ -316,7 +316,7 @@ const SettingsPage: FC = () => {
               variant="primary"
               onClick={handleSaveCategories}
               disabled={savingCategories}
-              className="!rounded-full !px-6"
+              className="!rounded-full !px-6 cursor-pointer"
             >
               {savingCategories ? t.auth.actions.loading : t.settings.categories.save}
             </Button>
