@@ -3,13 +3,14 @@ import { FC, ReactNode } from 'react'
 interface ButtonProps {
   id?: string
   children: ReactNode
-  variant?: 'primary' | 'ghost' | 'icon' | 'tab' | 'menuItem' | 'avatar'
+  variant?: 'primary' | 'ghost' | 'icon' | 'tab' | 'menuItem' | 'avatar' | 'chip'
   onClick?: () => void
   disabled?: boolean
   className?: string
   'aria-label'?: string
   'aria-expanded'?: boolean
   'aria-haspopup'?: boolean | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog'
+  'aria-controls'?: string
   role?: string
   type?: 'button' | 'submit' | 'reset'
 }
@@ -28,6 +29,7 @@ const variants: Record<NonNullable<ButtonProps['variant']>, string> = {
     'bg-transparent w-full justify-start font-normal px-4 py-3 text-sm text-text hover:bg-surface-2',
   avatar:
     'rounded-full overflow-hidden border-2 bg-transparent hover:bg-transparent p-0 focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface focus:outline-none shrink-0',
+  chip: 'bg-surface-2 border border-border text-text-muted hover:bg-surface-offset hover:text-text rounded-full px-2 py-0.5 text-xs font-normal',
 }
 
 const Button: FC<ButtonProps> = ({
@@ -40,6 +42,7 @@ const Button: FC<ButtonProps> = ({
   'aria-label': ariaLabel,
   'aria-expanded': ariaExpanded,
   'aria-haspopup': ariaHasPopup,
+  'aria-controls': ariaControls,
   role,
   type = 'button',
 }) => (
@@ -51,6 +54,7 @@ const Button: FC<ButtonProps> = ({
     aria-label={ariaLabel}
     aria-expanded={ariaExpanded}
     aria-haspopup={ariaHasPopup}
+    aria-controls={ariaControls}
     role={role}
     className={`${base} ${variants[variant]} ${className}`.trim()}
   >
