@@ -1,8 +1,10 @@
 import { FC } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { SunIcon, MoonIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import Button from '@/components/ui/Button/Button'
+import Input from '@/components/ui/Input/Input'
 import BreveLogo from '@/components/ui/BreveLogo/BreveLogo'
+import Navbar from '@/components/layout/Navbar/Navbar'
 import UserMenu from '@/components/layout/UserMenu/UserMenu'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { useTime } from '@/hooks/useTime'
@@ -33,44 +35,18 @@ const Header: FC = () => {
           <span className="hidden md:block text-border mx-1 select-none" aria-hidden="true">
             |
           </span>
-          <nav
-            id="header__nav--links"
-            className="hidden md:flex items-center gap-3"
-            aria-label="Sections de l'application"
-          >
-            <NavLink
-              to="/"
-              end
-              id="header__link--actualites"
-              className={({ isActive }) =>
-                `text-sm font-medium transition-colors duration-150 ${isActive ? 'text-text' : 'text-text-muted hover:text-text'}`
-              }
-            >
-              {t.nav.actualites}
-            </NavLink>
-            <NavLink
-              to="/meteo"
-              id="header__link--meteo"
-              className={({ isActive }) =>
-                `text-sm font-medium transition-colors duration-150 ${isActive ? 'text-text' : 'text-text-muted hover:text-text'}`
-              }
-            >
-              {t.nav.meteo}
-            </NavLink>
-          </nav>
+          <Navbar />
         </div>
 
-        <div
-          id="header__search--wrapper"
-          className="w-80 flex items-center gap-2 bg-surface-2 border border-border rounded-full px-3 h-9 min-w-0"
-        >
-          <MagnifyingGlassIcon className="w-4 h-4 text-text-faint shrink-0" aria-hidden="true" />
-          <input
+        <div id="header__search--wrapper" className="w-80 min-w-0">
+          <Input
             id="header__input--search"
             type="search"
             placeholder={t.nav.searchPlaceholder}
-            className="flex-1 min-w-0 bg-transparent text-text placeholder:text-text-faint text-sm outline-none"
             aria-label="Rechercher des articles"
+            startAdornment={
+              <MagnifyingGlassIcon className="w-4 h-4 text-text-faint" aria-hidden="true" />
+            }
           />
         </div>
 

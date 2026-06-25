@@ -2,6 +2,8 @@ import { FC, useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import Button from '@/components/ui/Button/Button'
+import Input from '@/components/ui/Input/Input'
+import Label from '@/components/ui/Label/Label'
 import { useUserProfile } from '@/hooks/useUserProfile'
 import { useAuth } from '@/hooks/useAuth'
 import { SELECTABLE_CATEGORIES } from '@/lib/categories'
@@ -109,7 +111,7 @@ const SettingsPage: FC = () => {
     <div id="settings-page__container--main" className="p-4 md:p-6 max-w-2xl mx-auto">
       <div id="settings-page__header--top" className="flex items-center justify-between mb-6">
         <h1 id="settings-page__title--main" className="m-0">
-          Paramètres
+          {t.settings.title}
         </h1>
         <Button
           id="settings-page__button--close"
@@ -191,13 +193,8 @@ const SettingsPage: FC = () => {
 
         <div id="settings-page__profile-fields--wrapper" className="flex flex-col gap-4 mb-4">
           <div id="settings-page__profile-field--firstname">
-            <label
-              htmlFor="settings-page__input--firstname"
-              className="block text-sm font-medium text-text mb-1"
-            >
-              {t.settings.profile.firstName}
-            </label>
-            <input
+            <Label htmlFor="settings-page__input--firstname">{t.settings.profile.firstName}</Label>
+            <Input
               id="settings-page__input--firstname"
               type="text"
               value={firstName}
@@ -205,18 +202,12 @@ const SettingsPage: FC = () => {
                 setSavedProfile(false)
                 setFirstName(event.target.value)
               }}
-              className="w-full bg-surface-2 border border-border rounded-md px-3 py-2 text-sm text-text placeholder:text-text-faint outline-none focus:border-primary transition-colors duration-150"
             />
           </div>
 
           <div id="settings-page__profile-field--lastname">
-            <label
-              htmlFor="settings-page__input--lastname"
-              className="block text-sm font-medium text-text mb-1"
-            >
-              {t.settings.profile.lastName}
-            </label>
-            <input
+            <Label htmlFor="settings-page__input--lastname">{t.settings.profile.lastName}</Label>
+            <Input
               id="settings-page__input--lastname"
               type="text"
               value={lastName}
@@ -224,7 +215,6 @@ const SettingsPage: FC = () => {
                 setSavedProfile(false)
                 setLastName(event.target.value)
               }}
-              className="w-full bg-surface-2 border border-border rounded-md px-3 py-2 text-sm text-text placeholder:text-text-faint outline-none focus:border-primary transition-colors duration-150"
             />
           </div>
         </div>
@@ -246,7 +236,6 @@ const SettingsPage: FC = () => {
           variant="primary"
           onClick={handleSaveProfile}
           disabled={savingProfile}
-          className="!rounded-full !px-6 cursor-pointer"
         >
           {savingProfile ? t.auth.actions.loading : t.settings.profile.save}
         </Button>
@@ -280,21 +269,22 @@ const SettingsPage: FC = () => {
               {SELECTABLE_CATEGORIES.map(({ id, label, cat }) => {
                 const isSelected = selectedCategories.includes(cat)
                 return (
-                  <button
+                  <Button
                     key={id}
                     id={`settings-page__chip--${id}`}
+                    variant="custom"
                     type="button"
                     onClick={() => toggleCategory(cat)}
                     aria-pressed={isSelected}
                     className={[
-                      'w-full py-3 px-4 rounded-xl text-sm font-medium border transition-all duration-150 text-left',
+                      'w-full py-3 px-4 rounded-xl text-sm font-medium border transition-all duration-150 text-left cursor-pointer',
                       isSelected
-                        ? 'bg-primary text-white border-primary cursor-pointer'
-                        : 'bg-surface-2 text-text border-border hover:border-primary/50 hover:text-primary cursor-pointer',
+                        ? 'bg-primary text-white border-primary'
+                        : 'bg-surface-2 text-text border-border hover:border-primary/50 hover:text-primary',
                     ].join(' ')}
                   >
                     {label}
-                  </button>
+                  </Button>
                 )
               })}
             </div>
@@ -316,7 +306,6 @@ const SettingsPage: FC = () => {
               variant="primary"
               onClick={handleSaveCategories}
               disabled={savingCategories}
-              className="!rounded-full !px-6 cursor-pointer"
             >
               {savingCategories ? t.auth.actions.loading : t.settings.categories.save}
             </Button>

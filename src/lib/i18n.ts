@@ -101,6 +101,7 @@ const translations = {
       saveError: 'Impossible de sauvegarder vos préférences.',
     },
     settings: {
+      title: 'Paramètres',
       profile: {
         title: 'Mon profil',
         subtitle: 'Modifiez vos informations personnelles.',
@@ -255,6 +256,7 @@ const translations = {
       saveError: 'Unable to save your preferences.',
     },
     settings: {
+      title: 'Settings',
       profile: {
         title: 'My profile',
         subtitle: 'Edit your personal information.',
