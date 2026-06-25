@@ -44,6 +44,7 @@ const Header: FC = () => {
             type="search"
             placeholder={t.nav.searchPlaceholder}
             aria-label="Rechercher des articles"
+            compact
             startAdornment={
               <MagnifyingGlassIcon className="w-4 h-4 text-text-faint" aria-hidden="true" />
             }

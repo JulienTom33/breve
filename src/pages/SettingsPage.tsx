@@ -236,6 +236,7 @@ const SettingsPage: FC = () => {
           variant="primary"
           onClick={handleSaveProfile}
           disabled={savingProfile}
+          className="rounded-full px-6 cursor-pointer"
         >
           {savingProfile ? t.auth.actions.loading : t.settings.profile.save}
         </Button>
@@ -306,6 +307,7 @@ const SettingsPage: FC = () => {
               variant="primary"
               onClick={handleSaveCategories}
               disabled={savingCategories}
+              className="rounded-full px-6 cursor-pointer"
             >
               {savingCategories ? t.auth.actions.loading : t.settings.categories.save}
             </Button>

@@ -66,7 +66,7 @@ const UserMenu: FC<Props> = ({ user }) => {
             id="user-menu__item--preferences"
             variant="menuItem"
             role="menuitem"
-            className="cursor-pointer"
+            className="cursor-pointer gap-2"
             onClick={handlePreferences}
           >
             <Cog6ToothIcon className="w-4 h-4 text-text-muted shrink-0" aria-hidden="true" />
@@ -80,7 +80,7 @@ const UserMenu: FC<Props> = ({ user }) => {
             variant="menuItem"
             role="menuitem"
             onClick={handleSignOut}
-            className="cursor-pointer text-error hover:bg-error-subtle"
+            className="cursor-pointer gap-2 text-error hover:bg-error-subtle"
           >
             <ArrowRightStartOnRectangleIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
             {t.nav.signOut}
