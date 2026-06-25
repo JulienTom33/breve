@@ -24,13 +24,20 @@ const Header: FC = () => {
     >
       <div className="flex items-center justify-between gap-3 w-full">
         <div id="header__brand--wrapper" className="flex items-center gap-2 shrink-0">
-          <BreveLogo className="h-5 w-auto" />
-          <span
-            id="header__logo--breve"
-            className="font-display font-bold text-primary text-sm md:text-base tracking-tight select-none"
+          <Link
+            to="/"
+            id="header__link--home"
+            className="flex items-center gap-2 cursor-pointer"
+            aria-label="Accueil"
           >
-            {t.app.name}
-          </span>
+            <BreveLogo className="h-5 w-auto" />
+            <span
+              id="header__logo--breve"
+              className="font-display font-bold text-primary text-sm md:text-base tracking-tight select-none"
+            >
+              {t.app.name}
+            </span>
+          </Link>
 
           <span className="hidden md:block text-border mx-1 select-none" aria-hidden="true">
             |
