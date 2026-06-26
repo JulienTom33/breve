@@ -33,6 +33,10 @@ const translations = {
       science: 'Science',
       tech: 'Tech',
       environment: 'Environnement',
+      politique: 'Politique',
+      sport: 'Sport',
+      sante: 'Santé',
+      'faits-divers': 'Faits divers',
     },
     auth: {
       login: {
@@ -190,6 +194,10 @@ const translations = {
       science: 'Science',
       tech: 'Tech',
       environment: 'Environment',
+      politique: 'Politics',
+      sport: 'Sport',
+      sante: 'Health',
+      'faits-divers': 'Misc.',
     },
     auth: {
       login: {

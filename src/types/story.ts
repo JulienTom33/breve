@@ -29,4 +29,8 @@ export const CATEGORY_TO_BADGE: Record<string, BadgeCategory> = {
   science: 'science',
   technologie: 'tech',
   environnement: 'environment',
+  politique: 'politique',
+  sport: 'sport',
+  sante: 'sante',
+  'faits-divers': 'faits-divers',
 }
