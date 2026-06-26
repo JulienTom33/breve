@@ -1,4 +1,4 @@
-import { FC, useState, FormEvent } from 'react'
+import { FC, useState, useEffect, FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { SunIcon, MoonIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import Button from '@/components/ui/Button/Button'
@@ -18,6 +18,16 @@ const Header: FC = () => {
   const { user, loading } = useAuth()
   const navigate = useNavigate()
   const [searchValue, setSearchValue] = useState('')
+
+  useEffect(() => {
+    const q = searchValue.trim()
+    if (q.length < 2) return
+    const timer = setTimeout(() => {
+      navigate(`/search?q=${encodeURIComponent(q)}`)
+      setSearchValue('')
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [searchValue, navigate])
 
   const handleSearchSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
