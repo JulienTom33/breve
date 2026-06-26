@@ -133,6 +133,27 @@ describe('StoryCard', () => {
     expect(mark?.textContent?.toLowerCase()).toBe('économique')
   })
 
+  it('auto-expands summary when highlight matches in summary', () => {
+    render(
+      <ul>
+        <StoryCard story={mockStory} highlight="correction" />
+      </ul>,
+    )
+    // summary is expanded — line-clamp class should not be present
+    const summary = document.querySelector(`#story-card__summary--${mockStory.id}`)
+    expect(summary?.className).not.toContain('line-clamp-4')
+  })
+
+  it('does not auto-expand when highlight only matches title', () => {
+    render(
+      <ul>
+        <StoryCard story={mockStory} highlight="économique" />
+      </ul>,
+    )
+    const summary = document.querySelector(`#story-card__summary--${mockStory.id}`)
+    expect(summary?.className).toContain('line-clamp-4')
+  })
+
   it('renders title normally when no highlight prop', () => {
     render(
       <ul>

@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC, useState, useEffect } from 'react'
 import Badge from '@/components/ui/Badge/Badge'
 import Button from '@/components/ui/Button/Button'
 import SourcePill from '@/components/ui/SourcePill/SourcePill'
@@ -13,7 +13,13 @@ interface StoryCardProps {
 }
 
 const StoryCard: FC<StoryCardProps> = ({ story, highlight }) => {
-  const [expanded, setExpanded] = useState(false)
+  const summaryHasMatch =
+    !!highlight?.trim() && story.summary.toLowerCase().includes(highlight.trim().toLowerCase())
+  const [expanded, setExpanded] = useState(summaryHasMatch)
+
+  useEffect(() => {
+    setExpanded(summaryHasMatch)
+  }, [summaryHasMatch])
   const badgeCategory = CATEGORY_TO_BADGE[story.category] ?? 'world'
   const date = new Date(story.published_at).toLocaleDateString('fr-FR', {
     day: 'numeric',
