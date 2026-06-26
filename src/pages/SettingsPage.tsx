@@ -8,6 +8,7 @@ import { useUserProfile } from '@/hooks/useUserProfile'
 import { useAuth } from '@/hooks/useAuth'
 import { SELECTABLE_CATEGORIES } from '@/lib/categories'
 import { t } from '@/lib/i18n'
+import { getUserAvatarUrl } from '@/lib/userAvatar'
 import defaultAvatar from '@/assets/default-avatar.png'
 import avatar1 from '@/assets/avatars/avatar-1.png'
 import avatar2 from '@/assets/avatars/avatar-2.png'
@@ -54,7 +55,7 @@ const SettingsPage: FC = () => {
     if (user) {
       setFirstName((user.user_metadata?.first_name as string | undefined) ?? '')
       setLastName((user.user_metadata?.last_name as string | undefined) ?? '')
-      setPendingAvatarUrl(user.user_metadata?.avatar_url as string | undefined)
+      setPendingAvatarUrl(getUserAvatarUrl(user))
     }
   }, [user])
 

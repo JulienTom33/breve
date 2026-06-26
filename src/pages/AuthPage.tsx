@@ -9,6 +9,7 @@ import {
   XCircleIcon,
 } from '@heroicons/react/24/outline'
 import Button from '@/components/ui/Button/Button'
+import Form from '@/components/ui/Form/Form'
 import Input from '@/components/ui/Input/Input'
 import BreveLogo from '@/components/ui/BreveLogo/BreveLogo'
 import { useAuth } from '@/hooks/useAuth'
@@ -183,7 +184,7 @@ const AuthPage: FC = () => {
           </div>
         )}
 
-        <form id="auth-page__form--main" onSubmit={handleSubmit} noValidate>
+        <Form id="auth-page__form--main" onSubmit={handleSubmit} noValidate>
           <div className="flex flex-col gap-4">
             {mode === Mode.Register && (
               <div className="flex gap-3">
@@ -354,7 +355,7 @@ const AuthPage: FC = () => {
               </Button>
             )}
           </div>
-        </form>
+        </Form>
       </div>
     </div>
   )

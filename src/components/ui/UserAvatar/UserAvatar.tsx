@@ -1,6 +1,7 @@
 import { FC } from 'react'
 import type { User } from '@supabase/supabase-js'
 import Button from '@/components/ui/Button/Button'
+import { getUserAvatarUrl } from '@/lib/userAvatar'
 import defaultAvatar from '@/assets/default-avatar.png'
 
 interface Props {
@@ -16,7 +17,7 @@ const sizeClasses: Record<NonNullable<Props['size']>, string> = {
 }
 
 const UserAvatar: FC<Props> = ({ user, size = 'md', onClick, isOpen = false }) => {
-  const avatarUrl = user.user_metadata?.avatar_url as string | undefined
+  const avatarUrl = getUserAvatarUrl(user)
   const sizeClass = sizeClasses[size]
 
   return (
