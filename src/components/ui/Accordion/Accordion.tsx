@@ -1,5 +1,6 @@
 import { FC, ReactNode, useState } from 'react'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
+import Button from '@/components/ui/Button/Button'
 
 export interface AccordionItem {
   id: string
@@ -37,9 +38,10 @@ const Accordion: FC<AccordionProps> = ({ id, items }) => {
             id={`accordion__item--${item.id}`}
             className="bg-surface rounded-lg shadow-card overflow-hidden"
           >
-            <button
+            <Button
               id={`accordion__trigger--${item.id}`}
               type="button"
+              variant="custom"
               onClick={() => toggle(item.id)}
               aria-expanded={isOpen}
               aria-controls={`accordion__content--${item.id}`}
@@ -50,7 +52,7 @@ const Accordion: FC<AccordionProps> = ({ id, items }) => {
                 className={`w-4 h-4 text-text-faint shrink-0 transition-transform duration-150 ${isOpen ? 'rotate-180' : ''}`}
                 aria-hidden="true"
               />
-            </button>
+            </Button>
             {isOpen && (
               <div id={`accordion__content--${item.id}`} role="region">
                 {item.content}

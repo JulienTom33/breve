@@ -2,6 +2,10 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
 import { useSearch } from './useSearch'
 
+vi.mock('@/lib/supabase', () => ({
+  supabase: { from: vi.fn() },
+}))
+
 vi.mock('@/features/feed/mockStories', () => ({
   MOCK_STORIES: [
     {
