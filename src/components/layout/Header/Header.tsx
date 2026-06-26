@@ -2,6 +2,7 @@ import { FC, useState, useEffect, FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { SunIcon, MoonIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import Button from '@/components/ui/Button/Button'
+import Form from '@/components/ui/Form/Form'
 import Input from '@/components/ui/Input/Input'
 import BreveLogo from '@/components/ui/BreveLogo/BreveLogo'
 import Navbar from '@/components/layout/Navbar/Navbar'
@@ -20,10 +21,10 @@ const Header: FC = () => {
   const [searchValue, setSearchValue] = useState('')
 
   useEffect(() => {
-    const q = searchValue.trim()
-    if (q.length < 2) return
+    const query = searchValue.trim()
+    if (query.length < 2) return
     const timer = setTimeout(() => {
-      navigate(`/search?q=${encodeURIComponent(q)}`)
+      navigate(`/search?q=${encodeURIComponent(query)}`)
       setSearchValue('')
     }, 300)
     return () => clearTimeout(timer)
@@ -31,9 +32,9 @@ const Header: FC = () => {
 
   const handleSearchSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const q = searchValue.trim()
-    if (q.length >= 2) {
-      navigate(`/search?q=${encodeURIComponent(q)}`)
+    const query = searchValue.trim()
+    if (query.length >= 2) {
+      navigate(`/search?q=${encodeURIComponent(query)}`)
       setSearchValue('')
     }
   }
@@ -66,7 +67,7 @@ const Header: FC = () => {
           <Navbar />
         </div>
 
-        <form
+        <Form
           id="header__search--wrapper"
           className="w-80 min-w-0"
           onSubmit={handleSearchSubmit}
@@ -84,7 +85,7 @@ const Header: FC = () => {
               <MagnifyingGlassIcon className="w-4 h-4 text-text-faint" aria-hidden="true" />
             }
           />
-        </form>
+        </Form>
 
         <div id="header__actions--desktop" className="hidden md:flex items-center gap-2 shrink-0">
           <span
