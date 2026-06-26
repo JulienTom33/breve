@@ -73,7 +73,7 @@ export interface UseFeedReturn {
   sentinelRef: React.RefObject<HTMLDivElement | null>
 }
 
-export function useFeed(): UseFeedReturn {
+export function useFeed(category: string | null = null): UseFeedReturn {
   const [stories, setStories] = useState<Story[]>([])
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
@@ -81,26 +81,36 @@ export function useFeed(): UseFeedReturn {
   const pageRef = useRef(0)
   const sentinelRef = useRef<HTMLDivElement | null>(null)
 
-  const fetchPage = useCallback(async (page: number): Promise<Story[]> => {
-    if (USE_MOCK) {
-      const start = page * PAGE_SIZE
-      return MOCK_STORIES.slice(start, start + PAGE_SIZE)
-    }
+  const fetchPage = useCallback(
+    async (page: number): Promise<Story[]> => {
+      if (USE_MOCK) {
+        const all = category ? MOCK_STORIES.filter((s) => s.category === category) : MOCK_STORIES
+        const start = page * PAGE_SIZE
+        return all.slice(start, start + PAGE_SIZE)
+      }
 
-    const { data, error } = await supabase
-      .from('stories')
-      .select(
-        `id, title, summary, category, published_at, source_count,
+      let query = supabase
+        .from('stories')
+        .select(
+          `id, title, summary, category, published_at, source_count,
          story_sources(articles(url, sources(name))),
          story_tags(tags(label, slug))`,
-      )
-      .eq('is_published', true)
-      .order('published_at', { ascending: false })
-      .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1)
+        )
+        .eq('is_published', true)
+        .order('published_at', { ascending: false })
+        .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1)
 
-    if (error || !data) return []
-    return (data as unknown as RawStory[]).map(transformStory)
-  }, [])
+      if (category) {
+        query = query.eq('category', category)
+      }
+
+      const { data, error } = await query
+
+      if (error || !data) return []
+      return (data as unknown as RawStory[]).map(transformStory)
+    },
+    [category],
+  )
 
   useEffect(() => {
     let cancelled = false

@@ -33,6 +33,26 @@ describe('Badge', () => {
     expect(screen.getByText('Environnement')).toBeInTheDocument()
   })
 
+  it('renders default label for politique', () => {
+    render(<Badge category="politique" />)
+    expect(screen.getByText('Politique')).toBeInTheDocument()
+  })
+
+  it('renders default label for sport', () => {
+    render(<Badge category="sport" />)
+    expect(screen.getByText('Sport')).toBeInTheDocument()
+  })
+
+  it('renders default label for sante', () => {
+    render(<Badge category="sante" />)
+    expect(screen.getByText('Santé')).toBeInTheDocument()
+  })
+
+  it('renders default label for faits-divers', () => {
+    render(<Badge category="faits-divers" />)
+    expect(screen.getByText('Faits divers')).toBeInTheDocument()
+  })
+
   it('renders custom label when provided', () => {
     render(<Badge category="tech" label="IA" />)
     expect(screen.getByText('IA')).toBeInTheDocument()
@@ -46,6 +66,10 @@ describe('Badge', () => {
       ['science', 'bg-badge-science'],
       ['tech', 'bg-badge-tech'],
       ['environment', 'bg-badge-environment'],
+      ['politique', 'bg-badge-politique'],
+      ['sport', 'bg-badge-sport'],
+      ['sante', 'bg-badge-sante'],
+      ['faits-divers', 'bg-badge-faits-divers'],
     ] as const
 
     cases.forEach(([cat, cls]) => {

@@ -31,14 +31,16 @@ beforeEach(() => {
 })
 
 describe('OnboardingCategoriesPage', () => {
-  it('renders all 6 selectable categories', () => {
+  it('renders all 8 selectable categories', () => {
     renderPage()
     expect(screen.getByText('Monde')).toBeInTheDocument()
     expect(screen.getByText('France')).toBeInTheDocument()
+    expect(screen.getByText('Politique')).toBeInTheDocument()
     expect(screen.getByText('Économie')).toBeInTheDocument()
-    expect(screen.getByText('Science')).toBeInTheDocument()
     expect(screen.getByText('Technologie')).toBeInTheDocument()
-    expect(screen.getByText('Environnement')).toBeInTheDocument()
+    expect(screen.getByText('Sport')).toBeInTheDocument()
+    expect(screen.getByText('Santé')).toBeInTheDocument()
+    expect(screen.getByText('Faits divers')).toBeInTheDocument()
   })
 
   it('renders step indicator and title', () => {
@@ -69,10 +71,10 @@ describe('OnboardingCategoriesPage', () => {
     const user = userEvent.setup()
     renderPage()
     await user.click(screen.getByRole('button', { name: 'Monde' }))
-    await user.click(screen.getByRole('button', { name: 'Science' }))
+    await user.click(screen.getByRole('button', { name: 'Sport' }))
     await user.click(screen.getByRole('button', { name: /Commencer/i }))
     await waitFor(() =>
-      expect(mockSavePreferredCategories).toHaveBeenCalledWith(['monde', 'science']),
+      expect(mockSavePreferredCategories).toHaveBeenCalledWith(['monde', 'sport']),
     )
     await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/'))
   })

@@ -11,9 +11,9 @@ const renderWithRouter = (initialPath = '/') =>
   )
 
 describe('CategoryTabs', () => {
-  it('renders 7 tabs', () => {
+  it('renders 9 tabs', () => {
     renderWithRouter()
-    expect(screen.getAllByRole('listitem')).toHaveLength(7)
+    expect(screen.getAllByRole('listitem')).toHaveLength(9)
   })
 
   it('renders Tout tab', () => {
@@ -31,14 +31,14 @@ describe('CategoryTabs', () => {
     expect(screen.getByText('France')).toBeInTheDocument()
   })
 
+  it('renders Politique tab', () => {
+    renderWithRouter()
+    expect(screen.getByText('Politique')).toBeInTheDocument()
+  })
+
   it('renders Économie tab', () => {
     renderWithRouter()
     expect(screen.getByText('Économie')).toBeInTheDocument()
-  })
-
-  it('renders Science tab', () => {
-    renderWithRouter()
-    expect(screen.getByText('Science')).toBeInTheDocument()
   })
 
   it('renders Technologie tab', () => {
@@ -46,9 +46,19 @@ describe('CategoryTabs', () => {
     expect(screen.getByText('Technologie')).toBeInTheDocument()
   })
 
-  it('renders Environnement tab', () => {
+  it('renders Sport tab', () => {
     renderWithRouter()
-    expect(screen.getByText('Environnement')).toBeInTheDocument()
+    expect(screen.getByText('Sport')).toBeInTheDocument()
+  })
+
+  it('renders Santé tab', () => {
+    renderWithRouter()
+    expect(screen.getByText('Santé')).toBeInTheDocument()
+  })
+
+  it('renders Faits divers tab', () => {
+    renderWithRouter()
+    expect(screen.getByText('Faits divers')).toBeInTheDocument()
   })
 
   it('Tout tab is active on /', () => {
@@ -67,6 +77,19 @@ describe('CategoryTabs', () => {
     renderWithRouter('/')
     const tout = screen.getByText('Tout').closest('a')
     expect(tout).toHaveAttribute('aria-current', 'page')
+  })
+
+  it('category tab is active when ?cat= matches', () => {
+    renderWithRouter('/?cat=technologie')
+    const tab = screen.getByText('Technologie').closest('a')
+    expect(tab?.className).toContain('text-primary')
+    expect(tab).toHaveAttribute('aria-current', 'page')
+  })
+
+  it('Tout tab is not active when a category is selected', () => {
+    renderWithRouter('/?cat=sport')
+    const tout = screen.getByText('Tout').closest('a')
+    expect(tout?.className).not.toContain('text-primary')
   })
 
   it('nav has accessible label', () => {

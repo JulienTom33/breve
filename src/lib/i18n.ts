@@ -18,10 +18,12 @@ const translations = {
         tout: 'Tout',
         monde: 'Monde',
         france: 'France',
+        politique: 'Politique',
         economie: 'Économie',
-        science: 'Science',
         technologie: 'Technologie',
-        environnement: 'Environnement',
+        sport: 'Sport',
+        sante: 'Santé',
+        'faits-divers': 'Faits divers',
       },
     },
     badges: {
@@ -31,6 +33,10 @@ const translations = {
       science: 'Science',
       tech: 'Tech',
       environment: 'Environnement',
+      politique: 'Politique',
+      sport: 'Sport',
+      sante: 'Santé',
+      'faits-divers': 'Faits divers',
     },
     auth: {
       login: {
@@ -122,6 +128,10 @@ const translations = {
         saveError: 'Impossible de sauvegarder vos préférences.',
       },
     },
+    feed: {
+      emptyGeneric: 'Aucune brève disponible pour le moment.',
+      emptyCategory: 'Aucune brève disponible dans cette catégorie.',
+    },
     designSystem: {
       title: 'Design System — Brève',
       sections: {
@@ -173,10 +183,12 @@ const translations = {
         tout: 'All',
         monde: 'World',
         france: 'France',
+        politique: 'Politics',
         economie: 'Economy',
-        science: 'Science',
         technologie: 'Technology',
-        environnement: 'Environment',
+        sport: 'Sport',
+        sante: 'Health',
+        'faits-divers': 'Miscellaneous',
       },
     },
     badges: {
@@ -186,6 +198,10 @@ const translations = {
       science: 'Science',
       tech: 'Tech',
       environment: 'Environment',
+      politique: 'Politics',
+      sport: 'Sport',
+      sante: 'Health',
+      'faits-divers': 'Misc.',
     },
     auth: {
       login: {
@@ -276,6 +292,10 @@ const translations = {
         saved: 'Preferences saved.',
         saveError: 'Unable to save your preferences.',
       },
+    },
+    feed: {
+      emptyGeneric: 'No digest available at the moment.',
+      emptyCategory: 'No digest available in this category.',
     },
     designSystem: {
       title: 'Design System — Brève',

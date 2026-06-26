@@ -1,7 +1,17 @@
 import { FC } from 'react'
 import { t } from '@/lib/i18n'
 
-export type BadgeCategory = 'world' | 'france' | 'economy' | 'science' | 'tech' | 'environment'
+export type BadgeCategory =
+  | 'world'
+  | 'france'
+  | 'economy'
+  | 'science'
+  | 'tech'
+  | 'environment'
+  | 'politique'
+  | 'sport'
+  | 'sante'
+  | 'faits-divers'
 
 interface BadgeProps {
   category: BadgeCategory
@@ -17,6 +27,10 @@ const categoryClass: Record<BadgeCategory, string> = {
   science: 'bg-badge-science',
   tech: 'bg-badge-tech',
   environment: 'bg-badge-environment',
+  politique: 'bg-badge-politique',
+  sport: 'bg-badge-sport',
+  sante: 'bg-badge-sante',
+  'faits-divers': 'bg-badge-faits-divers',
 }
 
 const Badge: FC<BadgeProps> = ({ category, label }) => (
