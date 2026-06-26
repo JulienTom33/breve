@@ -1,7 +1,8 @@
-import { FC } from 'react'
-import { Link } from 'react-router-dom'
+import { FC, useState, useEffect, FormEvent } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { SunIcon, MoonIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import Button from '@/components/ui/Button/Button'
+import Form from '@/components/ui/Form/Form'
 import Input from '@/components/ui/Input/Input'
 import BreveLogo from '@/components/ui/BreveLogo/BreveLogo'
 import Navbar from '@/components/layout/Navbar/Navbar'
@@ -16,6 +17,27 @@ const Header: FC = () => {
   const time = useTime()
   const timeString = time.toLocaleTimeString('fr-FR')
   const { user, loading } = useAuth()
+  const navigate = useNavigate()
+  const [searchValue, setSearchValue] = useState('')
+
+  useEffect(() => {
+    const query = searchValue.trim()
+    if (query.length < 2) return
+    const timer = setTimeout(() => {
+      navigate(`/search?q=${encodeURIComponent(query)}`)
+      setSearchValue('')
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [searchValue, navigate])
+
+  const handleSearchSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const query = searchValue.trim()
+    if (query.length >= 2) {
+      navigate(`/search?q=${encodeURIComponent(query)}`)
+      setSearchValue('')
+    }
+  }
 
   return (
     <header
@@ -45,18 +67,25 @@ const Header: FC = () => {
           <Navbar />
         </div>
 
-        <div id="header__search--wrapper" className="w-80 min-w-0">
+        <Form
+          id="header__search--wrapper"
+          className="w-80 min-w-0"
+          onSubmit={handleSearchSubmit}
+          role="search"
+        >
           <Input
             id="header__input--search"
             type="search"
             placeholder={t.nav.searchPlaceholder}
             aria-label="Rechercher des articles"
             compact
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
             startAdornment={
               <MagnifyingGlassIcon className="w-4 h-4 text-text-faint" aria-hidden="true" />
             }
           />
-        </div>
+        </Form>
 
         <div id="header__actions--desktop" className="hidden md:flex items-center gap-2 shrink-0">
           <span
@@ -94,6 +123,16 @@ const Header: FC = () => {
         </div>
 
         <div id="header__actions--mobile" className="md:hidden flex items-center gap-2 shrink-0">
+          <Button
+            id="header__button--search-mobile"
+            variant="icon"
+            className="cursor-pointer"
+            onClick={() => navigate('/search')}
+            aria-label="Rechercher"
+          >
+            <MagnifyingGlassIcon className="w-5 h-5" aria-hidden="true" />
+          </Button>
+
           <Button
             variant="icon"
             className="cursor-pointer"

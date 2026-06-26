@@ -132,6 +132,13 @@ const translations = {
       emptyGeneric: 'Aucune brève disponible pour le moment.',
       emptyCategory: 'Aucune brève disponible dans cette catégorie.',
     },
+    search: {
+      inputPlaceholder: 'Rechercher des brèves...',
+      inputAriaLabel: 'Rechercher des brèves',
+      clearAriaLabel: 'Effacer la recherche',
+      emptyState: 'Aucun résultat pour',
+      hint: 'Saisissez au moins 2 caractères pour rechercher.',
+    },
     designSystem: {
       title: 'Design System — Brève',
       sections: {
@@ -296,6 +303,13 @@ const translations = {
     feed: {
       emptyGeneric: 'No digest available at the moment.',
       emptyCategory: 'No digest available in this category.',
+    },
+    search: {
+      inputPlaceholder: 'Search digests...',
+      inputAriaLabel: 'Search digests',
+      clearAriaLabel: 'Clear search',
+      emptyState: 'No results for',
+      hint: 'Type at least 2 characters to search.',
     },
     designSystem: {
       title: 'Design System — Brève',

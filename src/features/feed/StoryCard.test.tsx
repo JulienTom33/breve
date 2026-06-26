@@ -122,6 +122,48 @@ describe('StoryCard', () => {
     expect(screen.queryByLabelText('Sources')).not.toBeInTheDocument()
   })
 
+  it('highlights search term in title when highlight prop is provided', () => {
+    render(
+      <ul>
+        <StoryCard story={mockStory} highlight="économique" />
+      </ul>,
+    )
+    const mark = document.querySelector('mark')
+    expect(mark).toBeInTheDocument()
+    expect(mark?.textContent?.toLowerCase()).toBe('économique')
+  })
+
+  it('auto-expands summary when highlight matches in summary', () => {
+    render(
+      <ul>
+        <StoryCard story={mockStory} highlight="correction" />
+      </ul>,
+    )
+    // summary is expanded — line-clamp class should not be present
+    const summary = document.querySelector(`#story-card__summary--${mockStory.id}`)
+    expect(summary?.className).not.toContain('line-clamp-4')
+  })
+
+  it('does not auto-expand when highlight only matches title', () => {
+    render(
+      <ul>
+        <StoryCard story={mockStory} highlight="économique" />
+      </ul>,
+    )
+    const summary = document.querySelector(`#story-card__summary--${mockStory.id}`)
+    expect(summary?.className).toContain('line-clamp-4')
+  })
+
+  it('renders title normally when no highlight prop', () => {
+    render(
+      <ul>
+        <StoryCard story={mockStory} />
+      </ul>,
+    )
+    expect(document.querySelector('mark')).not.toBeInTheDocument()
+    expect(screen.getByText('Crise économique en Europe')).toBeInTheDocument()
+  })
+
   it('limits tags display to 3', () => {
     const storyManyTags: Story = {
       ...mockStory,
