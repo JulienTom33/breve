@@ -1,5 +1,6 @@
 import { FC } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { t } from '@/lib/i18n'
 import { useFeed } from '@/features/feed/useFeed'
 import StoryCard from '@/features/feed/StoryCard'
 import StoryCardSkeleton from '@/features/feed/StoryCardSkeleton'
@@ -22,9 +23,7 @@ const FeedPage: FC = () => {
       {!loading && stories.length === 0 && (
         <div id="feed-page__empty--state" className="text-center py-16">
           <p id="feed-page__empty--text" className="text-text-muted">
-            {cat
-              ? `Aucune story disponible dans cette catégorie.`
-              : 'Aucune story disponible pour le moment.'}
+            {cat ? t.feed.emptyCategory : t.feed.emptyGeneric}
           </p>
         </div>
       )}

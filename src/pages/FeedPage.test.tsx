@@ -76,7 +76,7 @@ describe('FeedPage', () => {
     })
 
     renderWithRouter('/')
-    expect(screen.getByText('Aucune story disponible pour le moment.')).toBeInTheDocument()
+    expect(screen.getByText('Aucune brève disponible pour le moment.')).toBeInTheDocument()
   })
 
   it('shows category empty state when no stories and category filter active', async () => {
@@ -90,7 +90,7 @@ describe('FeedPage', () => {
     })
 
     renderWithRouter('/?cat=sport')
-    expect(screen.getByText('Aucune story disponible dans cette catégorie.')).toBeInTheDocument()
+    expect(screen.getByText('Aucune brève disponible dans cette catégorie.')).toBeInTheDocument()
   })
 
   it('renders all stories as cards', async () => {

@@ -23,7 +23,7 @@ const translations = {
         technologie: 'Technologie',
         sport: 'Sport',
         sante: 'Santé',
-        faits_divers: 'Faits divers',
+        'faits-divers': 'Faits divers',
       },
     },
     badges: {
@@ -128,6 +128,10 @@ const translations = {
         saveError: 'Impossible de sauvegarder vos préférences.',
       },
     },
+    feed: {
+      emptyGeneric: 'Aucune brève disponible pour le moment.',
+      emptyCategory: 'Aucune brève disponible dans cette catégorie.',
+    },
     designSystem: {
       title: 'Design System — Brève',
       sections: {
@@ -184,7 +188,7 @@ const translations = {
         technologie: 'Technology',
         sport: 'Sport',
         sante: 'Health',
-        faits_divers: 'Miscellaneous',
+        'faits-divers': 'Miscellaneous',
       },
     },
     badges: {
@@ -288,6 +292,10 @@ const translations = {
         saved: 'Preferences saved.',
         saveError: 'Unable to save your preferences.',
       },
+    },
+    feed: {
+      emptyGeneric: 'No digest available at the moment.',
+      emptyCategory: 'No digest available in this category.',
     },
     designSystem: {
       title: 'Design System — Brève',
