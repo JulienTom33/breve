@@ -1,5 +1,5 @@
-import { FC } from 'react'
-import { Link } from 'react-router-dom'
+import { FC, useState, FormEvent } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { SunIcon, MoonIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import Button from '@/components/ui/Button/Button'
 import Input from '@/components/ui/Input/Input'
@@ -16,6 +16,17 @@ const Header: FC = () => {
   const time = useTime()
   const timeString = time.toLocaleTimeString('fr-FR')
   const { user, loading } = useAuth()
+  const navigate = useNavigate()
+  const [searchValue, setSearchValue] = useState('')
+
+  const handleSearchSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const q = searchValue.trim()
+    if (q.length >= 2) {
+      navigate(`/search?q=${encodeURIComponent(q)}`)
+      setSearchValue('')
+    }
+  }
 
   return (
     <header
@@ -45,18 +56,25 @@ const Header: FC = () => {
           <Navbar />
         </div>
 
-        <div id="header__search--wrapper" className="w-80 min-w-0">
+        <form
+          id="header__search--wrapper"
+          className="w-80 min-w-0"
+          onSubmit={handleSearchSubmit}
+          role="search"
+        >
           <Input
             id="header__input--search"
             type="search"
             placeholder={t.nav.searchPlaceholder}
             aria-label="Rechercher des articles"
             compact
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
             startAdornment={
               <MagnifyingGlassIcon className="w-4 h-4 text-text-faint" aria-hidden="true" />
             }
           />
-        </div>
+        </form>
 
         <div id="header__actions--desktop" className="hidden md:flex items-center gap-2 shrink-0">
           <span
@@ -94,6 +112,16 @@ const Header: FC = () => {
         </div>
 
         <div id="header__actions--mobile" className="md:hidden flex items-center gap-2 shrink-0">
+          <Button
+            id="header__button--search-mobile"
+            variant="icon"
+            className="cursor-pointer"
+            onClick={() => navigate('/search')}
+            aria-label="Rechercher"
+          >
+            <MagnifyingGlassIcon className="w-5 h-5" aria-hidden="true" />
+          </Button>
+
           <Button
             variant="icon"
             className="cursor-pointer"

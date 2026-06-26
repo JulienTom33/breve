@@ -122,6 +122,27 @@ describe('StoryCard', () => {
     expect(screen.queryByLabelText('Sources')).not.toBeInTheDocument()
   })
 
+  it('highlights search term in title when highlight prop is provided', () => {
+    render(
+      <ul>
+        <StoryCard story={mockStory} highlight="économique" />
+      </ul>,
+    )
+    const mark = document.querySelector('mark')
+    expect(mark).toBeInTheDocument()
+    expect(mark?.textContent?.toLowerCase()).toBe('économique')
+  })
+
+  it('renders title normally when no highlight prop', () => {
+    render(
+      <ul>
+        <StoryCard story={mockStory} />
+      </ul>,
+    )
+    expect(document.querySelector('mark')).not.toBeInTheDocument()
+    expect(screen.getByText('Crise économique en Europe')).toBeInTheDocument()
+  })
+
   it('limits tags display to 3', () => {
     const storyManyTags: Story = {
       ...mockStory,

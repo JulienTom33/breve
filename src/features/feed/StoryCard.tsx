@@ -3,14 +3,16 @@ import Badge from '@/components/ui/Badge/Badge'
 import Button from '@/components/ui/Button/Button'
 import SourcePill from '@/components/ui/SourcePill/SourcePill'
 import TagChip from '@/components/ui/TagChip/TagChip'
+import HighlightText from '@/features/search/HighlightText'
 import type { Story } from '@/types/story'
 import { CATEGORY_TO_BADGE } from '@/types/story'
 
 interface StoryCardProps {
   story: Story
+  highlight?: string
 }
 
-const StoryCard: FC<StoryCardProps> = ({ story }) => {
+const StoryCard: FC<StoryCardProps> = ({ story, highlight }) => {
   const [expanded, setExpanded] = useState(false)
   const badgeCategory = CATEGORY_TO_BADGE[story.category] ?? 'world'
   const date = new Date(story.published_at).toLocaleDateString('fr-FR', {
@@ -49,7 +51,7 @@ const StoryCard: FC<StoryCardProps> = ({ story }) => {
           id={`story-card__title--${story.id}`}
           className="font-display font-semibold text-text text-sm md:text-base mb-2 leading-snug"
         >
-          {story.title}
+          {highlight ? <HighlightText text={story.title} highlight={highlight} /> : story.title}
         </h2>
 
         <div id={`story-card__summary-wrapper--${story.id}`} className="mb-3">
@@ -57,7 +59,11 @@ const StoryCard: FC<StoryCardProps> = ({ story }) => {
             id={`story-card__summary--${story.id}`}
             className={`text-text-muted text-xs md:text-sm leading-relaxed ${expanded ? '' : 'line-clamp-4'}`}
           >
-            {story.summary}
+            {highlight ? (
+              <HighlightText text={story.summary} highlight={highlight} />
+            ) : (
+              story.summary
+            )}
           </p>
           <Button
             id={`story-card__expand-btn--${story.id}`}
