@@ -187,4 +187,76 @@ export const MOCK_STORIES: Story[] = [
       { label: 'Diplomatie', slug: 'diplomatie' },
     ],
   },
+  {
+    id: 'mock-11',
+    title: 'Législatives : la gauche unie dépose une motion de censure',
+    summary:
+      "Le Nouveau Front Populaire a déposé une motion de censure contre le gouvernement après le vote du budget rectificatif, arguant d'une violation des engagements électoraux sur les retraites et les services publics. La motion sera débattue jeudi en séance publique. L'issue reste incertaine : le RN, qui dispose de la clé du scrutin, n'a pas encore annoncé sa position. Si la motion passe, le Premier ministre devrait remettre sa démission au président de la République dans les 24 heures.",
+    category: 'politique',
+    published_at: new Date(Date.now() - 13 * 60 * 60 * 1000).toISOString(),
+    source_count: 2,
+    image_url: 'https://picsum.photos/seed/mock-11/800/400',
+    sources: [
+      { name: 'Le Monde', url: 'https://lemonde.fr' },
+      { name: 'Le Figaro', url: 'https://lefigaro.fr' },
+    ],
+    tags: [
+      { label: 'Assemblée Nationale', slug: 'assemblee-nationale' },
+      { label: 'Motion de censure', slug: 'motion-de-censure' },
+    ],
+  },
+  {
+    id: 'mock-12',
+    title: "Roland-Garros : Alcaraz s'offre un 3e titre consécutif",
+    summary:
+      "Carlos Alcaraz a dominé Jannik Sinner en quatre sets (6-3, 4-6, 6-2, 6-4) pour soulever pour la troisième fois consécutive la Coupe des Mousquetaires. L'Espagnol de 22 ans confirme sa domination sur terre battue et consolide sa place de numéro un mondial. Sinner, qui disputait sa première finale à Paris, a montré de belles réactions mais n'a pas pu renverser la tendance dans les moments clés. La prochaine étape pour les deux joueurs sera Wimbledon, dont le tirage au sort a lieu lundi.",
+    category: 'sport',
+    published_at: new Date(Date.now() - 14 * 60 * 60 * 1000).toISOString(),
+    source_count: 2,
+    image_url: 'https://picsum.photos/seed/mock-12/800/400',
+    sources: [
+      { name: "L'Équipe", url: 'https://lequipe.fr' },
+      { name: 'Eurosport', url: 'https://eurosport.fr' },
+    ],
+    tags: [
+      { label: 'Tennis', slug: 'tennis' },
+      { label: 'Roland-Garros', slug: 'roland-garros' },
+    ],
+  },
+  {
+    id: 'mock-13',
+    title: "Obésité : l'OMS valide un nouveau traitement par GLP-1",
+    summary:
+      "L'Organisation mondiale de la santé a officiellement recommandé les agonistes du GLP-1 comme traitement de première ligne de l'obésité sévère, ouvrant la voie à un remboursement généralisé dans les pays membres. Les études cliniques montrent une réduction moyenne du poids corporel de 15 à 22% sur 18 mois, avec un profil de sécurité satisfaisant. En France, la Haute Autorité de Santé doit se prononcer d'ici la fin de l'année sur les modalités de prise en charge. Les fabricants (Novo Nordisk, Eli Lilly) anticipent une tension sur l'approvisionnement mondial.",
+    category: 'sante',
+    published_at: new Date(Date.now() - 15 * 60 * 60 * 1000).toISOString(),
+    source_count: 2,
+    image_url: 'https://picsum.photos/seed/mock-13/800/400',
+    sources: [
+      { name: 'The Lancet', url: 'https://thelancet.com' },
+      { name: 'Le Monde', url: 'https://lemonde.fr' },
+    ],
+    tags: [
+      { label: 'Obésité', slug: 'obesite' },
+      { label: 'OMS', slug: 'oms' },
+    ],
+  },
+  {
+    id: 'mock-14',
+    title: 'Var : incendie criminel détruit 40 hectares de forêt',
+    summary:
+      "Un incendie d'origine criminelle s'est déclaré dans la nuit de vendredi à samedi près de Draguignan, ravageant 40 hectares de pinède avant d'être maîtrisé au petit matin par 180 pompiers et 6 Canadairs. Un suspect de 34 ans a été interpellé samedi après-midi à proximité du sinistre, en possession de matériel incendiaire. Placé en garde à vue, il sera présenté à un juge d'instruction lundi. Les dégâts sur la faune et la flore sont qualifiés de \"catastrophiques\" par les autorités locales.",
+    category: 'faits-divers',
+    published_at: new Date(Date.now() - 16 * 60 * 60 * 1000).toISOString(),
+    source_count: 2,
+    image_url: 'https://picsum.photos/seed/mock-14/800/400',
+    sources: [
+      { name: 'France Bleu', url: 'https://francebleu.fr' },
+      { name: 'BFM TV', url: 'https://bfmtv.com' },
+    ],
+    tags: [
+      { label: 'Incendie', slug: 'incendie' },
+      { label: 'Var', slug: 'var' },
+    ],
+  },
 ]

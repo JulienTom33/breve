@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
 import FeedPage from './FeedPage'
 import type { Story } from '@/types/story'
 
@@ -42,6 +43,13 @@ beforeEach(() => {
   )
 })
 
+const renderWithRouter = (path = '/') =>
+  render(
+    <MemoryRouter initialEntries={[path]}>
+      <FeedPage />
+    </MemoryRouter>,
+  )
+
 describe('FeedPage', () => {
   it('shows skeleton loaders during initial loading', async () => {
     const { useFeed } = await import('@/features/feed/useFeed')
@@ -53,11 +61,11 @@ describe('FeedPage', () => {
       sentinelRef: mockSentinelRef,
     })
 
-    render(<FeedPage />)
+    renderWithRouter()
     expect(screen.getAllByLabelText("Chargement d'une story")).toHaveLength(4)
   })
 
-  it('shows empty state when no stories', async () => {
+  it('shows generic empty state when no stories and no category filter', async () => {
     const { useFeed } = await import('@/features/feed/useFeed')
     vi.mocked(useFeed).mockReturnValue({
       stories: [],
@@ -67,8 +75,22 @@ describe('FeedPage', () => {
       sentinelRef: mockSentinelRef,
     })
 
-    render(<FeedPage />)
+    renderWithRouter('/')
     expect(screen.getByText('Aucune story disponible pour le moment.')).toBeInTheDocument()
+  })
+
+  it('shows category empty state when no stories and category filter active', async () => {
+    const { useFeed } = await import('@/features/feed/useFeed')
+    vi.mocked(useFeed).mockReturnValue({
+      stories: [],
+      loading: false,
+      loadingMore: false,
+      hasMore: false,
+      sentinelRef: mockSentinelRef,
+    })
+
+    renderWithRouter('/?cat=sport')
+    expect(screen.getByText('Aucune story disponible dans cette catégorie.')).toBeInTheDocument()
   })
 
   it('renders all stories as cards', async () => {
@@ -81,7 +103,7 @@ describe('FeedPage', () => {
       sentinelRef: mockSentinelRef,
     })
 
-    render(<FeedPage />)
+    renderWithRouter()
     expect(screen.getByText('First Story Title')).toBeInTheDocument()
     expect(screen.getByText('Second Story Title')).toBeInTheDocument()
   })
@@ -96,7 +118,7 @@ describe('FeedPage', () => {
       sentinelRef: mockSentinelRef,
     })
 
-    const { container } = render(<FeedPage />)
+    const { container } = renderWithRouter()
     const list = container.querySelector('#feed-page__list--stories')
     expect(list).toHaveClass('grid', 'md:grid-cols-2')
   })
@@ -111,7 +133,7 @@ describe('FeedPage', () => {
       sentinelRef: mockSentinelRef,
     })
 
-    render(<FeedPage />)
+    renderWithRouter()
     expect(screen.getAllByLabelText("Chargement d'une story")).toHaveLength(3)
   })
 
@@ -125,7 +147,7 @@ describe('FeedPage', () => {
       sentinelRef: mockSentinelRef,
     })
 
-    const { container } = render(<FeedPage />)
+    const { container } = renderWithRouter()
     expect(container.querySelector('#feed-page__sentinel--scroll')).toBeInTheDocument()
   })
 
@@ -139,7 +161,35 @@ describe('FeedPage', () => {
       sentinelRef: mockSentinelRef,
     })
 
-    const { container } = render(<FeedPage />)
+    const { container } = renderWithRouter()
     expect(container.querySelector('#feed-page__container--main')).toBeInTheDocument()
+  })
+
+  it('passes category param to useFeed', async () => {
+    const { useFeed } = await import('@/features/feed/useFeed')
+    vi.mocked(useFeed).mockReturnValue({
+      stories: mockStories,
+      loading: false,
+      loadingMore: false,
+      hasMore: false,
+      sentinelRef: mockSentinelRef,
+    })
+
+    renderWithRouter('/?cat=technologie')
+    expect(vi.mocked(useFeed)).toHaveBeenCalledWith('technologie')
+  })
+
+  it('passes null to useFeed when no category param', async () => {
+    const { useFeed } = await import('@/features/feed/useFeed')
+    vi.mocked(useFeed).mockReturnValue({
+      stories: mockStories,
+      loading: false,
+      loadingMore: false,
+      hasMore: false,
+      sentinelRef: mockSentinelRef,
+    })
+
+    renderWithRouter('/')
+    expect(vi.mocked(useFeed)).toHaveBeenCalledWith(null)
   })
 })

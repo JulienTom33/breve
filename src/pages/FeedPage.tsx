@@ -1,10 +1,13 @@
 import { FC } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useFeed } from '@/features/feed/useFeed'
 import StoryCard from '@/features/feed/StoryCard'
 import StoryCardSkeleton from '@/features/feed/StoryCardSkeleton'
 
 const FeedPage: FC = () => {
-  const { stories, loading, loadingMore, sentinelRef } = useFeed()
+  const [searchParams] = useSearchParams()
+  const cat = searchParams.get('cat')
+  const { stories, loading, loadingMore, sentinelRef } = useFeed(cat)
 
   return (
     <div id="feed-page__container--main" className="px-4 md:px-8 py-4 md:py-6 max-w-6xl mx-auto">
@@ -19,7 +22,9 @@ const FeedPage: FC = () => {
       {!loading && stories.length === 0 && (
         <div id="feed-page__empty--state" className="text-center py-16">
           <p id="feed-page__empty--text" className="text-text-muted">
-            Aucune story disponible pour le moment.
+            {cat
+              ? `Aucune story disponible dans cette catégorie.`
+              : 'Aucune story disponible pour le moment.'}
           </p>
         </div>
       )}

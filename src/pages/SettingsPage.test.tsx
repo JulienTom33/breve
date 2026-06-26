@@ -81,10 +81,12 @@ describe('SettingsPage', () => {
       renderPage()
       expect(screen.getByText('Monde')).toBeInTheDocument()
       expect(screen.getByText('France')).toBeInTheDocument()
+      expect(screen.getByText('Politique')).toBeInTheDocument()
       expect(screen.getByText('Économie')).toBeInTheDocument()
-      expect(screen.getByText('Science')).toBeInTheDocument()
       expect(screen.getByText('Technologie')).toBeInTheDocument()
-      expect(screen.getByText('Environnement')).toBeInTheDocument()
+      expect(screen.getByText('Sport')).toBeInTheDocument()
+      expect(screen.getByText('Santé')).toBeInTheDocument()
+      expect(screen.getByText('Faits divers')).toBeInTheDocument()
     })
 
     it('shows loading state', () => {
@@ -95,13 +97,10 @@ describe('SettingsPage', () => {
     })
 
     it('pre-selects preferred categories from profile', () => {
-      mockPreferredCategories = ['france', 'science']
+      mockPreferredCategories = ['france', 'sport']
       renderPage()
       expect(screen.getByRole('button', { name: 'France' })).toHaveAttribute('aria-pressed', 'true')
-      expect(screen.getByRole('button', { name: 'Science' })).toHaveAttribute(
-        'aria-pressed',
-        'true',
-      )
+      expect(screen.getByRole('button', { name: 'Sport' })).toHaveAttribute('aria-pressed', 'true')
       expect(screen.getByRole('button', { name: 'Monde' })).toHaveAttribute('aria-pressed', 'false')
     })
 
