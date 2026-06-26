@@ -1,10 +1,14 @@
 import { FC, useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import Button from '@/components/ui/Button/Button'
 import Input from '@/components/ui/Input/Input'
+import Accordion from '@/components/ui/Accordion/Accordion'
+import HighlightText from '@/features/search/HighlightText'
 import StoryCard from '@/features/feed/StoryCard'
 import StoryCardSkeleton from '@/features/feed/StoryCardSkeleton'
 import { useSearch } from '@/features/search/useSearch'
+import { t } from '@/lib/i18n'
 
 const SearchPage: FC = () => {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -29,57 +33,67 @@ const SearchPage: FC = () => {
         <Input
           id="search-page__input--query"
           type="search"
-          placeholder="Rechercher des brèves..."
+          placeholder={t.search.inputPlaceholder}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          aria-label="Rechercher des brèves"
+          aria-label={t.search.inputAriaLabel}
           autoFocus
           startAdornment={
             <MagnifyingGlassIcon className="w-4 h-4 text-text-faint" aria-hidden="true" />
           }
           endAdornment={
             inputValue ? (
-              <button
+              <Button
                 id="search-page__button--clear"
-                type="button"
+                variant="icon"
                 onClick={() => setInputValue('')}
-                aria-label="Effacer la recherche"
-                className="text-text-faint hover:text-text transition-colors cursor-pointer"
+                aria-label={t.search.clearAriaLabel}
+                className="cursor-pointer"
               >
                 <XMarkIcon className="w-4 h-4" />
-              </button>
+              </Button>
             ) : undefined
           }
         />
       </div>
 
       {loading && (
-        <ul id="search-page__list--loading" className="space-y-3 list-none p-0">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <li key={i}>
-              <StoryCardSkeleton />
-            </li>
-          ))}
-        </ul>
+        <Accordion
+          id="search-page__accordion--loading"
+          items={Array.from({ length: 3 }, (_, i) => ({
+            id: `loading-${i}`,
+            trigger: <div className="h-4 bg-surface-2 rounded w-2/3 animate-pulse" />,
+            content: <StoryCardSkeleton />,
+          }))}
+        />
       )}
 
       {!loading && hasQuery && stories.length === 0 && (
         <p id="search-page__empty--state" className="text-text-muted text-sm text-center py-12">
-          Aucun résultat pour «&nbsp;{trimmed}&nbsp;»
+          {t.search.emptyState} «&nbsp;{trimmed}&nbsp;»
         </p>
       )}
 
       {!loading && stories.length > 0 && (
-        <ul id="search-page__list--results" className="space-y-3 list-none p-0">
-          {stories.map((story) => (
-            <StoryCard key={story.id} story={story} highlight={trimmed} />
-          ))}
-        </ul>
+        <Accordion
+          key={trimmed}
+          id="search-page__accordion--results"
+          items={stories.map((story) => ({
+            id: story.id,
+            trigger: trimmed ? (
+              <HighlightText text={story.title} highlight={trimmed} />
+            ) : (
+              story.title
+            ),
+            content: <StoryCard story={story} highlight={trimmed} />,
+            defaultOpen: true,
+          }))}
+        />
       )}
 
       {!loading && !hasQuery && (
         <p id="search-page__hint--text" className="text-text-muted text-sm text-center py-12">
-          Saisissez au moins 2 caractères pour rechercher.
+          {t.search.hint}
         </p>
       )}
     </div>

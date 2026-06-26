@@ -40,7 +40,7 @@ describe('SearchPage', () => {
 
   it('shows hint when query is empty', () => {
     renderWithRouter()
-    expect(screen.getByText(/Saisissez au moins 2 caractères/)).toBeInTheDocument()
+    expect(screen.getByText(/au moins 2 caractères/)).toBeInTheDocument()
   })
 
   it('pre-fills input from ?q= URL param', () => {
@@ -53,21 +53,21 @@ describe('SearchPage', () => {
     expect(screen.getByText(/Aucun résultat pour/)).toBeInTheDocument()
   })
 
-  it('shows stories when results are returned', async () => {
+  it('shows accordion with stories when results are returned', async () => {
     const { useSearch } = await import('@/features/search/useSearch')
     vi.mocked(useSearch).mockReturnValue({ stories: [mockStory], loading: false })
     renderWithRouter('/search?q=Intelligence')
-    // title is split by HighlightText — check via heading role
+    expect(document.querySelector('#search-page__accordion--results')).toBeInTheDocument()
     expect(
       screen.getByRole('heading', { level: 2, name: /Intelligence Artificielle en France/ }),
     ).toBeInTheDocument()
   })
 
-  it('shows loading skeletons when loading', async () => {
+  it('shows accordion loading state while loading', async () => {
     const { useSearch } = await import('@/features/search/useSearch')
     vi.mocked(useSearch).mockReturnValue({ stories: [], loading: true })
     renderWithRouter('/search?q=IA')
-    expect(document.querySelectorAll('[aria-busy="true"]').length).toBeGreaterThan(0)
+    expect(document.querySelector('#search-page__accordion--loading')).toBeInTheDocument()
   })
 
   it('shows clear button when input has value', () => {
