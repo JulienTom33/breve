@@ -131,6 +131,9 @@ const translations = {
     feed: {
       emptyGeneric: 'Aucune brève disponible pour le moment.',
       emptyCategory: 'Aucune brève disponible dans cette catégorie.',
+      personalizedBanner: 'Feed personnalisé selon vos préférences',
+      settingsLink: 'Modifier',
+      showAll: 'Voir tout',
     },
     search: {
       inputPlaceholder: 'Rechercher des brèves...',
@@ -303,6 +306,9 @@ const translations = {
     feed: {
       emptyGeneric: 'No digest available at the moment.',
       emptyCategory: 'No digest available in this category.',
+      personalizedBanner: 'Personalised feed based on your preferences',
+      settingsLink: 'Edit',
+      showAll: 'Show all',
     },
     search: {
       inputPlaceholder: 'Search digests...',

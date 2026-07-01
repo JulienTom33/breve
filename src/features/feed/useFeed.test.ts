@@ -52,6 +52,7 @@ function makeChain(resolvedValue: unknown): QueryChain {
   const chain: QueryChain = {
     select: vi.fn().mockReturnThis(),
     eq: vi.fn().mockReturnThis(),
+    in: vi.fn().mockReturnThis(),
     order: vi.fn().mockReturnThis(),
     range: vi.fn().mockResolvedValue(resolvedValue),
   }
@@ -120,16 +121,23 @@ describe('useFeed', () => {
     expect(result.current.stories).toHaveLength(2)
   })
 
-  it('filters mock stories by category', async () => {
-    const { result } = renderHook(() => useFeed('technologie'))
+  it('filters mock stories by single category', async () => {
+    const { result } = renderHook(() => useFeed(['technologie']))
     await waitFor(() => expect(result.current.loading).toBe(false))
 
     expect(result.current.stories).toHaveLength(1)
     expect(result.current.stories[0].category).toBe('technologie')
   })
 
+  it('filters mock stories by multiple categories', async () => {
+    const { result } = renderHook(() => useFeed(['technologie', 'monde']))
+    await waitFor(() => expect(result.current.loading).toBe(false))
+
+    expect(result.current.stories).toHaveLength(2)
+  })
+
   it('returns empty array when no stories match the category', async () => {
-    const { result } = renderHook(() => useFeed('sport'))
+    const { result } = renderHook(() => useFeed(['sport']))
     await waitFor(() => expect(result.current.loading).toBe(false))
 
     expect(result.current.stories).toHaveLength(0)

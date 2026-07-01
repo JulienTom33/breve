@@ -73,7 +73,7 @@ export interface UseFeedReturn {
   sentinelRef: React.RefObject<HTMLDivElement | null>
 }
 
-export function useFeed(category: string | null = null): UseFeedReturn {
+export function useFeed(categories: string[] | null = null): UseFeedReturn {
   const [stories, setStories] = useState<Story[]>([])
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
@@ -81,10 +81,14 @@ export function useFeed(category: string | null = null): UseFeedReturn {
   const pageRef = useRef(0)
   const sentinelRef = useRef<HTMLDivElement | null>(null)
 
+  const categoriesKey = JSON.stringify(categories)
+
   const fetchPage = useCallback(
     async (page: number): Promise<Story[]> => {
       if (USE_MOCK) {
-        const all = category ? MOCK_STORIES.filter((s) => s.category === category) : MOCK_STORIES
+        const all = categories?.length
+          ? MOCK_STORIES.filter((s) => categories.includes(s.category))
+          : MOCK_STORIES
         const start = page * PAGE_SIZE
         return all.slice(start, start + PAGE_SIZE)
       }
@@ -100,8 +104,8 @@ export function useFeed(category: string | null = null): UseFeedReturn {
         .order('published_at', { ascending: false })
         .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1)
 
-      if (category) {
-        query = query.eq('category', category)
+      if (categories?.length) {
+        query = query.in('category', categories)
       }
 
       const { data, error } = await query
@@ -109,7 +113,8 @@ export function useFeed(category: string | null = null): UseFeedReturn {
       if (error || !data) return []
       return (data as unknown as RawStory[]).map(transformStory)
     },
-    [category],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [categoriesKey],
   )
 
   useEffect(() => {

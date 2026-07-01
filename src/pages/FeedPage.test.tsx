@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import FeedPage from './FeedPage'
 import type { Story } from '@/types/story'
@@ -31,9 +32,25 @@ vi.mock('@/features/feed/useFeed', () => ({
   useFeed: vi.fn(),
 }))
 
+vi.mock('@/hooks/useAuth', () => ({
+  useAuth: vi.fn(),
+}))
+
+vi.mock('@/hooks/useUserProfile', () => ({
+  useUserProfile: vi.fn(),
+}))
+
 const mockSentinelRef = { current: null }
 
-beforeEach(() => {
+const defaultUseFeedReturn = {
+  stories: [],
+  loading: false,
+  loadingMore: false,
+  hasMore: false,
+  sentinelRef: mockSentinelRef,
+}
+
+beforeEach(async () => {
   vi.stubGlobal(
     'IntersectionObserver',
     vi.fn().mockImplementation(() => ({
@@ -41,6 +58,25 @@ beforeEach(() => {
       disconnect: vi.fn(),
     })),
   )
+
+  const { useAuth } = await import('@/hooks/useAuth')
+  vi.mocked(useAuth).mockReturnValue({
+    user: null,
+    loading: false,
+    signIn: vi.fn(),
+    signUp: vi.fn(),
+    signInWithGoogle: vi.fn(),
+    signOut: vi.fn(),
+    resetPassword: vi.fn(),
+    updateUserMetadata: vi.fn(),
+  })
+
+  const { useUserProfile } = await import('@/hooks/useUserProfile')
+  vi.mocked(useUserProfile).mockReturnValue({
+    preferredCategories: [],
+    loading: false,
+    savePreferredCategories: vi.fn(),
+  })
 })
 
 const renderWithRouter = (path = '/') =>
@@ -54,11 +90,9 @@ describe('FeedPage', () => {
   it('shows skeleton loaders during initial loading', async () => {
     const { useFeed } = await import('@/features/feed/useFeed')
     vi.mocked(useFeed).mockReturnValue({
-      stories: [],
+      ...defaultUseFeedReturn,
       loading: true,
-      loadingMore: false,
       hasMore: true,
-      sentinelRef: mockSentinelRef,
     })
 
     renderWithRouter()
@@ -67,13 +101,7 @@ describe('FeedPage', () => {
 
   it('shows generic empty state when no stories and no category filter', async () => {
     const { useFeed } = await import('@/features/feed/useFeed')
-    vi.mocked(useFeed).mockReturnValue({
-      stories: [],
-      loading: false,
-      loadingMore: false,
-      hasMore: false,
-      sentinelRef: mockSentinelRef,
-    })
+    vi.mocked(useFeed).mockReturnValue(defaultUseFeedReturn)
 
     renderWithRouter('/')
     expect(screen.getByText('Aucune brève disponible pour le moment.')).toBeInTheDocument()
@@ -81,13 +109,7 @@ describe('FeedPage', () => {
 
   it('shows category empty state when no stories and category filter active', async () => {
     const { useFeed } = await import('@/features/feed/useFeed')
-    vi.mocked(useFeed).mockReturnValue({
-      stories: [],
-      loading: false,
-      loadingMore: false,
-      hasMore: false,
-      sentinelRef: mockSentinelRef,
-    })
+    vi.mocked(useFeed).mockReturnValue(defaultUseFeedReturn)
 
     renderWithRouter('/?cat=sport')
     expect(screen.getByText('Aucune brève disponible dans cette catégorie.')).toBeInTheDocument()
@@ -95,13 +117,7 @@ describe('FeedPage', () => {
 
   it('renders all stories as cards', async () => {
     const { useFeed } = await import('@/features/feed/useFeed')
-    vi.mocked(useFeed).mockReturnValue({
-      stories: mockStories,
-      loading: false,
-      loadingMore: false,
-      hasMore: false,
-      sentinelRef: mockSentinelRef,
-    })
+    vi.mocked(useFeed).mockReturnValue({ ...defaultUseFeedReturn, stories: mockStories })
 
     renderWithRouter()
     expect(screen.getByText('First Story Title')).toBeInTheDocument()
@@ -110,13 +126,7 @@ describe('FeedPage', () => {
 
   it('renders stories list as grid', async () => {
     const { useFeed } = await import('@/features/feed/useFeed')
-    vi.mocked(useFeed).mockReturnValue({
-      stories: mockStories,
-      loading: false,
-      loadingMore: false,
-      hasMore: false,
-      sentinelRef: mockSentinelRef,
-    })
+    vi.mocked(useFeed).mockReturnValue({ ...defaultUseFeedReturn, stories: mockStories })
 
     const { container } = renderWithRouter()
     const list = container.querySelector('#feed-page__list--stories')
@@ -126,11 +136,10 @@ describe('FeedPage', () => {
   it('shows loadingMore skeletons when paginating', async () => {
     const { useFeed } = await import('@/features/feed/useFeed')
     vi.mocked(useFeed).mockReturnValue({
+      ...defaultUseFeedReturn,
       stories: mockStories,
-      loading: false,
       loadingMore: true,
       hasMore: true,
-      sentinelRef: mockSentinelRef,
     })
 
     renderWithRouter()
@@ -140,11 +149,9 @@ describe('FeedPage', () => {
   it('renders scroll sentinel div', async () => {
     const { useFeed } = await import('@/features/feed/useFeed')
     vi.mocked(useFeed).mockReturnValue({
+      ...defaultUseFeedReturn,
       stories: mockStories,
-      loading: false,
-      loadingMore: false,
       hasMore: true,
-      sentinelRef: mockSentinelRef,
     })
 
     const { container } = renderWithRouter()
@@ -153,43 +160,169 @@ describe('FeedPage', () => {
 
   it('has main container id', async () => {
     const { useFeed } = await import('@/features/feed/useFeed')
-    vi.mocked(useFeed).mockReturnValue({
-      stories: [],
-      loading: false,
-      loadingMore: false,
-      hasMore: false,
-      sentinelRef: mockSentinelRef,
-    })
+    vi.mocked(useFeed).mockReturnValue(defaultUseFeedReturn)
 
     const { container } = renderWithRouter()
     expect(container.querySelector('#feed-page__container--main')).toBeInTheDocument()
   })
 
-  it('passes category param to useFeed', async () => {
+  it('passes category param to useFeed as single-item array', async () => {
     const { useFeed } = await import('@/features/feed/useFeed')
-    vi.mocked(useFeed).mockReturnValue({
-      stories: mockStories,
-      loading: false,
-      loadingMore: false,
-      hasMore: false,
-      sentinelRef: mockSentinelRef,
-    })
+    vi.mocked(useFeed).mockReturnValue({ ...defaultUseFeedReturn, stories: mockStories })
 
     renderWithRouter('/?cat=technologie')
-    expect(vi.mocked(useFeed)).toHaveBeenCalledWith('technologie')
+    expect(vi.mocked(useFeed)).toHaveBeenCalledWith(['technologie'])
   })
 
-  it('passes null to useFeed when no category param', async () => {
+  it('passes null to useFeed when no category param and not logged in', async () => {
     const { useFeed } = await import('@/features/feed/useFeed')
-    vi.mocked(useFeed).mockReturnValue({
-      stories: mockStories,
-      loading: false,
-      loadingMore: false,
-      hasMore: false,
-      sentinelRef: mockSentinelRef,
-    })
+    vi.mocked(useFeed).mockReturnValue({ ...defaultUseFeedReturn, stories: mockStories })
 
     renderWithRouter('/')
     expect(vi.mocked(useFeed)).toHaveBeenCalledWith(null)
+  })
+
+  // --- Personalized feed ---
+
+  it('does not show personalized banner when not logged in', async () => {
+    const { useFeed } = await import('@/features/feed/useFeed')
+    vi.mocked(useFeed).mockReturnValue({ ...defaultUseFeedReturn, stories: mockStories })
+
+    const { container } = renderWithRouter('/')
+    expect(container.querySelector('#feed-page__banner--personalized')).not.toBeInTheDocument()
+  })
+
+  it('does not show personalized banner when logged in but no preferences', async () => {
+    const { useFeed } = await import('@/features/feed/useFeed')
+    vi.mocked(useFeed).mockReturnValue({ ...defaultUseFeedReturn, stories: mockStories })
+
+    const { useAuth } = await import('@/hooks/useAuth')
+    vi.mocked(useAuth).mockReturnValue({
+      user: { id: 'user-1' } as never,
+      loading: false,
+      signIn: vi.fn(),
+      signUp: vi.fn(),
+      signInWithGoogle: vi.fn(),
+      signOut: vi.fn(),
+      resetPassword: vi.fn(),
+      updateUserMetadata: vi.fn(),
+    })
+
+    const { container } = renderWithRouter('/')
+    expect(container.querySelector('#feed-page__banner--personalized')).not.toBeInTheDocument()
+  })
+
+  it('shows personalized banner when logged in with preferences and no tab filter', async () => {
+    const { useFeed } = await import('@/features/feed/useFeed')
+    vi.mocked(useFeed).mockReturnValue({ ...defaultUseFeedReturn, stories: mockStories })
+
+    const { useAuth } = await import('@/hooks/useAuth')
+    vi.mocked(useAuth).mockReturnValue({
+      user: { id: 'user-1' } as never,
+      loading: false,
+      signIn: vi.fn(),
+      signUp: vi.fn(),
+      signInWithGoogle: vi.fn(),
+      signOut: vi.fn(),
+      resetPassword: vi.fn(),
+      updateUserMetadata: vi.fn(),
+    })
+
+    const { useUserProfile } = await import('@/hooks/useUserProfile')
+    vi.mocked(useUserProfile).mockReturnValue({
+      preferredCategories: ['monde', 'france'],
+      loading: false,
+      savePreferredCategories: vi.fn(),
+    })
+
+    const { container } = renderWithRouter('/')
+    expect(container.querySelector('#feed-page__banner--personalized')).toBeInTheDocument()
+    expect(screen.getByText('Feed personnalisé selon vos préférences')).toBeInTheDocument()
+  })
+
+  it('passes preferred categories to useFeed when personalized', async () => {
+    const { useFeed } = await import('@/features/feed/useFeed')
+    vi.mocked(useFeed).mockReturnValue({ ...defaultUseFeedReturn, stories: mockStories })
+
+    const { useAuth } = await import('@/hooks/useAuth')
+    vi.mocked(useAuth).mockReturnValue({
+      user: { id: 'user-1' } as never,
+      loading: false,
+      signIn: vi.fn(),
+      signUp: vi.fn(),
+      signInWithGoogle: vi.fn(),
+      signOut: vi.fn(),
+      resetPassword: vi.fn(),
+      updateUserMetadata: vi.fn(),
+    })
+
+    const { useUserProfile } = await import('@/hooks/useUserProfile')
+    vi.mocked(useUserProfile).mockReturnValue({
+      preferredCategories: ['monde', 'france'],
+      loading: false,
+      savePreferredCategories: vi.fn(),
+    })
+
+    renderWithRouter('/')
+    expect(vi.mocked(useFeed)).toHaveBeenCalledWith(['monde', 'france'])
+  })
+
+  it('hides banner and passes null to useFeed after clicking "Voir tout"', async () => {
+    const user = userEvent.setup()
+    const { useFeed } = await import('@/features/feed/useFeed')
+    vi.mocked(useFeed).mockReturnValue({ ...defaultUseFeedReturn, stories: mockStories })
+
+    const { useAuth } = await import('@/hooks/useAuth')
+    vi.mocked(useAuth).mockReturnValue({
+      user: { id: 'user-1' } as never,
+      loading: false,
+      signIn: vi.fn(),
+      signUp: vi.fn(),
+      signInWithGoogle: vi.fn(),
+      signOut: vi.fn(),
+      resetPassword: vi.fn(),
+      updateUserMetadata: vi.fn(),
+    })
+
+    const { useUserProfile } = await import('@/hooks/useUserProfile')
+    vi.mocked(useUserProfile).mockReturnValue({
+      preferredCategories: ['monde', 'france'],
+      loading: false,
+      savePreferredCategories: vi.fn(),
+    })
+
+    const { container } = renderWithRouter('/')
+    await user.click(screen.getByText('Voir tout'))
+
+    expect(container.querySelector('#feed-page__banner--personalized')).not.toBeInTheDocument()
+    expect(vi.mocked(useFeed)).toHaveBeenLastCalledWith(null)
+  })
+
+  it('tab filter takes priority over personalization — no banner shown', async () => {
+    const { useFeed } = await import('@/features/feed/useFeed')
+    vi.mocked(useFeed).mockReturnValue({ ...defaultUseFeedReturn, stories: mockStories })
+
+    const { useAuth } = await import('@/hooks/useAuth')
+    vi.mocked(useAuth).mockReturnValue({
+      user: { id: 'user-1' } as never,
+      loading: false,
+      signIn: vi.fn(),
+      signUp: vi.fn(),
+      signInWithGoogle: vi.fn(),
+      signOut: vi.fn(),
+      resetPassword: vi.fn(),
+      updateUserMetadata: vi.fn(),
+    })
+
+    const { useUserProfile } = await import('@/hooks/useUserProfile')
+    vi.mocked(useUserProfile).mockReturnValue({
+      preferredCategories: ['monde', 'france'],
+      loading: false,
+      savePreferredCategories: vi.fn(),
+    })
+
+    const { container } = renderWithRouter('/?cat=sport')
+    expect(container.querySelector('#feed-page__banner--personalized')).not.toBeInTheDocument()
+    expect(vi.mocked(useFeed)).toHaveBeenCalledWith(['sport'])
   })
 })
