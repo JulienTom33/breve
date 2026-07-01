@@ -158,6 +158,30 @@ describe('FeedPage', () => {
     expect(container.querySelector('#feed-page__sentinel--scroll')).toBeInTheDocument()
   })
 
+  it('shows end-of-feed message when hasMore is false and stories exist', async () => {
+    const { useFeed } = await import('@/features/feed/useFeed')
+    vi.mocked(useFeed).mockReturnValue({
+      ...defaultUseFeedReturn,
+      stories: mockStories,
+      hasMore: false,
+    })
+
+    renderWithRouter()
+    expect(screen.getByText('Plus aucunes brèves.')).toBeInTheDocument()
+  })
+
+  it('does not show end-of-feed message when hasMore is true', async () => {
+    const { useFeed } = await import('@/features/feed/useFeed')
+    vi.mocked(useFeed).mockReturnValue({
+      ...defaultUseFeedReturn,
+      stories: mockStories,
+      hasMore: true,
+    })
+
+    renderWithRouter()
+    expect(screen.queryByText('Plus aucunes brèves.')).not.toBeInTheDocument()
+  })
+
   it('has main container id', async () => {
     const { useFeed } = await import('@/features/feed/useFeed')
     vi.mocked(useFeed).mockReturnValue(defaultUseFeedReturn)

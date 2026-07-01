@@ -134,6 +134,7 @@ const translations = {
       personalizedBanner: 'Votre feed',
       settingsLink: 'Modifier',
       showAll: 'Voir tout',
+      endOfFeed: 'Plus aucunes brèves.',
     },
     search: {
       inputPlaceholder: 'Rechercher des brèves...',
@@ -309,6 +310,7 @@ const translations = {
       personalizedBanner: 'Your feed',
       settingsLink: 'Edit',
       showAll: 'Show all',
+      endOfFeed: 'No more digests.',
     },
     search: {
       inputPlaceholder: 'Search digests...',

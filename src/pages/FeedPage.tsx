@@ -29,7 +29,7 @@ const FeedPage: FC = () => {
       ? preferredCategories
       : null
 
-  const { stories, loading, loadingMore, sentinelRef } = useFeed(filterCategories)
+  const { stories, loading, loadingMore, hasMore, sentinelRef } = useFeed(filterCategories)
 
   return (
     <div id="feed-page__container--main" className="px-4 md:px-8 py-4 md:py-6 max-w-6xl mx-auto">
@@ -94,6 +94,11 @@ const FeedPage: FC = () => {
                 <StoryCardSkeleton key={i} variant="card" />
               ))}
             </div>
+          )}
+          {!loadingMore && !hasMore && (
+            <p id="feed-page__end--message" className="text-center text-text-faint text-xs py-6">
+              {t.feed.endOfFeed}
+            </p>
           )}
         </>
       )}

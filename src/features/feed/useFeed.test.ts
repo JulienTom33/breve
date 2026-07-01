@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { renderHook, waitFor } from '@testing-library/react'
+import React from 'react'
+import { act, render, renderHook, waitFor } from '@testing-library/react'
 import { useFeed } from './useFeed'
 import { supabase } from '@/lib/supabase'
 
@@ -160,5 +161,99 @@ describe('useFeed', () => {
     const { result } = renderHook(() => useFeed())
     await waitFor(() => expect(result.current.loading).toBe(false))
     expect(result.current.loadingMore).toBe(false)
+  })
+
+  function stubObserver() {
+    let observerCallback: ((entries: { isIntersecting: boolean }[]) => void) | undefined
+    vi.stubGlobal(
+      'IntersectionObserver',
+      vi.fn().mockImplementation(function (callback: typeof observerCallback) {
+        observerCallback = callback
+        return {
+          observe: vi.fn(),
+          disconnect: vi.fn(),
+        }
+      }),
+    )
+    return () => observerCallback?.([{ isIntersecting: true }])
+  }
+
+  // 25 mock stories (> PAGE_SIZE) so a real second page exists to load.
+  async function useFeedWithManyStories() {
+    vi.resetModules()
+    vi.doMock('./mockStories', () => ({
+      MOCK_STORIES: Array.from({ length: 25 }, (_, i) => ({
+        id: `story-${i}`,
+        title: `Story ${i}`,
+        summary: 'Summary',
+        category: 'monde',
+        published_at: '2026-06-24T10:00:00Z',
+        source_count: 1,
+        sources: [],
+        tags: [],
+      })),
+    }))
+    const mod = await import('./useFeed')
+    return mod.useFeed
+  }
+
+  // renderHook never attaches sentinelRef to a real DOM node, so the
+  // IntersectionObserver effect's `if (!sentinel) return` guard would skip
+  // observation. Render a host element bound to the ref to exercise it.
+  function renderWithSentinel(useFeedFn: typeof useFeed) {
+    let hookResult: ReturnType<typeof useFeedFn> | undefined
+    function Harness() {
+      hookResult = useFeedFn()
+      return React.createElement('div', { ref: hookResult.sentinelRef })
+    }
+    render(React.createElement(Harness))
+    return () => hookResult!
+  }
+
+  it('accumulates stories across multiple intersections without loss or duplication', async () => {
+    const intersect = stubObserver()
+    const useFeedMany = await useFeedWithManyStories()
+    const getResult = renderWithSentinel(useFeedMany)
+
+    await waitFor(() => expect(getResult().loading).toBe(false))
+    expect(getResult().stories).toHaveLength(20)
+    expect(getResult().hasMore).toBe(true)
+
+    act(() => intersect())
+    await waitFor(() => expect(getResult().loadingMore).toBe(false))
+
+    expect(getResult().stories).toHaveLength(25)
+    expect(getResult().hasMore).toBe(false)
+    const ids = getResult().stories.map((s) => s.id)
+    expect(new Set(ids).size).toBe(ids.length)
+  })
+
+  it('does not refetch when hasMore is already false', async () => {
+    const intersect = stubObserver()
+    const getResult = renderWithSentinel(useFeed)
+
+    await waitFor(() => expect(getResult().loading).toBe(false))
+    expect(getResult().hasMore).toBe(false)
+
+    const storiesBefore = getResult().stories
+
+    act(() => intersect())
+
+    expect(getResult().stories).toBe(storiesBefore)
+    expect(getResult().loadingMore).toBe(false)
+  })
+
+  it('triggers loadMore when the IntersectionObserver reports the sentinel is intersecting', async () => {
+    const intersect = stubObserver()
+    const useFeedMany = await useFeedWithManyStories()
+    const getResult = renderWithSentinel(useFeedMany)
+
+    await waitFor(() => expect(getResult().loading).toBe(false))
+    expect(getResult().hasMore).toBe(true)
+
+    act(() => intersect())
+
+    await waitFor(() => expect(getResult().loadingMore).toBe(false))
+    expect(getResult().stories.length).toBeGreaterThan(20)
   })
 })
