@@ -25,7 +25,7 @@ values
   ('Franceinfo — Santé', 'https://www.franceinfo.fr/sante.rss', 'https://www.franceinfo.fr/sante', 'sante', true, 'FR'),
   ('Franceinfo — Faits divers', 'https://www.franceinfo.fr/faits-divers.rss', 'https://www.franceinfo.fr/faits-divers', 'faits-divers', true, 'FR'),
   ('Franceinfo — Sciences', 'https://www.franceinfo.fr/sciences.rss', 'https://www.franceinfo.fr/sciences', 'science', true, 'FR'),
-  ('Franceinfo — High-tech', 'https://www.franceinfo.fr/high-tech.rss', 'https://www.franceinfo.fr/high-tech', 'technologie', true, 'FR'),
+  ('Franceinfo — High-tech', 'https://www.franceinfo.fr/sciences/high-tech.rss', 'https://www.franceinfo.fr/sciences/high-tech', 'technologie', true, 'FR'),
   ('Franceinfo — Environnement', 'https://www.franceinfo.fr/environnement.rss', 'https://www.franceinfo.fr/environnement', 'environnement', true, 'FR'),
 
   -- 20 Minutes — couverture par catégorie

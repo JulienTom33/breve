@@ -45,6 +45,9 @@ Sources ingérées par le worker RSS (`sources` table), toutes gratuites et lisi
 | France 24 — Sport           | `sport`         | Chaîne d'information internationale, actualité sportive         |
 | France 24 — Environnement   | `environnement` | Chaîne d'information internationale, actualité environnementale |
 
+> ⚠️ Reporterre (SPIP) date ses items via `<dc:date>` et non `<pubDate>` — le futur
+> worker d'ingestion (#53) doit supporter le namespace `dc` pour cette source.
+
 Toutes les catégories Brève (`monde`, `france`, `economie`, `science`, `technologie`,
 `environnement`, `politique`, `sport`, `sante`, `faits-divers`) sont couvertes par au
 moins un média généraliste (Franceinfo, 20 Minutes, RFI, France 24). Les médias de niche
