@@ -6,6 +6,7 @@ import { useUserProfile } from '@/hooks/useUserProfile'
 import { useFeed } from '@/features/feed/useFeed'
 import StoryCard from '@/features/feed/StoryCard'
 import StoryCardSkeleton from '@/features/feed/StoryCardSkeleton'
+import Button from '@/components/ui/Button/Button'
 
 const FeedPage: FC = () => {
   const [searchParams] = useSearchParams()
@@ -35,26 +36,28 @@ const FeedPage: FC = () => {
       {isPersonalized && (
         <div
           id="feed-page__banner--personalized"
-          className="flex items-center justify-between gap-2 mb-4 px-3 py-2 rounded-lg bg-surface-2 text-sm text-text-muted"
+          className="flex items-center gap-2 mb-3 text-xs text-text-faint"
         >
           <span id="feed-page__banner-text--personalized">
-            {t.feed.personalizedBanner}{' '}
+            {t.feed.personalizedBanner} ·{' '}
             <Link
               id="feed-page__link--settings"
               to="/settings"
-              className="text-primary underline hover:opacity-80"
+              className="text-primary hover:opacity-80"
             >
               {t.feed.settingsLink}
             </Link>
           </span>
-          <button
+          <span aria-hidden="true">·</span>
+          <Button
             id="feed-page__button--show-all"
+            variant="custom"
             type="button"
             onClick={() => setShowAll(true)}
-            className="shrink-0 text-primary text-sm font-medium hover:opacity-80 cursor-pointer"
+            className="text-xs text-primary hover:opacity-80 cursor-pointer p-0"
           >
             {t.feed.showAll}
-          </button>
+          </Button>
         </div>
       )}
 

@@ -85,9 +85,11 @@ export function useFeed(categories: string[] | null = null): UseFeedReturn {
 
   const fetchPage = useCallback(
     async (page: number): Promise<Story[]> => {
+      const cats: string[] | null = categoriesKey ? (JSON.parse(categoriesKey) as string[]) : null
+
       if (USE_MOCK) {
-        const all = categories?.length
-          ? MOCK_STORIES.filter((s) => categories.includes(s.category))
+        const all = cats?.length
+          ? MOCK_STORIES.filter((story) => cats.includes(story.category))
           : MOCK_STORIES
         const start = page * PAGE_SIZE
         return all.slice(start, start + PAGE_SIZE)
@@ -104,8 +106,8 @@ export function useFeed(categories: string[] | null = null): UseFeedReturn {
         .order('published_at', { ascending: false })
         .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1)
 
-      if (categories?.length) {
-        query = query.in('category', categories)
+      if (cats?.length) {
+        query = query.in('category', cats)
       }
 
       const { data, error } = await query
@@ -113,7 +115,6 @@ export function useFeed(categories: string[] | null = null): UseFeedReturn {
       if (error || !data) return []
       return (data as unknown as RawStory[]).map(transformStory)
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [categoriesKey],
   )
 

@@ -237,7 +237,9 @@ describe('FeedPage', () => {
 
     const { container } = renderWithRouter('/')
     expect(container.querySelector('#feed-page__banner--personalized')).toBeInTheDocument()
-    expect(screen.getByText('Feed personnalisé selon vos préférences')).toBeInTheDocument()
+    expect(container.querySelector('#feed-page__banner-text--personalized')).toHaveTextContent(
+      'Feed personnalisé selon vos préférences',
+    )
   })
 
   it('passes preferred categories to useFeed when personalized', async () => {
@@ -292,7 +294,7 @@ describe('FeedPage', () => {
     })
 
     const { container } = renderWithRouter('/')
-    await user.click(screen.getByText('Voir tout'))
+    await user.click(screen.getByRole('button', { name: 'Voir tout' }))
 
     expect(container.querySelector('#feed-page__banner--personalized')).not.toBeInTheDocument()
     expect(vi.mocked(useFeed)).toHaveBeenLastCalledWith(null)
