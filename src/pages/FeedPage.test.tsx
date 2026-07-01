@@ -238,7 +238,7 @@ describe('FeedPage', () => {
     const { container } = renderWithRouter('/')
     expect(container.querySelector('#feed-page__banner--personalized')).toBeInTheDocument()
     expect(container.querySelector('#feed-page__banner-text--personalized')).toHaveTextContent(
-      'Feed personnalisé selon vos préférences',
+      'Votre feed',
     )
   })
 
